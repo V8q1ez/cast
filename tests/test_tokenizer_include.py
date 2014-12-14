@@ -16,6 +16,6 @@ class preprocessorInclude(unittest.TestCase):
 
         self.assertEqual( INCLUDE, actualOutput[0].type)
         self.assertEqual( QUOTE, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[2].type)
         self.assertEqual( 'hello.h', actualOutput[2].literalValue)
         self.assertEqual( QUOTE, actualOutput[3].type)

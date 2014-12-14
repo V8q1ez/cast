@@ -11,6 +11,7 @@ FUNCTION_LIKE_MACRO = 7
 COMMA = 8
 VARIADIC_ARGS = 9
 BACKSLASH_NEWLINE = 10
+STRING = 11
 
 class token():
     def __init__(self, type):
@@ -27,6 +28,11 @@ class tokenList():
 
     def addLiteralToken(self, literalValue):
         t = token(LITERAL)
+        t.literalValue = literalValue
+        self.tokensList.append(t)
+
+    def addStringToken(self, literalValue):
+        t = token(STRING)
         t.literalValue = literalValue
         self.tokensList.append(t)
 
@@ -49,6 +55,7 @@ class tokenizer():
     def parseDefine(self, remainingString):
 
         self.isLiteralStarted = False
+        self.isStringStarted = False
         literalValue = ''
         isTypeOfMacrosKnown = False
         for c in remainingString:
@@ -89,17 +96,30 @@ class tokenizer():
                 if self.isLiteralStarted == True:
                     self.tokensList.addLiteralToken( literalValue )
                     self.isLiteralStarted = False
+                else:
+                    if self.isStringStarted == True:
+                        self.tokensList.addStringToken( literalValue )
+                        self.isStringStarted = False
+                    else:
+                        literalValue = ''
+                        self.isStringStarted = True
+
                 self.tokensList.addSimpleToken( QUOTE )
 
             elif c != ' ':
-                if self.isLiteralStarted == False:
-                    literalValue = c
-                    self.isLiteralStarted = True
-                else:
+                if self.isStringStarted == True:
                     literalValue += c
+                else:
+                    if self.isLiteralStarted == False:
+                        literalValue = c
+                        self.isLiteralStarted = True
+                    else:
+                        literalValue += c
 
             elif c == ' ':
-                if self.isLiteralStarted == True:
+                if self.isStringStarted == True:
+                    literalValue += c
+                elif self.isLiteralStarted == True:
                     # since literal finishes by space - this is an object like macros
                     isTypeOfMacrosKnown = True
                     if literalValue == '...':
@@ -145,8 +165,8 @@ class tokenizer():
 
 
     def parseString(self, inputString):
-        parts = inputString.split()
-        inputString = ' '.join(parts)
+        #parts = inputString.split()
+        #inputString = ' '.join(parts)
 
         (firstToken, nextPos) = self.getFirstToken(inputString)
 

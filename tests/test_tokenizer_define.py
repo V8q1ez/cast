@@ -260,7 +260,7 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( STRING, actualOutput[3].type)
         self.assertEqual( 'str', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
@@ -273,7 +273,7 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( STRING, actualOutput[3].type)
         self.assertEqual( '...', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
