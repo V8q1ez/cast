@@ -10,6 +10,7 @@ PARENTHESIS_RIGHT = 6
 FUNCTION_LIKE_MACRO = 7
 COMMA = 8
 VARIADIC_ARGS = 9
+BACKSLASH_NEWLINE = 10
 
 class token():
     def __init__(self, type):
@@ -109,7 +110,13 @@ class tokenizer():
 
         # if end of line but literal was started
         if self.isLiteralStarted == True:
-            self.tokensList.addLiteralToken( literalValue )
+            if literalValue[-1] == '\\':
+                if len(literalValue) != 1:
+                    self.tokensList.addLiteralToken( literalValue[:-1] )
+                self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
+            else:
+                self.tokensList.addLiteralToken( literalValue )
+            self.isLiteralStarted = False
 
         return
 
