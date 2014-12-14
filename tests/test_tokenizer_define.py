@@ -251,6 +251,32 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( '5.5', actualOutput[3].literalValue)
         self.assertEqual( PARENTHESIS_RIGHT, actualOutput[4].type)
 
+    def test_define_object_like_string_constant(self):
+        input = '#define a "str"'
+
+        actualOutput = self.tkz.parseString(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( 'str', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+    def test_define_object_like_str_const_like_variadic(self):
+        input = '#define a "..."'
+
+        actualOutput = self.tkz.parseString(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( '...', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
     def test_define_function_like_sum(self):
         input = '#define sum(x,y) (x)+(y)'
 

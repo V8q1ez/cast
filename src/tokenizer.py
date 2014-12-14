@@ -41,42 +41,11 @@ class tokenizer():
         self.tokensList = tokenList()
 
     """
-    The argument of ‘#include’, whether delimited with quote marks or angle brackets,
-        behaves like a string constant in that comments are not recognized,
-        and macro names are not expanded. Thus,
-        #include <x/*y> specifies inclusion of a system header file named x/*y.
-
-    However, if backslashes occur within file, they are considered ordinary text characters,
-        not escape characters. None of the character escape sequences appropriate to string
-        constants in C are processed. Thus, #include "x\n\\y" specifies a filename containing
-        three backslashes. (Some systems interpret ‘\’ as a pathname separator.
-        All of these also interpret ‘/’ the same way. It is most portable to use only ‘/’.)
-
-    It is an error if there is anything (other than comments) on the line after the file name.
-
-    source:  https://gcc.gnu.org/onlinedocs/cpp/Include-Syntax.html#Include-Syntax
+    All used preprocessor rules are taken from:
+        https://gcc.gnu.org/onlinedocs/cpp/index.html
     """
-    def parseInclude(self, remainingString):
-        self.tokensList.addSimpleToken( INCLUDE )
-        # try to find first '"' or '<'
-        self.isLiteralStarted = False
-        literalValue = ''
-        for c in remainingString:
-            if c == '"':
-                if self.isLiteralStarted == False:
-                    self.tokensList.addSimpleToken( QUOTE )
-                    self.isLiteralStarted = True
-                else:
-                    self.tokensList.addLiteralToken( literalValue )
-                    self.tokensList.addSimpleToken( QUOTE )
-                    self.isLiteralStarted = False
-            elif self.isLiteralStarted == True:
-                literalValue += c
-
-        return
 
     def parseDefine(self, remainingString):
-        self.tokensList.addSimpleToken( OBJECT_LIKE_MACRO )
 
         self.isLiteralStarted = False
         literalValue = ''
@@ -114,6 +83,12 @@ class tokenizer():
                         self.tokensList.addLiteralToken( literalValue )
                     self.isLiteralStarted = False
                 self.tokensList.addSimpleToken( COMMA )
+
+            elif c == '"':
+                if self.isLiteralStarted == True:
+                    self.tokensList.addLiteralToken( literalValue )
+                    self.isLiteralStarted = False
+                self.tokensList.addSimpleToken( QUOTE )
 
             elif c != ' ':
                 if self.isLiteralStarted == False:
@@ -169,9 +144,11 @@ class tokenizer():
         (firstToken, nextPos) = self.getFirstToken(inputString)
 
         if firstToken.type == INCLUDE:
-            self.parseInclude(inputString[nextPos:])
+            self.tokensList.addSimpleToken( INCLUDE )
+            self.parseDefine(inputString[nextPos:])
 
         elif firstToken.type == OBJECT_LIKE_MACRO:
+            self.tokensList.addSimpleToken( OBJECT_LIKE_MACRO )
             self.parseDefine(inputString[nextPos:])
 
         return self.tokensList.getList()
