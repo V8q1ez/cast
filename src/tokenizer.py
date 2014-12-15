@@ -58,105 +58,135 @@ class tokenizer():
         self.isLiteralStarted = False
         self.isStringStarted = False
         self.isEscSeqStarted = False
-        literalValue = ''
-        isTypeOfMacrosKnown = False
+        self.isTypeOfMacrosKnown = False
+        self.literalValue = ''
+
         for c in remainingString:
 
             if c == '(':
-                if self.isLiteralStarted == True:
-                    if isTypeOfMacrosKnown == False:
-                        # There is no space between name and parenthesis
-                        # So we should change the type of first token
-                        self.tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
-                        isTypeOfMacrosKnown = True
-                        # and write the macros name
-                    self.tokensList.addLiteralToken( literalValue )
-                    self.isLiteralStarted = False
-
-                self.tokensList.addSimpleToken( PARENTHESIS_LEFT )
+                self._processLeftParenthesis()
 
             elif c == ')':
-                if self.isLiteralStarted == True:
-                    if literalValue == '...':
-                        self.tokensList.addSimpleToken( VARIADIC_ARGS )
-                    else:
-                        self.tokensList.addLiteralToken( literalValue )
-                    self.isLiteralStarted = False
-
-                self.tokensList.addSimpleToken( PARENTHESIS_RIGHT )
+                self._processRightParenthesis()
 
             elif c == '\\':
                 if self.isEscSeqStarted == False:
                     self.isEscSeqStarted = True
 
             elif c == ',':
-                if self.isLiteralStarted == True:
-                    if literalValue == '...':
-                        self.tokensList.addSimpleToken( VARIADIC_ARGS )
-                    else:
-                        self.tokensList.addLiteralToken( literalValue )
-                    self.isLiteralStarted = False
-                self.tokensList.addSimpleToken( COMMA )
+                self._processComma()
 
             elif c == '"':
-                if self.isStringStarted == True:
-                    if self.isEscSeqStarted == True:
-                        literalValue += '\\' + c
-                        self.isEscSeqStarted = False
-                    else:
-                        self.tokensList.addStringToken( literalValue )
-                        self.isStringStarted = False
-                        self.tokensList.addSimpleToken( QUOTE )
-                else:
-                    if self.isLiteralStarted == True:
-                        self.tokensList.addLiteralToken( literalValue )
-                        self.isLiteralStarted = False
-                    else:
-                        literalValue = ''
-                        self.isStringStarted = True
-                    self.tokensList.addSimpleToken( QUOTE )
+                self._processQuote()
 
             elif c != ' ':
-                if self.isStringStarted == True:
-                    if self.isEscSeqStarted == True:
-                        literalValue += '\\'
-                        self.isEscSeqStarted = False
-                    literalValue += c
-                else:
-                    if self.isLiteralStarted == False:
-                        literalValue = c
-                        self.isLiteralStarted = True
-                    else:
-                        literalValue += c
+                self._processNonSpace( c )
 
             elif c == ' ':
-                if self.isStringStarted == True:
-                    literalValue += c
-                elif self.isLiteralStarted == True:
-                    # since literal finishes by space - this is an object like macros
-                    isTypeOfMacrosKnown = True
-                    if literalValue == '...':
-                        self.tokensList.addSimpleToken( VARIADIC_ARGS )
-                    else:
-                        self.tokensList.addLiteralToken( literalValue )
-                    self.isLiteralStarted = False
+                self._processSpace()
 
         # if end of line
         if self.isEscSeqStarted == True:
             if self.isLiteralStarted == True:
-                self.tokensList.addLiteralToken( literalValue )
+                self.tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
         else:
             if self.isLiteralStarted == True:
-                self.tokensList.addLiteralToken( literalValue )
+                self.tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
 
         self.tokensList.addSimpleToken( EOL )
 
         return
 
-    def getFirstToken(self, inputString):
+    def _processLeftParenthesis(self):
+        if self.isLiteralStarted == True:
+            if self.isTypeOfMacrosKnown == False:
+                # There is no space between name and parenthesis
+                # So we should change the type of first token
+                self.tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
+                isTypeOfMacrosKnown = True
+                # and write the macros name
+            self.tokensList.addLiteralToken( self.literalValue )
+            self.isLiteralStarted = False
+
+        self.tokensList.addSimpleToken( PARENTHESIS_LEFT )
+
+        return
+
+    def _processRightParenthesis(self):
+        if self.isLiteralStarted == True:
+            if self.literalValue == '...':
+                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+            else:
+                self.tokensList.addLiteralToken( self.literalValue )
+            self.isLiteralStarted = False
+
+        self.tokensList.addSimpleToken( PARENTHESIS_RIGHT )
+
+        return
+
+    def _processComma(self):
+        if self.isLiteralStarted == True:
+            if self.literalValue == '...':
+                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+            else:
+                self.tokensList.addLiteralToken( self.literalValue )
+            self.isLiteralStarted = False
+        self.tokensList.addSimpleToken( COMMA )
+
+        return
+
+    def _processQuote(self):
+        if self.isStringStarted == True:
+            if self.isEscSeqStarted == True:
+                self.literalValue += '\\\"'
+                self.isEscSeqStarted = False
+            else:
+                self.tokensList.addStringToken( self.literalValue )
+                self.isStringStarted = False
+                self.tokensList.addSimpleToken( QUOTE )
+        else:
+            if self.isLiteralStarted == True:
+                self.tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            else:
+                self.literalValue = ''
+                self.isStringStarted = True
+            self.tokensList.addSimpleToken( QUOTE )
+
+        return
+
+    def _processSpace(self):
+        if self.isStringStarted == True:
+            self.literalValue += ' '
+        elif self.isLiteralStarted == True:
+            # since literal finishes by space - this is an object like macros
+            self.isTypeOfMacrosKnown = True
+            if self.literalValue == '...':
+                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+            else:
+                self.tokensList.addLiteralToken( self.literalValue )
+            self.isLiteralStarted = False
+
+        return
+
+    def _processNonSpace(self, c):
+        if self.isStringStarted == True:
+            if self.isEscSeqStarted == True:
+                self.literalValue += '\\'
+                self.isEscSeqStarted = False
+            self.literalValue += c
+        else:
+            if self.isLiteralStarted == False:
+                self.literalValue = c
+                self.isLiteralStarted = True
+            else:
+                self.literalValue += c
+        return
+
+    def _getFirstToken(self, inputString):
         curPos = 0
         firstToken = ''
         isItPreprocessorDirective = False
@@ -184,7 +214,7 @@ class tokenizer():
         #parts = inputString.split()
         #inputString = ' '.join(parts)
 
-        (firstToken, nextPos) = self.getFirstToken(inputString)
+        (firstToken, nextPos) = self._getFirstToken(inputString)
 
         if firstToken.type == INCLUDE:
             self.tokensList.addSimpleToken( INCLUDE )
