@@ -12,6 +12,7 @@ COMMA = 8
 VARIADIC_ARGS = 9
 BACKSLASH_NEWLINE = 10
 STRING = 11
+EOL = 12
 
 class token():
     def __init__(self, type):
@@ -148,7 +149,11 @@ class tokenizer():
                 self.isLiteralStarted = False
             self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
         else:
-            self.tokensList.addLiteralToken( literalValue )
+            if self.isLiteralStarted == True:
+                self.tokensList.addLiteralToken( literalValue )
+                self.isLiteralStarted = False
+
+        self.tokensList.addSimpleToken( EOL )
 
         return
 
@@ -176,7 +181,7 @@ class tokenizer():
         return (result, 0)
 
 
-    def parseString(self, inputString):
+    def parseLine(self, inputString):
         #parts = inputString.split()
         #inputString = ' '.join(parts)
 
