@@ -21,3 +21,29 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( STRING, actualOutput[3].type)
         self.assertEqual( 'before after', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
+
+    def test_define_str_escaped_quote(self):
+        input = '#define a "before\\\"after"'
+
+        actualOutput = self.tkz.parseString(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'before\\\"after', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+    def test_define_str_escaped_quote_spaces(self):
+        input = '#define a "before \\\" after"'
+
+        actualOutput = self.tkz.parseString(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'before \\\" after', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)

@@ -56,6 +56,7 @@ class tokenizer():
 
         self.isLiteralStarted = False
         self.isStringStarted = False
+        self.isEscSeqStarted = False
         literalValue = ''
         isTypeOfMacrosKnown = False
         for c in remainingString:
@@ -83,6 +84,10 @@ class tokenizer():
 
                 self.tokensList.addSimpleToken( PARENTHESIS_RIGHT )
 
+            elif c == '\\':
+                if self.isEscSeqStarted == False:
+                    self.isEscSeqStarted = True
+
             elif c == ',':
                 if self.isLiteralStarted == True:
                     if literalValue == '...':
@@ -98,6 +103,11 @@ class tokenizer():
                     self.isLiteralStarted = False
                 else:
                     if self.isStringStarted == True:
+                        if self.isEscSeqStarted == True and c != '\\':
+                            literalValue += '\\\"'
+                            self.isEscSeqStarted = False
+                            continue
+
                         self.tokensList.addStringToken( literalValue )
                         self.isStringStarted = False
                     else:
@@ -128,15 +138,14 @@ class tokenizer():
                         self.tokensList.addLiteralToken( literalValue )
                     self.isLiteralStarted = False
 
-        # if end of line but literal was started
-        if self.isLiteralStarted == True:
-            if literalValue[-1] == '\\':
-                if len(literalValue) != 1:
-                    self.tokensList.addLiteralToken( literalValue[:-1] )
-                self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
-            else:
+        # if end of line
+        if self.isEscSeqStarted == True:
+            if self.isLiteralStarted == True:
                 self.tokensList.addLiteralToken( literalValue )
-            self.isLiteralStarted = False
+                self.isLiteralStarted = False
+            self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
+        else:
+            self.tokensList.addLiteralToken( literalValue )
 
         return
 
