@@ -99,23 +99,22 @@ class tokenizer():
                 self.tokensList.addSimpleToken( COMMA )
 
             elif c == '"':
-                if self.isLiteralStarted == True:
-                    self.tokensList.addLiteralToken( literalValue )
-                    self.isLiteralStarted = False
-                else:
-                    if self.isStringStarted == True:
-                        if self.isEscSeqStarted == True:
-                            literalValue += '\\' + c
-                            self.isEscSeqStarted = False
-                            continue
-
+                if self.isStringStarted == True:
+                    if self.isEscSeqStarted == True:
+                        literalValue += '\\' + c
+                        self.isEscSeqStarted = False
+                    else:
                         self.tokensList.addStringToken( literalValue )
                         self.isStringStarted = False
+                        self.tokensList.addSimpleToken( QUOTE )
+                else:
+                    if self.isLiteralStarted == True:
+                        self.tokensList.addLiteralToken( literalValue )
+                        self.isLiteralStarted = False
                     else:
                         literalValue = ''
                         self.isStringStarted = True
-
-                self.tokensList.addSimpleToken( QUOTE )
+                    self.tokensList.addSimpleToken( QUOTE )
 
             elif c != ' ':
                 if self.isStringStarted == True:
