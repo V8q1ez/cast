@@ -103,8 +103,8 @@ class tokenizer():
                     self.isLiteralStarted = False
                 else:
                     if self.isStringStarted == True:
-                        if self.isEscSeqStarted == True and c != '\\':
-                            literalValue += '\\\"'
+                        if self.isEscSeqStarted == True:
+                            literalValue += '\\' + c
                             self.isEscSeqStarted = False
                             continue
 
@@ -118,6 +118,9 @@ class tokenizer():
 
             elif c != ' ':
                 if self.isStringStarted == True:
+                    if self.isEscSeqStarted == True:
+                        literalValue += '\\'
+                        self.isEscSeqStarted = False
                     literalValue += c
                 else:
                     if self.isLiteralStarted == False:
