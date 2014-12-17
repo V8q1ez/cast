@@ -10,7 +10,7 @@ PARENTHESIS_RIGHT = 6
 FUNCTION_LIKE_MACRO = 7
 COMMA = 8
 VARIADIC_ARGS = 9
-BACKSLASH_NEWLINE = 10
+# BACKSLASH_NEWLINE = 10
 STRING = 11
 EOL = 12
 
@@ -58,19 +58,20 @@ class tokenizer():
         self._tokensList = tokenList()
         self.knownDirectives = directivesDict()
 
-    """
-    All used preprocessor rules are taken from:
-        https://gcc.gnu.org/onlinedocs/cpp/index.html
-    """
-
-    def parseDefine(self, remainingString):
-
+    def _clearState(self):
         self.isLiteralStarted = False
         self.isStringStarted = False
         self.isEscSeqStarted = False
         self.isTypeOfMacrosKnown = False
         self.literalValue = ''
         self.isDirectiveStarted = False
+
+    """
+    All used preprocessor rules are taken from:
+        https://gcc.gnu.org/onlinedocs/cpp/index.html
+    """
+
+    def parseDefine(self, remainingString):
 
         for c in remainingString:
 
@@ -109,7 +110,7 @@ class tokenizer():
                 # There is no space between name and parenthesis
                 # So we should change the type of first token
                 self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
-                isTypeOfMacrosKnown = True
+                self.isTypeOfMacrosKnown = True
                 # and write the macros name
             self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
@@ -208,13 +209,12 @@ class tokenizer():
             if self.isLiteralStarted == True:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( BACKSLASH_NEWLINE )
+            # esc sequence cannot be between two lines
+            self.isEscSeqStarted = False
         else:
             if self.isLiteralStarted == True:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
-
-        if self._tokensList.getLastToken().type != BACKSLASH_NEWLINE:
             self._tokensList.addSimpleToken( EOL )
 
         return
@@ -225,6 +225,7 @@ class tokenizer():
 
 
     def parseText(self, text):
+        self._clearState()
         for line in text:
             self._parseLine(line)
 
