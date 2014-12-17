@@ -14,6 +14,12 @@ BACKSLASH_NEWLINE = 10
 STRING = 11
 EOL = 12
 
+class directivesDict(dict):
+    def __init__(self):
+        self['include'] = INCLUDE
+        # by default we always interpret definition as an object-like macros
+        self['define'] = OBJECT_LIKE_MACRO
+
 class token():
     def __init__(self, type):
         self.type = type
@@ -40,13 +46,17 @@ class tokenList():
     def changeTokenType(self, index, newType):
         self.tokensList[ index ].type = newType
 
+    def getLastToken(self):
+        return self.tokensList[-1]
+
     def getList(self):
         return self.tokensList
 
 
 class tokenizer():
     def __init__(self):
-        self.tokensList = tokenList()
+        self._tokensList = tokenList()
+        self.knownDirectives = directivesDict()
 
     """
     All used preprocessor rules are taken from:
@@ -60,6 +70,7 @@ class tokenizer():
         self.isEscSeqStarted = False
         self.isTypeOfMacrosKnown = False
         self.literalValue = ''
+        self.isDirectiveStarted = False
 
         for c in remainingString:
 
@@ -79,24 +90,16 @@ class tokenizer():
             elif c == '"':
                 self._processQuote()
 
+            elif c == '#':
+                self._processSharp()
+
             elif c != ' ':
                 self._processNonSpace( c )
 
             elif c == ' ':
                 self._processSpace()
 
-        # if end of line
-        if self.isEscSeqStarted == True:
-            if self.isLiteralStarted == True:
-                self.tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-            self.tokensList.addSimpleToken( BACKSLASH_NEWLINE )
-        else:
-            if self.isLiteralStarted == True:
-                self.tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-
-        self.tokensList.addSimpleToken( EOL )
+        self._processEndOfLine()
 
         return
 
@@ -105,36 +108,36 @@ class tokenizer():
             if self.isTypeOfMacrosKnown == False:
                 # There is no space between name and parenthesis
                 # So we should change the type of first token
-                self.tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
+                self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
                 isTypeOfMacrosKnown = True
                 # and write the macros name
-            self.tokensList.addLiteralToken( self.literalValue )
+            self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
 
-        self.tokensList.addSimpleToken( PARENTHESIS_LEFT )
+        self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
 
         return
 
     def _processRightParenthesis(self):
         if self.isLiteralStarted == True:
             if self.literalValue == '...':
-                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+                self._tokensList.addSimpleToken( VARIADIC_ARGS )
             else:
-                self.tokensList.addLiteralToken( self.literalValue )
+                self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
 
-        self.tokensList.addSimpleToken( PARENTHESIS_RIGHT )
+        self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
 
         return
 
     def _processComma(self):
         if self.isLiteralStarted == True:
             if self.literalValue == '...':
-                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+                self._tokensList.addSimpleToken( VARIADIC_ARGS )
             else:
-                self.tokensList.addLiteralToken( self.literalValue )
+                self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
-        self.tokensList.addSimpleToken( COMMA )
+        self._tokensList.addSimpleToken( COMMA )
 
         return
 
@@ -144,36 +147,44 @@ class tokenizer():
                 self.literalValue += '\\\"'
                 self.isEscSeqStarted = False
             else:
-                self.tokensList.addStringToken( self.literalValue )
+                self._tokensList.addStringToken( self.literalValue )
                 self.isStringStarted = False
-                self.tokensList.addSimpleToken( QUOTE )
+                self._tokensList.addSimpleToken( QUOTE )
         else:
             if self.isLiteralStarted == True:
-                self.tokensList.addLiteralToken( self.literalValue )
+                self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             else:
                 self.literalValue = ''
                 self.isStringStarted = True
-            self.tokensList.addSimpleToken( QUOTE )
+            self._tokensList.addSimpleToken( QUOTE )
 
         return
 
     def _processSpace(self):
-        if self.isStringStarted == True:
+        if self.isDirectiveStarted == True:
+            if self.literalValue in self.knownDirectives:
+                self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
+                self.isDirectiveStarted = False
+            else:
+                self._tokensList.addSimpleToken(UNKNOWN)
+        elif self.isStringStarted == True:
             self.literalValue += ' '
         elif self.isLiteralStarted == True:
             # since literal finishes by space - this is an object like macros
             self.isTypeOfMacrosKnown = True
             if self.literalValue == '...':
-                self.tokensList.addSimpleToken( VARIADIC_ARGS )
+                self._tokensList.addSimpleToken( VARIADIC_ARGS )
             else:
-                self.tokensList.addLiteralToken( self.literalValue )
+                self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
 
         return
 
     def _processNonSpace(self, c):
-        if self.isStringStarted == True:
+        if self.isDirectiveStarted == True:
+            self.literalValue += c
+        elif self.isStringStarted == True:
             if self.isEscSeqStarted == True:
                 self.literalValue += '\\'
                 self.isEscSeqStarted = False
@@ -186,44 +197,30 @@ class tokenizer():
                 self.literalValue += c
         return
 
-    def _getFirstToken(self, inputString):
-        curPos = 0
-        firstToken = ''
-        isItPreprocessorDirective = False
-        result = token(UNKNOWN)
-        for c in inputString:
-            if c == '#' and curPos == 0:
-                isItPreprocessorDirective = True
-            elif c == '_' or c.isalnum():
-                firstToken += c
-            else:
-                if isItPreprocessorDirective:
-                    if firstToken == 'include':
-                        result.type = INCLUDE
-                    elif firstToken == 'define':
-                        result.type = OBJECT_LIKE_MACRO
+    def _processSharp(self):
+        if self.isDirectiveStarted == False:
+            self.literalValue = ''
+            self.isDirectiveStarted = True
+        return
 
-            curPos += 1
-            if result.type != UNKNOWN:
-                return (result, curPos)
+    def _processEndOfLine(self):
+        if self.isEscSeqStarted == True:
+            if self.isLiteralStarted == True:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken( BACKSLASH_NEWLINE )
+        else:
+            if self.isLiteralStarted == True:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
 
-        return (result, 0)
+        if self._tokensList.getLastToken().type != BACKSLASH_NEWLINE:
+            self._tokensList.addSimpleToken( EOL )
 
+        return
 
     def _parseLine(self, inputString):
-        #parts = inputString.split()
-        #inputString = ' '.join(parts)
-
-        (firstToken, nextPos) = self._getFirstToken(inputString)
-
-        if firstToken.type == INCLUDE:
-            self.tokensList.addSimpleToken( INCLUDE )
-            self.parseDefine(inputString[nextPos:])
-
-        elif firstToken.type == OBJECT_LIKE_MACRO:
-            self.tokensList.addSimpleToken( OBJECT_LIKE_MACRO )
-            self.parseDefine(inputString[nextPos:])
-
+        self.parseDefine(inputString)
         return
 
 
@@ -231,4 +228,4 @@ class tokenizer():
         for line in text:
             self._parseLine(line)
 
-        return self.tokensList.getList()
+        return self._tokensList.getList()
