@@ -46,9 +46,6 @@ class tokenList():
     def changeTokenType(self, index, newType):
         self.tokensList[ index ].type = newType
 
-    def getLastToken(self):
-        return self.tokensList[-1]
-
     def getList(self):
         return self.tokensList
 
@@ -82,7 +79,7 @@ class tokenizer():
                 self._processRightParenthesis()
 
             elif c == '\\':
-                if self.isEscSeqStarted == False:
+                if not self.isEscSeqStarted:
                     self.isEscSeqStarted = True
 
             elif c == ',':
@@ -105,8 +102,8 @@ class tokenizer():
         return
 
     def _processLeftParenthesis(self):
-        if self.isLiteralStarted == True:
-            if self.isTypeOfMacrosKnown == False:
+        if self.isLiteralStarted:
+            if not self.isTypeOfMacrosKnown:
                 # There is no space between name and parenthesis
                 # So we should change the type of first token
                 self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
@@ -120,7 +117,7 @@ class tokenizer():
         return
 
     def _processRightParenthesis(self):
-        if self.isLiteralStarted == True:
+        if self.isLiteralStarted:
             if self.literalValue == '...':
                 self._tokensList.addSimpleToken( VARIADIC_ARGS )
             else:
@@ -132,7 +129,7 @@ class tokenizer():
         return
 
     def _processComma(self):
-        if self.isLiteralStarted == True:
+        if self.isLiteralStarted:
             if self.literalValue == '...':
                 self._tokensList.addSimpleToken( VARIADIC_ARGS )
             else:
@@ -143,8 +140,8 @@ class tokenizer():
         return
 
     def _processQuote(self):
-        if self.isStringStarted == True:
-            if self.isEscSeqStarted == True:
+        if self.isStringStarted:
+            if self.isEscSeqStarted:
                 self.literalValue += '\\\"'
                 self.isEscSeqStarted = False
             else:
@@ -152,7 +149,7 @@ class tokenizer():
                 self.isStringStarted = False
                 self._tokensList.addSimpleToken( QUOTE )
         else:
-            if self.isLiteralStarted == True:
+            if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             else:
@@ -163,15 +160,15 @@ class tokenizer():
         return
 
     def _processSpace(self):
-        if self.isDirectiveStarted == True:
+        if self.isDirectiveStarted:
             if self.literalValue in self.knownDirectives:
                 self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
                 self.isDirectiveStarted = False
             else:
                 self._tokensList.addSimpleToken(UNKNOWN)
-        elif self.isStringStarted == True:
+        elif self.isStringStarted:
             self.literalValue += ' '
-        elif self.isLiteralStarted == True:
+        elif self.isLiteralStarted:
             # since literal finishes by space - this is an object like macros
             self.isTypeOfMacrosKnown = True
             if self.literalValue == '...':
@@ -183,15 +180,15 @@ class tokenizer():
         return
 
     def _processNonSpace(self, c):
-        if self.isDirectiveStarted == True:
+        if self.isDirectiveStarted:
             self.literalValue += c
-        elif self.isStringStarted == True:
-            if self.isEscSeqStarted == True:
+        elif self.isStringStarted:
+            if self.isEscSeqStarted:
                 self.literalValue += '\\'
                 self.isEscSeqStarted = False
             self.literalValue += c
         else:
-            if self.isLiteralStarted == False:
+            if not self.isLiteralStarted:
                 self.literalValue = c
                 self.isLiteralStarted = True
             else:
@@ -199,20 +196,20 @@ class tokenizer():
         return
 
     def _processSharp(self):
-        if self.isDirectiveStarted == False:
+        if not self.isDirectiveStarted:
             self.literalValue = ''
             self.isDirectiveStarted = True
         return
 
     def _processEndOfLine(self):
-        if self.isEscSeqStarted == True:
-            if self.isLiteralStarted == True:
+        if self.isEscSeqStarted:
+            if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             # esc sequence cannot be between two lines
             self.isEscSeqStarted = False
         else:
-            if self.isLiteralStarted == True:
+            if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             self._tokensList.addSimpleToken( EOL )
