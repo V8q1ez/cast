@@ -10,9 +10,10 @@ class preprocessorInclude(unittest.TestCase):
        self.tkz = tokenizer()
 
     def test_include_quotes(self):
-        input = '#include "hello.h"'
+        input = []
+        input.append('#include "hello.h"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( INCLUDE, actualOutput[0].type)
         self.assertEqual( QUOTE, actualOutput[1].type)

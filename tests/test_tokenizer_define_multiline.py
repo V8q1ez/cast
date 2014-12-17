@@ -10,9 +10,10 @@ class preprocessorDefineMultiline(unittest.TestCase):
        self.tkz = tokenizer()
 
     def test_define_multi(self):
-        input = '#define a b\\'
+        input = []
+        input.append('#define a b\\')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -22,9 +23,10 @@ class preprocessorDefineMultiline(unittest.TestCase):
         self.assertEqual( BACKSLASH_NEWLINE, actualOutput[3].type)
 
     def test_define_multi_after_space(self):
-        input = '#define a b \\'
+        input = []
+        input.append('#define a b \\')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)

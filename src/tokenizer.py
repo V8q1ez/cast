@@ -210,7 +210,7 @@ class tokenizer():
         return (result, 0)
 
 
-    def parseLine(self, inputString):
+    def _parseLine(self, inputString):
         #parts = inputString.split()
         #inputString = ' '.join(parts)
 
@@ -223,5 +223,12 @@ class tokenizer():
         elif firstToken.type == OBJECT_LIKE_MACRO:
             self.tokensList.addSimpleToken( OBJECT_LIKE_MACRO )
             self.parseDefine(inputString[nextPos:])
+
+        return
+
+
+    def parseText(self, text):
+        for line in text:
+            self._parseLine(line)
 
         return self.tokensList.getList()

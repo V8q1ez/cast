@@ -10,9 +10,10 @@ class preprocessorDefineStrings(unittest.TestCase):
        self.tkz = tokenizer()
 
     def test_define_str_space_including(self):
-        input = '#define a "before after"'
+        input = []
+        input.append('#define a "before after"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -25,9 +26,10 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_str_escaped_quote(self):
-        input = '#define a "before\\\"after"'
+        input = []
+        input.append('#define a "before\\\"after"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -40,9 +42,10 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_str_escaped_quote_spaces(self):
-        input = '#define a "before \\\" after"'
+        input = []
+        input.append('#define a "before \\\" after"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -55,9 +58,10 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_str_escaped_n(self):
-        input = '#define a "before\\nafter"'
+        input = []
+        input.append('#define a "before\\nafter"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -70,9 +74,10 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_str_escaped_n_spaces(self):
-        input = '#define a "before \\n after"'
+        input = []
+        input.append('#define a "before \\n after"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)

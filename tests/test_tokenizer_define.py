@@ -10,9 +10,10 @@ class preprocessorDefine(unittest.TestCase):
        self.tkz = tokenizer()
 
     def test_define_object_like(self):
-        input = '#define a b'
+        input = []
+        input.append('#define a b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -23,9 +24,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[3].type)
 
     def test_define_function_like(self):
-        input = '#define a() b'
+        input = []
+        input.append('#define a() b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -38,9 +40,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_function_like_param(self):
-        input = '#define a(x) b'
+        input = []
+        input.append('#define a(x) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -55,9 +58,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[6].type)
 
     def test_define_function_like_param_2(self):
-        input = '#define a(x,y) b'
+        input = []
+        input.append('#define a(x,y) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -75,9 +79,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[8].type)
 
     def test_define_function_like_param_2_spaces(self):
-        input = '#define a( x , y ) b'
+        input = []
+        input.append('#define a( x , y ) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -95,9 +100,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[8].type)
 
     def test_define_function_like_param_3(self):
-        input = '#define a(x,y,z) b'
+        input = []
+        input.append('#define a(x,y,z) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -118,9 +124,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[10].type)
 
     def test_define_function_like_param_3_spaces(self):
-        input = '#define a(  x  ,  y  ,  z  ) b'
+        input = []
+        input.append('#define a(  x  ,  y  ,  z  ) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -141,9 +148,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[10].type)
 
     def test_define_variadic(self):
-        input = '#define a(...) b'
+        input = []
+        input.append('#define a(...) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -157,9 +165,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[6].type)
 
     def test_define_variadic_param_1(self):
-        input = '#define a(x,...) b'
+        input = []
+        input.append('#define a(x,...) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -176,9 +185,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[8].type)
 
     def test_define_variadic_param_1_spaces(self):
-        input = '#define a( x , ... ) b'
+        input = []
+        input.append('#define a( x , ... ) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -195,9 +205,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[8].type)
 
     def test_define_variadic_param_2(self):
-        input = '#define a(x,y,...) b'
+        input = []
+        input.append('#define a(x,y,...) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -217,9 +228,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[10].type)
 
     def test_define_variadic_param_2_spaces(self):
-        input = '#define a( x , y , ... ) b'
+        input = []
+        input.append('#define a( x , y , ... ) b')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -239,9 +251,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[10].type)
 
     def test_define_object_like_empty_parenthesis_impl(self):
-        input = '#define a ()'
+        input = []
+        input.append('#define a ()')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -252,9 +265,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[4].type)
 
     def test_define_object_like_constant_in_parenthesis(self):
-        input = '#define aa (5)'
+        input = []
+        input.append('#define aa (5)')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -267,9 +281,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_object_like_float_constant_in_parenthesis(self):
-        input = '#define a (5.5)'
+        input = []
+        input.append('#define a (5.5)')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -282,9 +297,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_object_like_string_constant(self):
-        input = '#define a "str"'
+        input = []
+        input.append('#define a "str"')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -297,9 +313,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_object_like_str_const_like_variadic(self):
-        input = '#define a "..."'
+        input = []
+        input.append('#define a "..."')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -312,9 +329,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[5].type)
 
     def test_define_function_like_sum(self):
-        input = '#define sum(x,y) (x)+(y)'
+        input = []
+        input.append('#define sum(x,y) (x)+(y)')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -340,9 +358,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[14].type)
 
     def test_define_function_like_sum_spaces(self):
-        input = '#define sum( x , y ) ( x ) + ( y )'
+        input = []
+        input.append('#define sum( x , y ) ( x ) + ( y )')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
@@ -368,9 +387,10 @@ class preprocessorDefine(unittest.TestCase):
         self.assertEqual( EOL, actualOutput[14].type)
 
     def test_define_wrong_function_like_sum(self):
-        input = '#define sum (x,y) (x)+(y)'
+        input = []
+        input.append('#define sum (x,y) (x)+(y)')
 
-        actualOutput = self.tkz.parseLine(input)
+        actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( LITERAL, actualOutput[1].type)
