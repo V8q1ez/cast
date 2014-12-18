@@ -10,15 +10,28 @@ PARENTHESIS_RIGHT = 6
 FUNCTION_LIKE_MACRO = 7
 COMMA = 8
 VARIADIC_ARGS = 9
-# BACKSLASH_NEWLINE = 10
+SEMICOLON = 10
 STRING = 11
 EOL = 12
+TYPEDEF = 13
+ENUM = 14
+BRACE_LEFT = 15
+BRACE_RIGHT = 16
+
 
 class directivesDict(dict):
     def __init__(self):
         self['include'] = INCLUDE
         # by default we always interpret definition as an object-like macros
         self['define'] = OBJECT_LIKE_MACRO
+
+
+class keyWordsDict(dict):
+    def __init__(self):
+        self['typedef'] = TYPEDEF
+        self['enum'] = ENUM
+        self['...'] = VARIADIC_ARGS
+
 
 class token():
     def __init__(self, type):
@@ -54,6 +67,7 @@ class tokenizer():
     def __init__(self):
         self._tokensList = tokenList()
         self.knownDirectives = directivesDict()
+        self._knownKeywords = keyWordsDict()
 
     def _clearState(self):
         self.isLiteralStarted = False
@@ -78,12 +92,21 @@ class tokenizer():
             elif c == ')':
                 self._processRightParenthesis()
 
+            elif c == '{':
+                self._processLeftBrace()
+
+            elif c == '}':
+                self._processRightBrace()
+
             elif c == '\\':
                 if not self.isEscSeqStarted:
                     self.isEscSeqStarted = True
 
             elif c == ',':
                 self._processComma()
+
+            elif c == ';':
+                self._processSemicolon()
 
             elif c == '"':
                 self._processQuote()
@@ -125,7 +148,18 @@ class tokenizer():
             self.isLiteralStarted = False
 
         self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
+        return
 
+    def _processLeftBrace(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+        self._tokensList.addSimpleToken( BRACE_LEFT )
+        return
+
+    def _processRightBrace(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+        self._tokensList.addSimpleToken( BRACE_RIGHT )
         return
 
     def _processComma(self):
@@ -136,7 +170,12 @@ class tokenizer():
                 self._tokensList.addLiteralToken( self.literalValue )
             self.isLiteralStarted = False
         self._tokensList.addSimpleToken( COMMA )
+        return
 
+    def _processSemicolon(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+        self._tokensList.addSimpleToken( SEMICOLON )
         return
 
     def _processQuote(self):
@@ -167,12 +206,7 @@ class tokenizer():
         elif self.isLiteralStarted:
             # since literal finishes by space - this is an object like macros
             self.isTypeOfMacrosKnown = True
-            if self.literalValue == '...':
-                self._tokensList.addSimpleToken( VARIADIC_ARGS )
-            else:
-                self._tokensList.addLiteralToken( self.literalValue )
-            self.isLiteralStarted = False
-
+            self._processFoundLiteral()
         return
 
     def _processNonSpace(self, c):
@@ -203,6 +237,14 @@ class tokenizer():
             self.isDirectiveStarted = False
         else:
             self._tokensList.addSimpleToken(UNKNOWN)
+        return
+
+    def _processFoundLiteral(self):
+        if self.literalValue in self._knownKeywords:
+            self._tokensList.addSimpleToken( self._knownKeywords[self.literalValue] )
+        else:
+            self._tokensList.addLiteralToken( self.literalValue )
+        self.isLiteralStarted = False
         return
 
 
