@@ -204,8 +204,9 @@ class tokenizer():
     def _processEndOfLine(self):
         if self.isEscSeqStarted:
             if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
+                pass
+                #self._tokensList.addLiteralToken( self.literalValue )
+                #self.isLiteralStarted = False
             # esc sequence cannot be between two lines
             self.isEscSeqStarted = False
         else:
@@ -225,5 +226,8 @@ class tokenizer():
         self._clearState()
         for line in text:
             self._parseLine(line)
+
+        if self.isLiteralStarted:
+            self._tokensList.addLiteralToken( self.literalValue )
 
         return self._tokensList.getList()

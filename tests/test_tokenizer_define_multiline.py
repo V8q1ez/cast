@@ -66,3 +66,18 @@ class preprocessorDefineMultiline(unittest.TestCase):
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_multi_broken_literal(self):
+        input = []
+        input.append('#define a start\\')
+        input.append('finish')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'startfinish', actualOutput[2].literalValue)
+
+        self.assertEqual( EOL, actualOutput[3].type)
