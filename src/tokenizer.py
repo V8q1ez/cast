@@ -161,11 +161,7 @@ class tokenizer():
 
     def _processSpace(self):
         if self.isDirectiveStarted:
-            if self.literalValue in self.knownDirectives:
-                self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
-                self.isDirectiveStarted = False
-            else:
-                self._tokensList.addSimpleToken(UNKNOWN)
+            self._processFoundDirective()
         elif self.isStringStarted:
             self.literalValue += ' '
         elif self.isLiteralStarted:
@@ -201,6 +197,15 @@ class tokenizer():
             self.isDirectiveStarted = True
         return
 
+    def _processFoundDirective(self):
+        if self.literalValue in self.knownDirectives:
+            self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
+            self.isDirectiveStarted = False
+        else:
+            self._tokensList.addSimpleToken(UNKNOWN)
+        return
+
+
     def _processEndOfLine(self):
         if self.isEscSeqStarted:
             if self.isLiteralStarted:
@@ -213,6 +218,8 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
+            elif self.isDirectiveStarted:
+                self._processFoundDirective()
             self._tokensList.addSimpleToken( EOL )
 
         return

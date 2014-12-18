@@ -22,3 +22,14 @@ class preprocessorInclude(unittest.TestCase):
         self.assertEqual( QUOTE, actualOutput[3].type)
 
         self.assertEqual( EOL, actualOutput[4].type)
+
+    def test_include_multi_broken_directive(self):
+        input = []
+        input.append('#in\\')
+        input.append('clude')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( INCLUDE, actualOutput[0].type)
+
+        self.assertEqual( EOL, actualOutput[1].type)
