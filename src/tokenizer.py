@@ -141,12 +141,7 @@ class tokenizer():
 
     def _processRightParenthesis(self):
         if self.isLiteralStarted:
-            if self.literalValue == '...':
-                self._tokensList.addSimpleToken( VARIADIC_ARGS )
-            else:
-                self._tokensList.addLiteralToken( self.literalValue )
-            self.isLiteralStarted = False
-
+            self._processFoundLiteral()
         self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
         return
 
@@ -164,11 +159,7 @@ class tokenizer():
 
     def _processComma(self):
         if self.isLiteralStarted:
-            if self.literalValue == '...':
-                self._tokensList.addSimpleToken( VARIADIC_ARGS )
-            else:
-                self._tokensList.addLiteralToken( self.literalValue )
-            self.isLiteralStarted = False
+            self._processFoundLiteral()
         self._tokensList.addSimpleToken( COMMA )
         return
 
