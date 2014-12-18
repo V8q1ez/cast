@@ -94,3 +94,21 @@ class preprocessorDefineMultiline(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
         self.assertEqual( EOL, actualOutput[2].type)
+
+    def test_define_multi_broken_variadic(self):
+        input = []
+        input.append('#define a(..\\')
+        input.append('.) b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[2].type)
+        self.assertEqual( VARIADIC_ARGS, actualOutput[3].type)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[4].type)
+        self.assertEqual( LITERAL, actualOutput[5].type)
+        self.assertEqual( 'b', actualOutput[5].literalValue)
+
+        self.assertEqual( EOL, actualOutput[6].type)
