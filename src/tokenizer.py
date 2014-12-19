@@ -17,7 +17,7 @@ TYPEDEF = 13
 ENUM = 14
 BRACE_LEFT = 15
 BRACE_RIGHT = 16
-
+ASSIGNMENT = 17
 
 class directivesDict(dict):
     def __init__(self):
@@ -113,6 +113,9 @@ class tokenizer():
 
             elif c == '#':
                 self._processSharp()
+
+            elif c == '=':
+                self._processEqual()
 
             elif c != ' ':
                 self._processNonSpace( c )
@@ -220,6 +223,13 @@ class tokenizer():
         if not self.isDirectiveStarted:
             self.literalValue = ''
             self.isDirectiveStarted = True
+        return
+
+    def _processEqual(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+            self.isLiteralStarted = False
+        self._tokensList.addSimpleToken(ASSIGNMENT)
         return
 
     def _processFoundDirective(self):
