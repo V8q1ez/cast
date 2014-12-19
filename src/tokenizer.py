@@ -259,8 +259,7 @@ class tokenizer():
             self.isEscSeqStarted = False
         else:
             if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
+                self._processFoundLiteral()
             elif self.isDirectiveStarted:
                 self._processFoundDirective()
             self._tokensList.addSimpleToken( EOL )
