@@ -152,3 +152,67 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_assignment(self):
+        input = []
+        input.append('#define a " b=7"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( ' b=7', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_comma(self):
+        input = []
+        input.append('#define a "b,c"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'b,c', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_sharp(self):
+        input = []
+        input.append('#define a "b#c"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'b#c', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_semicolon(self):
+        input = []
+        input.append('#define a "b;c"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'b;c', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)

@@ -173,15 +173,21 @@ class tokenizer():
         return
 
     def _processComma(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-        self._tokensList.addSimpleToken( COMMA )
+        if self.isStringStarted:
+            self.literalValue +=','
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( COMMA )
         return
 
     def _processSemicolon(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-        self._tokensList.addSimpleToken( SEMICOLON )
+        if self.isStringStarted:
+            self.literalValue += ';'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( SEMICOLON )
         return
 
     def _processQuote(self):
@@ -232,16 +238,22 @@ class tokenizer():
         return
 
     def _processSharp(self):
-        if not self.isDirectiveStarted:
-            self.literalValue = ''
-            self.isDirectiveStarted = True
+        if self.isStringStarted:
+            self.literalValue += '#'
+        else:
+            if not self.isDirectiveStarted:
+                self.literalValue = ''
+                self.isDirectiveStarted = True
         return
 
     def _processEqual(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-            self.isLiteralStarted = False
-        self._tokensList.addSimpleToken(ASSIGNMENT)
+        if self.isStringStarted:
+            self.literalValue += '='
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken(ASSIGNMENT)
         return
 
     def _processFoundDirective(self):
