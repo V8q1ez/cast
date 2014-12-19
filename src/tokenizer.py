@@ -128,39 +128,47 @@ class tokenizer():
         return
 
     def _processLeftParenthesis(self):
-        if self.isLiteralStarted:
-            if not self.isTypeOfMacrosKnown:
-                # There is no space between name and parenthesis
-                # So we should change the type of first token
-                self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
-                self.isTypeOfMacrosKnown = True
-                # and write the macros name
-            self._tokensList.addLiteralToken( self.literalValue )
-            self.isLiteralStarted = False
+        if self.isStringStarted:
+            self.literalValue += '('
+        else:
+            if self.isLiteralStarted:
+                if not self.isTypeOfMacrosKnown:
+                    # There is no space between name and parenthesis
+                    # So we should change the type of first token
+                    self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
+                    self.isTypeOfMacrosKnown = True
+                    # and write the macros name
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
 
-        self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
+            self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
 
         return
 
     def _processRightParenthesis(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-        self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
+        if self.isStringStarted:
+            self.literalValue += ')'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
         return
 
     def _processLeftBrace(self):
         if self.isStringStarted:
             self.literalValue += '{'
-        elif self.isLiteralStarted:
-            self._processFoundLiteral()
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
             self._tokensList.addSimpleToken( BRACE_LEFT )
         return
 
     def _processRightBrace(self):
         if self.isStringStarted:
             self.literalValue += '}'
-        elif self.isLiteralStarted:
-            self._processFoundLiteral()
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
             self._tokensList.addSimpleToken( BRACE_RIGHT )
         return
 
