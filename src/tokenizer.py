@@ -18,6 +18,7 @@ ENUM = 14
 BRACE_LEFT = 15
 BRACE_RIGHT = 16
 ASSIGNMENT = 17
+STRUCT = 18
 
 class directivesDict(dict):
     def __init__(self):
@@ -31,6 +32,7 @@ class keyWordsDict(dict):
         self['typedef'] = TYPEDEF
         self['enum'] = ENUM
         self['...'] = VARIADIC_ARGS
+        self['struct'] = STRUCT
 
 
 class token():

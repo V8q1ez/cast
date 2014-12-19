@@ -216,3 +216,19 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_struct(self):
+        input = []
+        input.append('#define a "struct"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'struct', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
