@@ -149,15 +149,19 @@ class tokenizer():
         return
 
     def _processLeftBrace(self):
-        if self.isLiteralStarted:
+        if self.isStringStarted:
+            self.literalValue += '{'
+        elif self.isLiteralStarted:
             self._processFoundLiteral()
-        self._tokensList.addSimpleToken( BRACE_LEFT )
+            self._tokensList.addSimpleToken( BRACE_LEFT )
         return
 
     def _processRightBrace(self):
-        if self.isLiteralStarted:
+        if self.isStringStarted:
+            self.literalValue += '}'
+        elif self.isLiteralStarted:
             self._processFoundLiteral()
-        self._tokensList.addSimpleToken( BRACE_RIGHT )
+            self._tokensList.addSimpleToken( BRACE_RIGHT )
         return
 
     def _processComma(self):

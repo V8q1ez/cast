@@ -88,3 +88,51 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_enum(self):
+        input = []
+        input.append('#define a "enum"')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( 'enum', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_enum_spaces(self):
+        input = []
+        input.append('#define a " enum "')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( ' enum ', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_define_str_with_braces(self):
+        input = []
+        input.append('#define a " { } "')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( 'a', actualOutput[1].literalValue)
+        self.assertEqual( QUOTE, actualOutput[2].type)
+        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( ' { } ', actualOutput[3].literalValue)
+        self.assertEqual( QUOTE, actualOutput[4].type)
+
+        self.assertEqual( EOL, actualOutput[5].type)
