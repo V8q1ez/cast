@@ -186,15 +186,21 @@ class tokenizer():
         return
 
     def _processSquareBracketLeft(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-        self._tokensList.addSimpleToken( SQUARE_BRACKET_LEFT )
+        if self.isStringStarted:
+            self.literalValue += '['
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( SQUARE_BRACKET_LEFT )
         return
 
     def _processSquareBracketRight(self):
-        if self.isLiteralStarted:
-            self._processFoundLiteral()
-        self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
+        if self.isStringStarted:
+            self.literalValue += ']'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
         return
 
     def _processComma(self):
