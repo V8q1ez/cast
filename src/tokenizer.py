@@ -20,6 +20,9 @@ BRACE_RIGHT = 16
 ASSIGNMENT = 17
 STRUCT = 18
 STATIC = 19
+SQUARE_BRACKET_LEFT = 20
+SQUARE_BRACKET_RIGHT = 21
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -121,6 +124,12 @@ class tokenizer():
             elif c == '=':
                 self._processEqual()
 
+            elif c == '[':
+                self._processSquareBracketLeft()
+
+            elif c == ']':
+                self._processSquareBracketRight()
+
             elif c != ' ':
                 self._processNonSpace( c )
 
@@ -174,6 +183,18 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( BRACE_RIGHT )
+        return
+
+    def _processSquareBracketLeft(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+        self._tokensList.addSimpleToken( SQUARE_BRACKET_LEFT )
+        return
+
+    def _processSquareBracketRight(self):
+        if self.isLiteralStarted:
+            self._processFoundLiteral()
+        self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
         return
 
     def _processComma(self):
