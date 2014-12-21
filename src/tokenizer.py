@@ -25,6 +25,7 @@ SQUARE_BRACKET_RIGHT = 21
 COLON = 22
 VOID = 23
 STAR = 24
+ADDITION = 25
 
 class directivesDict(dict):
     def __init__(self):
@@ -129,6 +130,9 @@ class tokenizer():
 
             elif c == '*':
                 self._processStar()
+
+            elif c == '+':
+                self._processPlus()
 
             elif c == '=':
                 self._processEqual()
@@ -301,6 +305,16 @@ class tokenizer():
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             self._tokensList.addSimpleToken( STAR )
+        return
+
+    def _processPlus(self):
+        if self.isStringStarted:
+            self.literalValue += '*'
+        else:
+            if self.isLiteralStarted:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken( ADDITION )
         return
 
     def _processEqual(self):
