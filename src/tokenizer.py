@@ -23,6 +23,8 @@ STATIC = 19
 SQUARE_BRACKET_LEFT = 20
 SQUARE_BRACKET_RIGHT = 21
 COLON = 22
+VOID = 23
+STAR = 24
 
 class directivesDict(dict):
     def __init__(self):
@@ -38,6 +40,7 @@ class keyWordsDict(dict):
         self['...'] = VARIADIC_ARGS
         self['struct'] = STRUCT
         self['static'] = STATIC
+        self['void'] = VOID
 
 
 class token():
@@ -124,6 +127,9 @@ class tokenizer():
             elif c == '#':
                 self._processSharp()
 
+            elif c == '*':
+                self._processStar()
+
             elif c == '=':
                 self._processEqual()
 
@@ -154,9 +160,7 @@ class tokenizer():
                     self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
                     self.isTypeOfMacrosKnown = True
                     # and write the macros name
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-
+                self._processFoundLiteral()
             self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
 
         return
@@ -287,6 +291,16 @@ class tokenizer():
             if not self.isDirectiveStarted:
                 self.literalValue = ''
                 self.isDirectiveStarted = True
+        return
+
+    def _processStar(self):
+        if self.isStringStarted:
+            self.literalValue += '*'
+        else:
+            if self.isLiteralStarted:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken( STAR )
         return
 
     def _processEqual(self):
