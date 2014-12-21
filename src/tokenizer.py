@@ -22,7 +22,7 @@ STRUCT = 18
 STATIC = 19
 SQUARE_BRACKET_LEFT = 20
 SQUARE_BRACKET_RIGHT = 21
-
+COLON = 22
 
 class directivesDict(dict):
     def __init__(self):
@@ -114,6 +114,9 @@ class tokenizer():
 
             elif c == ';':
                 self._processSemicolon()
+
+            elif c == ':':
+                self._processColon()
 
             elif c == '"':
                 self._processQuote()
@@ -219,6 +222,15 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( SEMICOLON )
+        return
+
+    def _processColon(self):
+        if self.isStringStarted:
+            self.literalValue += ':'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( COLON )
         return
 
     def _processQuote(self):

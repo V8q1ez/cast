@@ -86,3 +86,28 @@ class compilerTypedefStruct(unittest.TestCase):
         self.assertEqual( SEMICOLON, actualOutput[16].type)
 
         self.assertEqual( EOL, actualOutput[17].type)
+
+
+    def test_typedef_struct_bit_fields(self):
+        input = []
+        input.append('typedef struct{int a:2;}STRUCT_TYPE_NAME;')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( TYPEDEF, actualOutput[0].type)
+        self.assertEqual( STRUCT, actualOutput[1].type)
+        self.assertEqual( BRACE_LEFT, actualOutput[2].type)
+        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( 'int', actualOutput[3].literalValue)
+        self.assertEqual( LITERAL, actualOutput[4].type)
+        self.assertEqual( 'a', actualOutput[4].literalValue)
+        self.assertEqual( COLON, actualOutput[5].type)
+        self.assertEqual( LITERAL, actualOutput[6].type)
+        self.assertEqual( '2', actualOutput[6].literalValue)
+        self.assertEqual( SEMICOLON, actualOutput[7].type)
+        self.assertEqual( BRACE_RIGHT, actualOutput[8].type)
+        self.assertEqual( LITERAL, actualOutput[9].type)
+        self.assertEqual( 'STRUCT_TYPE_NAME', actualOutput[9].literalValue)
+        self.assertEqual( SEMICOLON, actualOutput[10].type)
+
+        self.assertEqual( EOL, actualOutput[11].type)
