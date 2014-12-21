@@ -313,7 +313,7 @@ class tokenizer():
 
     def _processPlus(self):
         if self.isStringStarted:
-            self.literalValue += '*'
+            self.literalValue += '+'
         else:
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
@@ -323,7 +323,7 @@ class tokenizer():
 
     def _processMinus(self):
         if self.isStringStarted:
-            self.literalValue += '*'
+            self.literalValue += '-'
         else:
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
