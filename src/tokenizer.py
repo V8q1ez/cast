@@ -27,6 +27,7 @@ VOID = 23
 STAR = 24
 ADDITION = 25
 SUBTRACTION = 26
+INCREMENT = 27
 
 class directivesDict(dict):
     def __init__(self):
@@ -88,6 +89,8 @@ class tokenizer():
         self.isTypeOfMacrosKnown = False
         self.literalValue = ''
         self.isDirectiveStarted = False
+        self._previousCharacter = ''
+        self.isPunctuatorComplete = False
 
     """
     All used preprocessor rules are taken from:
@@ -96,7 +99,11 @@ class tokenizer():
 
     def parseDefine(self, remainingString):
 
+        self._previousCharacter = ''
+
         for c in remainingString:
+
+            self._tryToCompletePreviousToken( c )
 
             if c == '(':
                 self._processLeftParenthesis()
@@ -152,6 +159,8 @@ class tokenizer():
 
             elif c == ' ':
                 self._processSpace()
+
+            self._previousCharacter = c
 
         self._processEndOfLine()
 
@@ -288,6 +297,7 @@ class tokenizer():
             if not self.isLiteralStarted:
                 self.literalValue = c
                 self.isLiteralStarted = True
+                self._tryToCompletePreviousToken(c)
             else:
                 self.literalValue += c
         return
@@ -318,7 +328,6 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( ADDITION )
         return
 
     def _processMinus(self):
@@ -357,6 +366,20 @@ class tokenizer():
         self.isLiteralStarted = False
         return
 
+    def _tryToCompletePreviousToken(self, c):
+        if not self.isStringStarted:
+            if not self.isPunctuatorComplete:
+                if self._previousCharacter == '+':
+                    if c == '+':
+                        self._tokensList.addSimpleToken( INCREMENT )
+                    else:
+                        self._tokensList.addSimpleToken( ADDITION )
+                    self.isPunctuatorComplete = True
+            else:
+                if c in ['+',',']:
+                    self.isPunctuatorComplete = False
+
+        return
 
     def _processEndOfLine(self):
         if self.isEscSeqStarted:
