@@ -83,6 +83,24 @@ class tokenizer():
         self._tokensList = tokenList()
         self.knownDirectives = directivesDict()
         self._knownKeywords = keyWordsDict()
+        self._characterHandlersDict = {
+            '(' : self._processLeftParenthesis,
+            ')' : self._processRightParenthesis,
+            '{' : self._processLeftBrace,
+            '}' : self._processRightBrace,
+            ',' : self._processComma,
+            ';' : self._processSemicolon,
+            ':' : self._processColon,
+            '"' : self._processQuote,
+            '#' : self._processSharp,
+            '*' : self._processStar,
+            '+' : self._processPlus,
+            '-' : self._processMinus,
+            '=' : self._processEqual,
+            '[' : self._processSquareBracketLeft,
+            ']' : self._processSquareBracketRight,
+            ' ' : self._processSpace
+            }
 
     def _clearState(self):
         self.isLiteralStarted = False
@@ -107,60 +125,16 @@ class tokenizer():
 
             self._tryToCompletePreviousToken( c )
 
-            if c == '(':
-                self._processLeftParenthesis()
-
-            elif c == ')':
-                self._processRightParenthesis()
-
-            elif c == '{':
-                self._processLeftBrace()
-
-            elif c == '}':
-                self._processRightBrace()
+            if c in self._characterHandlersDict:
+                handlerToCall = self._characterHandlersDict[ c ]
+                handlerToCall()
 
             elif c == '\\':
                 if not self.isEscSeqStarted:
                     self.isEscSeqStarted = True
 
-            elif c == ',':
-                self._processComma()
-
-            elif c == ';':
-                self._processSemicolon()
-
-            elif c == ':':
-                self._processColon()
-
-            elif c == '"':
-                self._processQuote()
-
-            elif c == '#':
-                self._processSharp()
-
-            elif c == '*':
-                self._processStar()
-
-            elif c == '+':
-                self._processPlus()
-
-            elif c == '-':
-                self._processMinus()
-
-            elif c == '=':
-                self._processEqual()
-
-            elif c == '[':
-                self._processSquareBracketLeft()
-
-            elif c == ']':
-                self._processSquareBracketRight()
-
             elif c != ' ':
                 self._processNonSpace( c )
-
-            elif c == ' ':
-                self._processSpace()
 
             self._previousCharacter = c
 
