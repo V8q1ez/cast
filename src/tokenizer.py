@@ -28,6 +28,8 @@ STAR = 24
 ADDITION = 25
 SUBTRACTION = 26
 INCREMENT = 27
+DECREMENT = 28
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -297,7 +299,6 @@ class tokenizer():
             if not self.isLiteralStarted:
                 self.literalValue = c
                 self.isLiteralStarted = True
-                self._tryToCompletePreviousToken(c)
             else:
                 self.literalValue += c
         return
@@ -337,7 +338,6 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( SUBTRACTION )
         return
 
     def _processEqual(self):
@@ -375,8 +375,15 @@ class tokenizer():
                     else:
                         self._tokensList.addSimpleToken( ADDITION )
                     self.isPunctuatorComplete = True
+
+                elif self._previousCharacter == '-':
+                    if c == '-':
+                        self._tokensList.addSimpleToken( DECREMENT )
+                    else:
+                        self._tokensList.addSimpleToken( SUBTRACTION )
+                    self.isPunctuatorComplete = True
             else:
-                if c in ['+',',']:
+                if c in ['+',',','-']:
                     self.isPunctuatorComplete = False
 
         return
