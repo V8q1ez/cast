@@ -281,9 +281,9 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         self.assertEqual( EOL, actualOutput[5].type)
 
-    def test_define_str_with_star(self):
+    def test_define_str_with_star_and_backslash(self):
         input = []
-        input.append('#define a "a*b"')
+        input.append('#define a "a*b/c"')
 
         actualOutput = self.tkz.parseText(input)
 
@@ -292,7 +292,7 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
         self.assertEqual( STRING, actualOutput[3].type)
-        self.assertEqual( 'a*b', actualOutput[3].literalValue)
+        self.assertEqual( 'a*b/c', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)

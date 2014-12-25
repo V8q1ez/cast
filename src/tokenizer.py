@@ -29,7 +29,7 @@ ADDITION = 25
 SUBTRACTION = 26
 INCREMENT = 27
 DECREMENT = 28
-
+DIVISION = 29
 
 class directivesDict(dict):
     def __init__(self):
@@ -94,6 +94,7 @@ class tokenizer():
             '"' : self._processQuote,
             '#' : self._processSharp,
             '*' : self._processStar,
+            '/' : self._processBackSlash,
             '+' : self._processPlus,
             '-' : self._processMinus,
             '=' : self._processEqual,
@@ -294,6 +295,16 @@ class tokenizer():
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             self._tokensList.addSimpleToken( STAR )
+        return
+
+    def _processBackSlash(self):
+        if self.isStringStarted:
+            self.literalValue += '/'
+        else:
+            if self.isLiteralStarted:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken( DIVISION )
         return
 
     def _processPlus(self):
