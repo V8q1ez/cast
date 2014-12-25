@@ -30,6 +30,7 @@ SUBTRACTION = 26
 INCREMENT = 27
 DECREMENT = 28
 DIVISION = 29
+MODULO = 30
 
 class directivesDict(dict):
     def __init__(self):
@@ -93,6 +94,7 @@ class tokenizer():
             ':' : self._processColon,
             '"' : self._processQuote,
             '#' : self._processSharp,
+            '%' : self._processPercent,
             '*' : self._processStar,
             '/' : self._processBackSlash,
             '+' : self._processPlus,
@@ -285,6 +287,16 @@ class tokenizer():
             if not self.isDirectiveStarted:
                 self.literalValue = ''
                 self.isDirectiveStarted = True
+        return
+
+    def _processPercent(self):
+        if self.isStringStarted:
+            self.literalValue += '%'
+        else:
+            if self.isLiteralStarted:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
+            self._tokensList.addSimpleToken( MODULO )
         return
 
     def _processStar(self):
