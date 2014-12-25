@@ -190,3 +190,55 @@ class compilerArithmeticOperations(unittest.TestCase):
         self.assertEqual( DECREMENT, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_pre_inc_with_unary_plus(self):
+        input = []
+        input.append('+++a')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( INCREMENT, actualOutput[0].type)
+        self.assertEqual( ADDITION, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_pre_dec_with_unary_minus(self):
+        input = []
+        input.append('---a')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( DECREMENT, actualOutput[0].type)
+        self.assertEqual( SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_pre_inc_with_unary_plus_spaces(self):
+        input = []
+        input.append('++ + a')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( INCREMENT, actualOutput[0].type)
+        self.assertEqual( ADDITION, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_pre_dec_with_unary_minus_spaces(self):
+        input = []
+        input.append('-- - a')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( DECREMENT, actualOutput[0].type)
+        self.assertEqual( SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+
+        self.assertEqual( EOL, actualOutput[3].type)
