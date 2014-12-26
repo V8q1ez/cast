@@ -32,6 +32,7 @@ DECREMENT = 28
 DIVISION = 29
 MODULO = 30
 EQUAL_TO = 31
+NOT_EQUAL_TO = 32
 
 
 class directivesDict(dict):
@@ -104,7 +105,8 @@ class tokenizer():
             '=' : self._processEqual,
             '[' : self._processSquareBracketLeft,
             ']' : self._processSquareBracketRight,
-            ' ' : self._processSpace
+            ' ' : self._processSpace,
+            '!' : self._processExclamationMark
             }
 
     def _clearState(self):
@@ -206,6 +208,14 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
+        return
+
+    def _processExclamationMark(self):
+        if self.isStringStarted:
+            self.literalValue +='!'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
         return
 
     def _processComma(self):
@@ -345,7 +355,6 @@ class tokenizer():
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
-                self.isLiteralStarted = False
         return
 
     def _processFoundDirective(self):
@@ -386,6 +395,13 @@ class tokenizer():
                         self._tokensList.addSimpleToken( EQUAL_TO )
                     else:
                         self._tokensList.addSimpleToken( ASSIGNMENT )
+                    self.isPunctuatorComplete = True
+
+                elif self._previousCharacter == '!':
+                    if c == '=':
+                        self._tokensList.addSimpleToken( NOT_EQUAL_TO )
+                    else:
+                        pass # self._tokensList.addSimpleToken( ASSIGNMENT )
                     self.isPunctuatorComplete = True
             else:
                 if c in ['+',',','-','=']:
