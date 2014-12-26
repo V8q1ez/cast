@@ -31,6 +31,8 @@ INCREMENT = 27
 DECREMENT = 28
 DIVISION = 29
 MODULO = 30
+EQUAL_TO = 31
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -344,7 +346,6 @@ class tokenizer():
             if self.isLiteralStarted:
                 self._processFoundLiteral()
                 self.isLiteralStarted = False
-            self._tokensList.addSimpleToken(ASSIGNMENT)
         return
 
     def _processFoundDirective(self):
@@ -379,8 +380,15 @@ class tokenizer():
                     else:
                         self._tokensList.addSimpleToken( SUBTRACTION )
                     self.isPunctuatorComplete = True
+
+                elif self._previousCharacter == '=':
+                    if c == '=':
+                        self._tokensList.addSimpleToken( EQUAL_TO )
+                    else:
+                        self._tokensList.addSimpleToken( ASSIGNMENT )
+                    self.isPunctuatorComplete = True
             else:
-                if c in ['+',',','-']:
+                if c in ['+',',','-','=']:
                     self.isPunctuatorComplete = False
 
         return
