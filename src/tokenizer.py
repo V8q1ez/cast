@@ -24,7 +24,7 @@ SQUARE_BRACKET_LEFT = 20
 SQUARE_BRACKET_RIGHT = 21
 COLON = 22
 VOID = 23
-STAR = 24
+ASTERISK = 24
 ADDITION = 25
 SUBTRACTION = 26
 INCREMENT = 27
@@ -127,11 +127,11 @@ class tokenizer():
             ';' : self._processSemicolon,
             ':' : self._processColon,
             '"' : self._processQuote,
-            '#' : self._processSharp,
+            '#' : self._processHash,
             '%' : self._processPercent,
-            '*' : self._processStar,
+            '*' : self._processAsterisk,
             '&' : self._processAmpersand,
-            '/' : self._processBackSlash,
+            '/' : self._processSlash,
             '+' : self._processPlus,
             '-' : self._processMinus,
             '=' : self._processEqual,
@@ -351,7 +351,7 @@ class tokenizer():
                 self.literalValue += c
         return
 
-    def _processSharp(self):
+    def _processHash(self):
         if self.isStringStarted:
             self.literalValue += '#'
         else:
@@ -370,14 +370,14 @@ class tokenizer():
             self._tokensList.addSimpleToken( MODULO )
         return
 
-    def _processStar(self):
+    def _processAsterisk(self):
         if self.isStringStarted:
             self.literalValue += '*'
         else:
             if self.isLiteralStarted:
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( STAR )
+            self._tokensList.addSimpleToken( ASTERISK )
         return
 
     def _processAmpersand(self):
@@ -389,7 +389,7 @@ class tokenizer():
                 self.isLiteralStarted = False
         return
 
-    def _processBackSlash(self):
+    def _processSlash(self):
         if self.isStringStarted:
             self.literalValue += '/'
         else:
