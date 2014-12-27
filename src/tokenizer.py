@@ -38,6 +38,7 @@ GREATER_THAN = 34
 LESS_OR_EQUAL = 35
 GREATER_OR_EQUAL = 36
 NOT = 37
+LOGICAL_END = 38
 
 
 class directivesDict(dict):
@@ -75,6 +76,7 @@ class complexPunctuatorDict(dict):
         self['=='] = EQUAL_TO
         self['<='] = LESS_OR_EQUAL
         self['>='] = GREATER_OR_EQUAL
+        self['&&'] = LOGICAL_END
 
 
 class token():
@@ -127,6 +129,7 @@ class tokenizer():
             '#' : self._processSharp,
             '%' : self._processPercent,
             '*' : self._processStar,
+            '&' : self._processAmpersand,
             '/' : self._processBackSlash,
             '+' : self._processPlus,
             '-' : self._processMinus,
@@ -365,6 +368,15 @@ class tokenizer():
                 self._tokensList.addLiteralToken( self.literalValue )
                 self.isLiteralStarted = False
             self._tokensList.addSimpleToken( STAR )
+        return
+
+    def _processAmpersand(self):
+        if self.isStringStarted:
+            self.literalValue += '&'
+        else:
+            if self.isLiteralStarted:
+                self._tokensList.addLiteralToken( self.literalValue )
+                self.isLiteralStarted = False
         return
 
     def _processBackSlash(self):

@@ -379,7 +379,7 @@ class preprocessorDefineStrings(unittest.TestCase):
 
     def test_define_str_with_logical_operations(self):
         input = []
-        input.append('#define a "!a"')
+        input.append('#define a "!a && b"')
 
         actualOutput = self.tkz.parseText(input)
 
@@ -388,7 +388,7 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
         self.assertEqual( STRING, actualOutput[3].type)
-        self.assertEqual( '!a', actualOutput[3].literalValue)
+        self.assertEqual( '!a && b', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
