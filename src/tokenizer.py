@@ -35,6 +35,7 @@ EQUAL_TO = 31
 NOT_EQUAL_TO = 32
 LESS_THAN = 33
 GREATER_THAN = 34
+LESS_OR_EQUAL = 35
 
 
 class directivesDict(dict):
@@ -220,7 +221,6 @@ class tokenizer():
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
-            self._tokensList.addSimpleToken( LESS_THAN )
         return
 
     def _processRightAngleBracket(self):
@@ -425,6 +425,14 @@ class tokenizer():
                     else:
                         pass # self._tokensList.addSimpleToken( ASSIGNMENT )
                     self.isPunctuatorComplete = True
+
+                elif self._previousCharacter == '<':
+                    if c == '=':
+                        self._tokensList.addSimpleToken( LESS_OR_EQUAL )
+                    else:
+                        self._tokensList.addSimpleToken( LESS_THAN )
+                    self.isPunctuatorComplete = True
+
             else:
                 if c in ['+',',','-','=']:
                     self.isPunctuatorComplete = False
