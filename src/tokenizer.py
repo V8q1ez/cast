@@ -36,7 +36,7 @@ NOT_EQUAL_TO = 32
 LESS_THAN = 33
 GREATER_THAN = 34
 LESS_OR_EQUAL = 35
-
+GREATER_OR_EQUAL = 36
 
 class directivesDict(dict):
     def __init__(self):
@@ -229,7 +229,6 @@ class tokenizer():
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
-            self._tokensList.addSimpleToken( GREATER_THAN )
         return
 
     def _processExclamationMark(self):
@@ -431,6 +430,13 @@ class tokenizer():
                         self._tokensList.addSimpleToken( LESS_OR_EQUAL )
                     else:
                         self._tokensList.addSimpleToken( LESS_THAN )
+                    self.isPunctuatorComplete = True
+
+                elif self._previousCharacter == '>':
+                    if c == '=':
+                        self._tokensList.addSimpleToken( GREATER_OR_EQUAL )
+                    else:
+                        self._tokensList.addSimpleToken( GREATER_THAN )
                     self.isPunctuatorComplete = True
 
             else:
