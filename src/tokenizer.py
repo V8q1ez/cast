@@ -37,6 +37,8 @@ LESS_THAN = 33
 GREATER_THAN = 34
 LESS_OR_EQUAL = 35
 GREATER_OR_EQUAL = 36
+NOT = 37
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -60,7 +62,7 @@ class singlePunctuatorDict(dict):
         self['+'] = ADDITION
         self['-'] = SUBTRACTION
         self['='] = ASSIGNMENT
-        self['!'] = None
+        self['!'] = NOT
         self['<'] = LESS_THAN
         self['>'] = GREATER_THAN
 
