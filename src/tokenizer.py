@@ -55,6 +55,26 @@ class keyWordsDict(dict):
         self['void'] = VOID
 
 
+class singlePunctuatorDict(dict):
+    def __init__(self):
+        self['+'] = ADDITION
+        self['-'] = SUBTRACTION
+        self['='] = ASSIGNMENT
+        self['!'] = None
+        self['<'] = LESS_THAN
+        self['>'] = GREATER_THAN
+
+
+class complexPunctuatorDict(dict):
+    def __init__(self):
+        self['++'] = INCREMENT
+        self['--'] = DECREMENT
+        self['!='] = NOT_EQUAL_TO
+        self['=='] = EQUAL_TO
+        self['<='] = LESS_OR_EQUAL
+        self['>='] = GREATER_OR_EQUAL
+
+
 class token():
     def __init__(self, type):
         self.type = type
@@ -90,6 +110,9 @@ class tokenizer():
         self._tokensList = tokenList()
         self.knownDirectives = directivesDict()
         self._knownKeywords = keyWordsDict()
+        self._singlePunctuators = singlePunctuatorDict()
+        self._complexPunctuatorsDict = complexPunctuatorDict()
+
         self._characterHandlersDict = {
             '(' : self._processLeftParenthesis,
             ')' : self._processRightParenthesis,
@@ -397,46 +420,16 @@ class tokenizer():
     def _tryToCompletePreviousToken(self, c):
         if not self.isStringStarted:
             if not self.isPunctuatorComplete:
-                if self._previousCharacter == '+':
-                    if c == '+':
-                        self._tokensList.addSimpleToken( INCREMENT )
-                    else:
-                        self._tokensList.addSimpleToken( ADDITION )
+                lastTwoChars = self._previousCharacter + c
+
+                if lastTwoChars in self._complexPunctuatorsDict:
+                    punctuator = self._complexPunctuatorsDict[ lastTwoChars ]
+                    self._tokensList.addSimpleToken( punctuator )
                     self.isPunctuatorComplete = True
 
-                elif self._previousCharacter == '-':
-                    if c == '-':
-                        self._tokensList.addSimpleToken( DECREMENT )
-                    else:
-                        self._tokensList.addSimpleToken( SUBTRACTION )
-                    self.isPunctuatorComplete = True
-
-                elif self._previousCharacter == '=':
-                    if c == '=':
-                        self._tokensList.addSimpleToken( EQUAL_TO )
-                    else:
-                        self._tokensList.addSimpleToken( ASSIGNMENT )
-                    self.isPunctuatorComplete = True
-
-                elif self._previousCharacter == '!':
-                    if c == '=':
-                        self._tokensList.addSimpleToken( NOT_EQUAL_TO )
-                    else:
-                        pass # self._tokensList.addSimpleToken( ASSIGNMENT )
-                    self.isPunctuatorComplete = True
-
-                elif self._previousCharacter == '<':
-                    if c == '=':
-                        self._tokensList.addSimpleToken( LESS_OR_EQUAL )
-                    else:
-                        self._tokensList.addSimpleToken( LESS_THAN )
-                    self.isPunctuatorComplete = True
-
-                elif self._previousCharacter == '>':
-                    if c == '=':
-                        self._tokensList.addSimpleToken( GREATER_OR_EQUAL )
-                    else:
-                        self._tokensList.addSimpleToken( GREATER_THAN )
+                elif self._previousCharacter in self._singlePunctuators:
+                    punctuator = self._singlePunctuators[ self._previousCharacter ]
+                    self._tokensList.addSimpleToken( punctuator )
                     self.isPunctuatorComplete = True
 
             else:
