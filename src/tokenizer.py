@@ -40,6 +40,8 @@ GREATER_OR_EQUAL = 36
 NOT = 37
 LOGICAL_END = 38
 LOGICAL_OR = 39
+BITWISE_NOT = 40
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -66,6 +68,7 @@ class singlePunctuatorDict(dict):
         self['!'] = NOT
         self['<'] = LESS_THAN
         self['>'] = GREATER_THAN
+        self['~'] = BITWISE_NOT
 
 
 class complexPunctuatorDict(dict):
@@ -142,6 +145,7 @@ class tokenizer():
             '<' : self._processLeftAngleBracket,
             '>' : self._processRightAngleBracket,
             '|' : self._processVerticalBar,
+            '~' : self._processTilde,
             }
 
     def _clearState(self):
@@ -264,6 +268,14 @@ class tokenizer():
     def _processVerticalBar(self):
         if self.isStringStarted:
             self.literalValue += '|'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+        return
+
+    def _processTilde(self):
+        if self.isStringStarted:
+            self.literalValue += '~'
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
