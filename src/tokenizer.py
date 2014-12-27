@@ -39,7 +39,7 @@ LESS_OR_EQUAL = 35
 GREATER_OR_EQUAL = 36
 NOT = 37
 LOGICAL_END = 38
-
+LOGICAL_OR = 39
 
 class directivesDict(dict):
     def __init__(self):
@@ -77,6 +77,7 @@ class complexPunctuatorDict(dict):
         self['<='] = LESS_OR_EQUAL
         self['>='] = GREATER_OR_EQUAL
         self['&&'] = LOGICAL_END
+        self['||'] = LOGICAL_OR
 
 
 class token():
@@ -140,6 +141,7 @@ class tokenizer():
             '!' : self._processExclamationMark,
             '<' : self._processLeftAngleBracket,
             '>' : self._processRightAngleBracket,
+            '|' : self._processVerticalBar,
             }
 
     def _clearState(self):
@@ -254,6 +256,14 @@ class tokenizer():
     def _processRightAngleBracket(self):
         if self.isStringStarted:
             self.literalValue += '>'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+        return
+
+    def _processVerticalBar(self):
+        if self.isStringStarted:
+            self.literalValue += '|'
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
