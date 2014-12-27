@@ -363,7 +363,7 @@ class preprocessorDefineStrings(unittest.TestCase):
 
     def test_define_str_with_comparison_relational(self):
         input = []
-        input.append('#define a "a==b c!=d e<f"')
+        input.append('#define a "a==b c!=d e<f g>h"')
 
         actualOutput = self.tkz.parseText(input)
 
@@ -372,7 +372,7 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
         self.assertEqual( STRING, actualOutput[3].type)
-        self.assertEqual( 'a==b c!=d e<f', actualOutput[3].literalValue)
+        self.assertEqual( 'a==b c!=d e<f g>h', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)

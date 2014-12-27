@@ -34,6 +34,7 @@ MODULO = 30
 EQUAL_TO = 31
 NOT_EQUAL_TO = 32
 LESS_THAN = 33
+GREATER_THAN = 34
 
 
 class directivesDict(dict):
@@ -108,7 +109,8 @@ class tokenizer():
             ']' : self._processSquareBracketRight,
             ' ' : self._processSpace,
             '!' : self._processExclamationMark,
-            '<' : self._processAngleBracket
+            '<' : self._processLeftAngleBracket,
+            '>' : self._processRightAngleBracket,
             }
 
     def _clearState(self):
@@ -212,13 +214,22 @@ class tokenizer():
             self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
         return
 
-    def _processAngleBracket(self):
+    def _processLeftAngleBracket(self):
         if self.isStringStarted:
             self.literalValue += '<'
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( LESS_THAN )
+        return
+
+    def _processRightAngleBracket(self):
+        if self.isStringStarted:
+            self.literalValue += '>'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+            self._tokensList.addSimpleToken( GREATER_THAN )
         return
 
     def _processExclamationMark(self):
