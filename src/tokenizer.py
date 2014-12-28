@@ -41,6 +41,8 @@ NOT = 37
 LOGICAL_END = 38
 LOGICAL_OR = 39
 BITWISE_NOT = 40
+BITWISE_AND = 41
+BITWISE_OR = 42
 
 
 class directivesDict(dict):
@@ -69,6 +71,8 @@ class singlePunctuatorDict(dict):
         self['<'] = LESS_THAN
         self['>'] = GREATER_THAN
         self['~'] = BITWISE_NOT
+        self['&'] = BITWISE_AND
+        self['|'] = BITWISE_OR
 
 
 class complexPunctuatorDict(dict):
