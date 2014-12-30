@@ -2,12 +2,12 @@ __author__ = 'V8q1ez'
 
 import unittest
 
-from src.tokenizer import *
+from src.cinderella import *
 
 
 class compilerLogicalOperations(unittest.TestCase):
     def setUp(self):
-       self.tkz = tokenizer()
+       self.tkz = cinderella()
 
     def test_logical_negation(self):
         input = []

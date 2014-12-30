@@ -117,7 +117,7 @@ class tokenList():
         return self.tokensList
 
 
-class tokenizer():
+class cinderella():
     def __init__(self):
         self._tokensList = tokenList()
         self.knownDirectives = directivesDict()
@@ -167,7 +167,7 @@ class tokenizer():
         https://gcc.gnu.org/onlinedocs/cpp/index.html
     """
 
-    def parseDefine(self, remainingString):
+    def parseLine(self, remainingString):
 
         self._previousCharacter = ''
 
@@ -496,7 +496,7 @@ class tokenizer():
         return
 
     def _parseLine(self, inputString):
-        self.parseDefine(inputString)
+        self.parseLine(inputString)
         return
 
 

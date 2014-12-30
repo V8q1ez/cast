@@ -2,12 +2,12 @@ __author__ = 'V8q1ez'
 
 import unittest
 
-from src.tokenizer import *
+from src.cinderella import *
 
 
 class compilerComparisonRelational(unittest.TestCase):
     def setUp(self):
-       self.tkz = tokenizer()
+       self.tkz = cinderella()
 
     def test_comparison_equal_to(self):
         input = []
