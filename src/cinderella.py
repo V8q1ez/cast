@@ -49,6 +49,8 @@ BITWISE_RIGHT_SHIFT = 45
 ADDITION_ASSIGNMENT = 46
 SUBTRACTION_ASSIGNMENT = 47
 MULTIPLICATION_ASSIGNMENT = 48
+DIVISION_ASSIGNMENT = 49
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -80,6 +82,7 @@ class singlePunctuatorDict(dict):
         self['|'] = BITWISE_OR
         self['^'] = BITWISE_XOR
         self['*'] = ASTERISK
+        self['/'] = DIVISION
 
 
 class complexPunctuatorDict(dict):
@@ -97,6 +100,7 @@ class complexPunctuatorDict(dict):
         self['+='] = ADDITION_ASSIGNMENT
         self['-='] = SUBTRACTION_ASSIGNMENT
         self['*='] = MULTIPLICATION_ASSIGNMENT
+        self['/='] = DIVISION_ASSIGNMENT
 
 
 class token():
@@ -429,9 +433,7 @@ class cinderella():
             self.literalValue += '/'
         else:
             if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( DIVISION )
+                self._processFoundLiteral()
         return
 
     def _processPlus(self):
