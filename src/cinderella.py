@@ -43,7 +43,7 @@ LOGICAL_OR = 39
 BITWISE_NOT = 40
 BITWISE_AND = 41
 BITWISE_OR = 42
-
+BITWISE_XOR = 43
 
 class directivesDict(dict):
     def __init__(self):
@@ -73,6 +73,7 @@ class singlePunctuatorDict(dict):
         self['~'] = BITWISE_NOT
         self['&'] = BITWISE_AND
         self['|'] = BITWISE_OR
+        self['^'] = BITWISE_XOR
 
 
 class complexPunctuatorDict(dict):
@@ -150,6 +151,7 @@ class cinderella():
             '>' : self._processRightAngleBracket,
             '|' : self._processVerticalBar,
             '~' : self._processTilde,
+            '^' : self._processCaret,
             }
 
     def _clearState(self):
@@ -280,6 +282,14 @@ class cinderella():
     def _processTilde(self):
         if self.isStringStarted:
             self.literalValue += '~'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+        return
+
+    def _processCaret(self):
+        if self.isStringStarted:
+            self.literalValue += '^'
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
