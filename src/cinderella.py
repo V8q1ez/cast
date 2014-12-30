@@ -51,6 +51,9 @@ SUBTRACTION_ASSIGNMENT = 47
 MULTIPLICATION_ASSIGNMENT = 48
 DIVISION_ASSIGNMENT = 49
 MODULO_ASSIGNMENT = 50
+BITWISE_AND_ASSIGNMENT = 51
+BITWISE_OR_ASSIGNMENT = 52
+BITWISE_XOR_ASSIGNMENT = 53
 
 
 class directivesDict(dict):
@@ -104,6 +107,9 @@ class complexPunctuatorDict(dict):
         self['*='] = MULTIPLICATION_ASSIGNMENT
         self['/='] = DIVISION_ASSIGNMENT
         self['%='] = MODULO_ASSIGNMENT
+        self['&='] = BITWISE_AND_ASSIGNMENT
+        self['|='] = BITWISE_OR_ASSIGNMENT
+        self['^='] = BITWISE_XOR_ASSIGNMENT
 
 
 class token():
