@@ -46,6 +46,7 @@ BITWISE_OR = 42
 BITWISE_XOR = 43
 BITWISE_LEFT_SHIFT = 44
 BITWISE_RIGHT_SHIFT = 45
+ADDITION_ASSIGNMENT = 46
 
 class directivesDict(dict):
     def __init__(self):
@@ -90,6 +91,7 @@ class complexPunctuatorDict(dict):
         self['||'] = LOGICAL_OR
         self['<<'] = BITWISE_LEFT_SHIFT
         self['>>'] = BITWISE_RIGHT_SHIFT
+        self['+='] = ADDITION_ASSIGNMENT
 
 
 class token():
