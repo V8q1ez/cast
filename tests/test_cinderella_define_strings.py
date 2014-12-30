@@ -411,7 +411,7 @@ class preprocessorDefineStrings(unittest.TestCase):
 
     def test_define_str_with_compound_assignments(self):
         input = []
-        input.append('#define a "a += b -= d"')
+        input.append('#define a "a += b -= d *= e"')
 
         actualOutput = self.tkz.parseText(input)
 
@@ -420,7 +420,7 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
         self.assertEqual( STRING, actualOutput[3].type)
-        self.assertEqual( 'a += b -= d', actualOutput[3].literalValue)
+        self.assertEqual( 'a += b -= d *= e', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)
