@@ -50,6 +50,7 @@ ADDITION_ASSIGNMENT = 46
 SUBTRACTION_ASSIGNMENT = 47
 MULTIPLICATION_ASSIGNMENT = 48
 DIVISION_ASSIGNMENT = 49
+MODULO_ASSIGNMENT = 50
 
 
 class directivesDict(dict):
@@ -83,6 +84,7 @@ class singlePunctuatorDict(dict):
         self['^'] = BITWISE_XOR
         self['*'] = ASTERISK
         self['/'] = DIVISION
+        self['%'] = MODULO
 
 
 class complexPunctuatorDict(dict):
@@ -101,6 +103,7 @@ class complexPunctuatorDict(dict):
         self['-='] = SUBTRACTION_ASSIGNMENT
         self['*='] = MULTIPLICATION_ASSIGNMENT
         self['/='] = DIVISION_ASSIGNMENT
+        self['%='] = MODULO_ASSIGNMENT
 
 
 class token():
@@ -406,9 +409,7 @@ class cinderella():
             self.literalValue += '%'
         else:
             if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-            self._tokensList.addSimpleToken( MODULO )
+                self._processFoundLiteral()
         return
 
     def _processAsterisk(self):

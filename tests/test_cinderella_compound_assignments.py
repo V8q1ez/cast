@@ -112,3 +112,29 @@ class compilerCompoundAssignments(unittest.TestCase):
         self.assertEqual( LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
         self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_modulo(self):
+        input = []
+        input.append('a%=b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( MODULO_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_modulo_with_spaces(self):
+        input = []
+        input.append('a %= b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( MODULO_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
