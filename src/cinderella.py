@@ -1,5 +1,7 @@
 __author__ = 'V8q1ez'
 
+from collections import deque
+
 UNKNOWN = 0
 OBJECT_LIKE_MACRO = 1
 INCLUDE = 2
@@ -54,6 +56,8 @@ MODULO_ASSIGNMENT = 50
 BITWISE_AND_ASSIGNMENT = 51
 BITWISE_OR_ASSIGNMENT = 52
 BITWISE_XOR_ASSIGNMENT = 53
+BITWISE_L_SHIFT_ASSIGNMENT = 54
+BITWISE_R_SHIFT_ASSIGNMENT = 55
 
 
 class directivesDict(dict):
@@ -90,7 +94,7 @@ class singlePunctuatorDict(dict):
         self['%'] = MODULO
 
 
-class complexPunctuatorDict(dict):
+class pairPunctuatorDict(dict):
     def __init__(self):
         self['++'] = INCREMENT
         self['--'] = DECREMENT
@@ -110,6 +114,12 @@ class complexPunctuatorDict(dict):
         self['&='] = BITWISE_AND_ASSIGNMENT
         self['|='] = BITWISE_OR_ASSIGNMENT
         self['^='] = BITWISE_XOR_ASSIGNMENT
+
+
+class triplePunctuatorDict(dict):
+    def __init__(self):
+        self['<<='] = BITWISE_L_SHIFT_ASSIGNMENT
+        self['>>='] = BITWISE_R_SHIFT_ASSIGNMENT
 
 
 class token():
@@ -148,7 +158,9 @@ class cinderella():
         self.knownDirectives = directivesDict()
         self._knownKeywords = keyWordsDict()
         self._singlePunctuators = singlePunctuatorDict()
-        self._complexPunctuatorsDict = complexPunctuatorDict()
+        self._pairPunctuatorsDict = pairPunctuatorDict()
+        self._triplePunctuatorsDict = triplePunctuatorDict()
+        self._punctuatorsCache = deque()
 
         self._characterHandlersDict = {
             '(' : self._processLeftParenthesis,
@@ -185,8 +197,6 @@ class cinderella():
         self.isTypeOfMacrosKnown = False
         self.literalValue = ''
         self.isDirectiveStarted = False
-        self._previousCharacter = ''
-        self.isPunctuatorComplete = False
 
     """
     All used preprocessor rules are taken from:
@@ -195,7 +205,6 @@ class cinderella():
 
     def parseLine(self, remainingString):
 
-        self._previousCharacter = ''
 
         for c in remainingString:
 
@@ -211,8 +220,6 @@ class cinderella():
 
             elif c != ' ':
                 self._processNonSpace( c )
-
-            self._previousCharacter = c
 
         self._processEndOfLine()
 
@@ -487,22 +494,45 @@ class cinderella():
 
     def _tryToCompletePreviousToken(self, c):
         if not self.isStringStarted:
-            if not self.isPunctuatorComplete:
-                lastTwoChars = self._previousCharacter + c
 
-                if lastTwoChars in self._complexPunctuatorsDict:
-                    punctuator = self._complexPunctuatorsDict[ lastTwoChars ]
-                    self._tokensList.addSimpleToken( punctuator )
-                    self.isPunctuatorComplete = True
-
-                elif self._previousCharacter in self._singlePunctuators:
-                    punctuator = self._singlePunctuators[ self._previousCharacter ]
-                    self._tokensList.addSimpleToken( punctuator )
-                    self.isPunctuatorComplete = True
-
+            if c in self._singlePunctuators:
+                self._punctuatorsCache.append(c)
             else:
-                if c in ['+',',','-','=']:
-                    self.isPunctuatorComplete = False
+                self._processCachedPunctuators()
+
+        return
+
+    def _processCachedPunctuators(self):
+        if len(self._punctuatorsCache) == 3:
+            lastThreeChars = ''.join(list(self._punctuatorsCache))
+            if lastThreeChars in self._triplePunctuatorsDict:
+                punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
+                self._tokensList.addSimpleToken( punctuator )
+            else:
+                firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                if firstTwoChars in self._pairPunctuatorsDict:
+                    punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                    self._tokensList.addSimpleToken( punctuator )
+
+                char = ''.join(list(self._punctuatorsCache)[2:3])
+                if char in self._singlePunctuators:
+                    punctuator = self._singlePunctuators[ char ]
+                    self._tokensList.addSimpleToken( punctuator )
+
+
+        elif len(self._punctuatorsCache) == 2:
+            lastTwoChars = ''.join(list(self._punctuatorsCache))
+            if lastTwoChars in self._pairPunctuatorsDict:
+                punctuator = self._pairPunctuatorsDict[ lastTwoChars ]
+                self._tokensList.addSimpleToken( punctuator )
+
+        elif len(self._punctuatorsCache) == 1:
+            char = ''.join(list(self._punctuatorsCache))
+            if char in self._singlePunctuators:
+                punctuator = self._singlePunctuators[ char ]
+                self._tokensList.addSimpleToken( punctuator )
+
+        self._punctuatorsCache.clear()
 
         return
 
@@ -519,6 +549,8 @@ class cinderella():
                 self._processFoundLiteral()
             elif self.isDirectiveStarted:
                 self._processFoundDirective()
+            else:
+                self._processCachedPunctuators()
             self._tokensList.addSimpleToken( EOL )
 
         return

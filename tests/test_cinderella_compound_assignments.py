@@ -229,3 +229,55 @@ class compilerCompoundAssignments(unittest.TestCase):
         self.assertEqual( LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
         self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_bitwise_left_shift(self):
+        input = []
+        input.append('a<<=b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_bitwise_left_shift_with_spaces(self):
+        input = []
+        input.append('a <<= b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_bitwise_right_shift(self):
+        input = []
+        input.append('a>>=b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
+
+    def test_compound_bitwise_right_shift_with_spaces(self):
+        input = []
+        input.append('a >>= b')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'a', actualOutput[0].literalValue)
+        self.assertEqual( BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'b', actualOutput[2].literalValue)
+        self.assertEqual( EOL, actualOutput[3].type)
