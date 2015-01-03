@@ -59,7 +59,7 @@ BITWISE_XOR_ASSIGNMENT = 53
 BITWISE_L_SHIFT_ASSIGNMENT = 54
 BITWISE_R_SHIFT_ASSIGNMENT = 55
 STRUCTURE_DEREFERENCE = 56
-
+QUESTION_MARK = 57
 
 class directivesDict(dict):
     def __init__(self):
@@ -93,6 +93,7 @@ class singlePunctuatorDict(dict):
         self['*'] = ASTERISK
         self['/'] = DIVISION
         self['%'] = MODULO
+        self['?'] = QUESTION_MARK
 
 
 class pairPunctuatorDict(dict):
@@ -190,6 +191,7 @@ class cinderella():
             '|' : self._processVerticalBar,
             '~' : self._processTilde,
             '^' : self._processCaret,
+            '?' : self._processQuestionMark,
             }
 
     def _clearState(self):
@@ -323,6 +325,14 @@ class cinderella():
     def _processCaret(self):
         if self.isStringStarted:
             self.literalValue += '^'
+        else:
+            if self.isLiteralStarted:
+                self._processFoundLiteral()
+        return
+
+    def _processQuestionMark(self):
+        if self.isStringStarted:
+            self.literalValue += '?'
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
