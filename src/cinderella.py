@@ -58,6 +58,7 @@ BITWISE_OR_ASSIGNMENT = 52
 BITWISE_XOR_ASSIGNMENT = 53
 BITWISE_L_SHIFT_ASSIGNMENT = 54
 BITWISE_R_SHIFT_ASSIGNMENT = 55
+STRUCTURE_DEREFERENCE = 56
 
 
 class directivesDict(dict):
@@ -114,6 +115,7 @@ class pairPunctuatorDict(dict):
         self['&='] = BITWISE_AND_ASSIGNMENT
         self['|='] = BITWISE_OR_ASSIGNMENT
         self['^='] = BITWISE_XOR_ASSIGNMENT
+        self['->'] = STRUCTURE_DEREFERENCE
 
 
 class triplePunctuatorDict(dict):
