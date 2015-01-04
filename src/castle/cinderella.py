@@ -27,6 +27,11 @@ class tokenList():
         t.literalValue = literalValue
         self.tokensList.append(t)
 
+    def addSingleLineCommentToken(self, literalValue):
+        t = token(SINGLE_LINE_COMMENT)
+        t.literalValue = literalValue
+        self.tokensList.append(t)
+
     def changeTokenType(self, index, newType):
         self.tokensList[ index ].type = newType
 
@@ -80,6 +85,7 @@ class cinderella():
         self.isTypeOfMacrosKnown = True
         self.literalValue = ''
         self.isDirectiveStarted = False
+        self.isSingleLineCommentStarted = False
 
     """
     All used preprocessor rules are taken from:
@@ -90,6 +96,10 @@ class cinderella():
 
 
         for c in remainingString:
+
+            if self.isSingleLineCommentStarted:
+                self.literalValue += c
+                continue
 
             self._tryToCompletePreviousToken( c )
 
@@ -275,7 +285,7 @@ class cinderella():
     def _processSpace(self):
         if self.isDirectiveStarted:
             self._processFoundDirective()
-        elif self.isStringStarted:
+        elif self.isStringStarted or self.isSingleLineCommentStarted:
             self.literalValue += ' '
         elif self.isLiteralStarted:
             # since literal finishes by space - this is an object like macros
@@ -397,6 +407,7 @@ class cinderella():
         return
 
     def _processCachedPunctuators(self):
+        punctuator = UNKNOWN
         if len(self._punctuatorsCache) == 3:
             lastThreeChars = ''.join(list(self._punctuatorsCache))
             if lastThreeChars in self._triplePunctuatorsDict:
@@ -428,6 +439,11 @@ class cinderella():
 
         self._punctuatorsCache.clear()
 
+        if punctuator == SINGLE_LINE_COMMENT:
+            self.isSingleLineCommentStarted = True
+            self.literalValue = ''
+            pass
+
         return
 
     def _processEndOfLine(self):
@@ -439,7 +455,10 @@ class cinderella():
             # esc sequence cannot be between two lines
             self.isEscSeqStarted = False
         else:
-            if self.isLiteralStarted:
+            if self.isSingleLineCommentStarted:
+              self._tokensList.addSingleLineCommentToken( self.literalValue )
+
+            elif self.isLiteralStarted:
                 self._processFoundLiteral()
             elif self.isDirectiveStarted:
                 self._processFoundDirective()

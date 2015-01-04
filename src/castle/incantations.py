@@ -60,6 +60,8 @@ STRUCTURE_DEREFERENCE = 56
 QUESTION_MARK = 57
 SIZEOF = 58
 ALIGNOF = 59
+SINGLE_LINE_COMMENT = 60
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -119,6 +121,7 @@ class pairPunctuatorDict(dict):
         self['|='] = BITWISE_OR_ASSIGNMENT
         self['^='] = BITWISE_XOR_ASSIGNMENT
         self['->'] = STRUCTURE_DEREFERENCE
+        self['//'] = SINGLE_LINE_COMMENT
 
 
 class triplePunctuatorDict(dict):
