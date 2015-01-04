@@ -68,3 +68,31 @@ class compilerOtherOperators(unittest.TestCase):
         self.assertEqual( PARENTHESIS_RIGHT, actualOutput[3].type)
 
         self.assertEqual( EOL, actualOutput[4].type)
+
+    def test_other_alignof(self):
+        input = []
+        input.append('alignof(a)')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( ALIGNOF, actualOutput[0].type)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[3].type)
+
+        self.assertEqual( EOL, actualOutput[4].type)
+
+    def test_other_alignof_with_spaces(self):
+        input = []
+        input.append('alignof ( a )')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( ALIGNOF, actualOutput[0].type)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[3].type)
+
+        self.assertEqual( EOL, actualOutput[4].type)

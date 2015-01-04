@@ -459,7 +459,7 @@ class preprocessorDefineStrings(unittest.TestCase):
 
     def test_define_str_with_other_operators(self):
         input = []
-        input.append('#define a "sizeof(a)"')
+        input.append('#define a "sizeof(a)+ alignof(b)"')
 
         actualOutput = self.tkz.parseText(input)
 
@@ -468,7 +468,7 @@ class preprocessorDefineStrings(unittest.TestCase):
         self.assertEqual( 'a', actualOutput[1].literalValue)
         self.assertEqual( QUOTE, actualOutput[2].type)
         self.assertEqual( STRING, actualOutput[3].type)
-        self.assertEqual( 'sizeof(a)', actualOutput[3].literalValue)
+        self.assertEqual( 'sizeof(a)+ alignof(b)', actualOutput[3].literalValue)
         self.assertEqual( QUOTE, actualOutput[4].type)
 
         self.assertEqual( EOL, actualOutput[5].type)

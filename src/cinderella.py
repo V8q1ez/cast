@@ -61,6 +61,7 @@ BITWISE_R_SHIFT_ASSIGNMENT = 55
 STRUCTURE_DEREFERENCE = 56
 QUESTION_MARK = 57
 SIZEOF = 58
+ALIGNOF = 59
 
 
 class directivesDict(dict):
@@ -79,6 +80,7 @@ class keyWordsDict(dict):
         self['static'] = STATIC
         self['void'] = VOID
         self['sizeof'] = SIZEOF
+        self['alignof'] = ALIGNOF
 
 
 class singlePunctuatorDict(dict):
