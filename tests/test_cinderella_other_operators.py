@@ -40,3 +40,31 @@ class compilerOtherOperators(unittest.TestCase):
         self.assertEqual( LITERAL, actualOutput[4].type)
         self.assertEqual( 'c', actualOutput[4].literalValue)
         self.assertEqual( EOL, actualOutput[5].type)
+
+    def test_other_sizeof(self):
+        input = []
+        input.append('sizeof(a)')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( SIZEOF, actualOutput[0].type)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[3].type)
+
+        self.assertEqual( EOL, actualOutput[4].type)
+
+    def test_other_sizeof_with_spaces(self):
+        input = []
+        input.append('sizeof ( a )')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( SIZEOF, actualOutput[0].type)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'a', actualOutput[2].literalValue)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[3].type)
+
+        self.assertEqual( EOL, actualOutput[4].type)

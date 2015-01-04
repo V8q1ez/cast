@@ -60,6 +60,8 @@ BITWISE_L_SHIFT_ASSIGNMENT = 54
 BITWISE_R_SHIFT_ASSIGNMENT = 55
 STRUCTURE_DEREFERENCE = 56
 QUESTION_MARK = 57
+SIZEOF = 58
+
 
 class directivesDict(dict):
     def __init__(self):
@@ -76,6 +78,7 @@ class keyWordsDict(dict):
         self['struct'] = STRUCT
         self['static'] = STATIC
         self['void'] = VOID
+        self['sizeof'] = SIZEOF
 
 
 class singlePunctuatorDict(dict):
@@ -198,7 +201,7 @@ class cinderella():
         self.isLiteralStarted = False
         self.isStringStarted = False
         self.isEscSeqStarted = False
-        self.isTypeOfMacrosKnown = False
+        self.isTypeOfMacrosKnown = True
         self.literalValue = ''
         self.isDirectiveStarted = False
 
@@ -427,6 +430,7 @@ class cinderella():
             if not self.isDirectiveStarted:
                 self.literalValue = ''
                 self.isDirectiveStarted = True
+                self.isTypeOfMacrosKnown = False
         return
 
     def _processPercent(self):
@@ -492,6 +496,8 @@ class cinderella():
         if self.literalValue in self.knownDirectives:
             self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
             self.isDirectiveStarted = False
+            if self.literalValue != 'define':
+                self.isTypeOfMacrosKnown = True
         else:
             self._tokensList.addSimpleToken(UNKNOWN)
         return
