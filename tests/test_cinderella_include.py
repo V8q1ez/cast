@@ -2,7 +2,7 @@ __author__ = 'V8q1ez'
 
 import unittest
 
-from src.cinderella import *
+from src.castle.cinderella import *
 
 
 class preprocessorInclude(unittest.TestCase):
