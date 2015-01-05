@@ -292,7 +292,9 @@ class cinderella():
     def _processSpace(self):
         if self.isDirectiveStarted:
             self._processFoundDirective()
-        elif self.isStringStarted or self.isSingleLineCommentStarted:
+        elif self.isStringStarted \
+                or self.isSingleLineCommentStarted\
+                or self.isMultiLineCommentStarted:
             self.literalValue += ' '
         elif self.isLiteralStarted:
             # since literal finishes by space - this is an object like macros
@@ -435,6 +437,8 @@ class cinderella():
                         self._tokensList.addSimpleToken( punctuator )
                     else:
                         self.literalValue += self._punctuatorsCache.popleft()
+                else:
+                    self.literalValue += self._punctuatorsCache.popleft()
             else:
                 if len(self._punctuatorsCache) >= 3:
                     lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
