@@ -416,52 +416,67 @@ class cinderella():
         punctuator = UNKNOWN
         while len(self._punctuatorsCache):
 
-            if len(self._punctuatorsCache) >= 3:
-                lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
-                firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
-                char = ''.join(list(self._punctuatorsCache)[0:1])
-                if lastThreeChars in self._triplePunctuatorsDict:
-                    punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
-                    for _ in range(3):
-                        self._punctuatorsCache.popleft()
-                elif firstTwoChars in self._pairPunctuatorsDict:
-                    punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
-                    for _ in range(2):
-                        self._punctuatorsCache.popleft()
-                elif char in self._singlePunctuators:
-                    punctuator = self._singlePunctuators[ char ]
-                    for _ in range(1):
-                        self._punctuatorsCache.popleft()
-
-            elif len(self._punctuatorsCache) == 2:
-                firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
-                if firstTwoChars in self._pairPunctuatorsDict:
-                    punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
-                    for _ in range(2):
-                        self._punctuatorsCache.popleft()
-
-            elif len(self._punctuatorsCache) == 1:
-                char = ''.join(list(self._punctuatorsCache)[0:1])
-                if char in self._singlePunctuators:
-                    punctuator = self._singlePunctuators[ char ]
-                    for _ in range(1):
-                        self._punctuatorsCache.popleft()
-
-            if punctuator != UNKNOWN:
-                if punctuator == SINGLE_LINE_COMMENT:
-                    self.isSingleLineCommentStarted = True
-                    self.literalValue = ''
-                else:
-                    if punctuator == MULTI_LINE_COMMENT_START:
-                        self.isMultiLineCommentStarted = True
-                        self.literalValue = ''
-                    elif punctuator == MULTI_LINE_COMMENT_END:
+            if self.isMultiLineCommentStarted:
+                # only MULTI_LINE_COMMENT_END of EOL are allowed
+                if len(self._punctuatorsCache) >= 2:
+                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                    if firstTwoChars in self._pairPunctuatorsDict:
+                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                    if punctuator == MULTI_LINE_COMMENT_END:
+                        for _ in range(2):
+                            self._punctuatorsCache.popleft()
                         self.isMultiLineCommentStarted = False
                         self._tokensList.addMultiLineCommentLineToken( self.literalValue )
+                        self._tokensList.addSimpleToken( punctuator )
+                    else:
+                        self.literalValue += self._punctuatorsCache.popleft()
+            else:
+                if len(self._punctuatorsCache) >= 3:
+                    lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
+                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                    char = ''.join(list(self._punctuatorsCache)[0:1])
+                    if lastThreeChars in self._triplePunctuatorsDict:
+                        punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
+                        for _ in range(3):
+                            self._punctuatorsCache.popleft()
+                    elif firstTwoChars in self._pairPunctuatorsDict:
+                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                        for _ in range(2):
+                            self._punctuatorsCache.popleft()
+                    elif char in self._singlePunctuators:
+                        punctuator = self._singlePunctuators[ char ]
+                        for _ in range(1):
+                            self._punctuatorsCache.popleft()
 
-                    self._tokensList.addSimpleToken( punctuator )
+                elif len(self._punctuatorsCache) == 2:
+                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                    if firstTwoChars in self._pairPunctuatorsDict:
+                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                        for _ in range(2):
+                            self._punctuatorsCache.popleft()
 
-                punctuator = UNKNOWN
+                elif len(self._punctuatorsCache) == 1:
+                    char = ''.join(list(self._punctuatorsCache)[0:1])
+                    if char in self._singlePunctuators:
+                        punctuator = self._singlePunctuators[ char ]
+                        for _ in range(1):
+                            self._punctuatorsCache.popleft()
+
+                if punctuator != UNKNOWN:
+                    if punctuator == SINGLE_LINE_COMMENT:
+                        self.isSingleLineCommentStarted = True
+                        self.literalValue = ''
+                    else:
+                        if punctuator == MULTI_LINE_COMMENT_START:
+                            self.isMultiLineCommentStarted = True
+                            self.literalValue = ''
+                        elif punctuator == MULTI_LINE_COMMENT_END:
+                            self.isMultiLineCommentStarted = False
+                            self._tokensList.addMultiLineCommentLineToken( self.literalValue )
+
+                        self._tokensList.addSimpleToken( punctuator )
+
+                    punctuator = UNKNOWN
 
         self._punctuatorsCache.clear()
 

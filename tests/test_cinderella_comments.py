@@ -92,3 +92,21 @@ class compilerComments(unittest.TestCase):
         self.assertEqual( ' j();', actualOutput[0].literalValue)
 
         self.assertEqual( EOL, actualOutput[1].type)
+
+    def test_comments_multi_line_with_single_line(self):
+        input = []
+        input.append('/*//*/ l();')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( MULTI_LINE_COMMENT_START, actualOutput[0].type)
+        self.assertEqual( MULTI_LINE_COMMENT_LINE, actualOutput[1].type)
+        self.assertEqual( '//', actualOutput[1].literalValue)
+        self.assertEqual( MULTI_LINE_COMMENT_END, actualOutput[2].type)
+        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( 'l', actualOutput[3].literalValue)
+        self.assertEqual( PARENTHESIS_LEFT, actualOutput[4].type)
+        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[5].type)
+        self.assertEqual( SEMICOLON, actualOutput[6].type)
+
+        self.assertEqual( EOL, actualOutput[7].type)
