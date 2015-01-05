@@ -61,6 +61,9 @@ QUESTION_MARK = 57
 SIZEOF = 58
 ALIGNOF = 59
 SINGLE_LINE_COMMENT = 60
+MULTI_LINE_COMMENT_START = 61
+MULTI_LINE_COMMENT_LINE = 62
+MULTI_LINE_COMMENT_END = 63
 
 
 class directivesDict(dict):
@@ -122,6 +125,8 @@ class pairPunctuatorDict(dict):
         self['^='] = BITWISE_XOR_ASSIGNMENT
         self['->'] = STRUCTURE_DEREFERENCE
         self['//'] = SINGLE_LINE_COMMENT
+        self['/*'] = MULTI_LINE_COMMENT_START
+        self['*/'] = MULTI_LINE_COMMENT_END
 
 
 class triplePunctuatorDict(dict):

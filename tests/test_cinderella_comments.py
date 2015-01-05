@@ -46,3 +46,25 @@ class compilerComments(unittest.TestCase):
         self.assertEqual( ' */', actualOutput[1].literalValue)
 
         self.assertEqual( EOL, actualOutput[2].type)
+
+    def test_comments_multi_line_inserted_into_statement(self):
+        input = []
+        input.append('f = g/**//h;')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'f', actualOutput[0].literalValue)
+        self.assertEqual( ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'g', actualOutput[2].literalValue)
+        self.assertEqual( MULTI_LINE_COMMENT_START, actualOutput[3].type)
+        self.assertEqual( MULTI_LINE_COMMENT_LINE, actualOutput[4].type)
+        self.assertEqual( '', actualOutput[4].literalValue)
+        self.assertEqual( MULTI_LINE_COMMENT_END, actualOutput[5].type)
+        self.assertEqual( DIVISION, actualOutput[6].type)
+        self.assertEqual( LITERAL, actualOutput[7].type)
+        self.assertEqual( 'h', actualOutput[7].literalValue)
+        self.assertEqual( SEMICOLON, actualOutput[8].type)
+
+        self.assertEqual( EOL, actualOutput[9].type)

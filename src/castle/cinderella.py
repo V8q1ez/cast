@@ -32,6 +32,11 @@ class tokenList():
         t.literalValue = literalValue
         self.tokensList.append(t)
 
+    def addMultiLineCommentLineToken(self, literalValue):
+        t = token(MULTI_LINE_COMMENT_LINE)
+        t.literalValue = literalValue
+        self.tokensList.append(t)
+
     def changeTokenType(self, index, newType):
         self.tokensList[ index ].type = newType
 
@@ -86,6 +91,7 @@ class cinderella():
         self.literalValue = ''
         self.isDirectiveStarted = False
         self.isSingleLineCommentStarted = False
+        self.isMultiLineCommentStarted = False
 
     """
     All used preprocessor rules are taken from:
@@ -398,7 +404,6 @@ class cinderella():
 
     def _tryToCompletePreviousToken(self, c):
         if not self.isStringStarted:
-
             if c in self._singlePunctuators:
                 self._punctuatorsCache.append(c)
             else:
@@ -408,41 +413,54 @@ class cinderella():
 
     def _processCachedPunctuators(self):
         punctuator = UNKNOWN
-        if len(self._punctuatorsCache) == 3:
-            lastThreeChars = ''.join(list(self._punctuatorsCache))
-            if lastThreeChars in self._triplePunctuatorsDict:
-                punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
-                self._tokensList.addSimpleToken( punctuator )
-            else:
+        while len(self._punctuatorsCache):
+
+            if len(self._punctuatorsCache) >= 3:
+                lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
+                firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                char = ''.join(list(self._punctuatorsCache)[0:1])
+                if lastThreeChars in self._triplePunctuatorsDict:
+                    punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
+                    for _ in range(3):
+                        self._punctuatorsCache.popleft()
+                elif firstTwoChars in self._pairPunctuatorsDict:
+                    punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                    for _ in range(2):
+                        self._punctuatorsCache.popleft()
+                elif char in self._singlePunctuators:
+                    punctuator = self._singlePunctuators[ char ]
+                    for _ in range(1):
+                        self._punctuatorsCache.popleft()
+
+            elif len(self._punctuatorsCache) == 2:
                 firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
                 if firstTwoChars in self._pairPunctuatorsDict:
                     punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
-                    self._tokensList.addSimpleToken( punctuator )
+                    for _ in range(2):
+                        self._punctuatorsCache.popleft()
 
-                char = ''.join(list(self._punctuatorsCache)[2:3])
+            elif len(self._punctuatorsCache) == 1:
+                char = ''.join(list(self._punctuatorsCache)[0:1])
                 if char in self._singlePunctuators:
                     punctuator = self._singlePunctuators[ char ]
-                    self._tokensList.addSimpleToken( punctuator )
+                    for _ in range(1):
+                        self._punctuatorsCache.popleft()
 
+            if punctuator != UNKNOWN:
+                if punctuator == SINGLE_LINE_COMMENT:
+                    self.isSingleLineCommentStarted = True
+                    self.literalValue = ''
+                elif punctuator == MULTI_LINE_COMMENT_START:
+                    self.isMultiLineCommentStarted = True
+                    self.literalValue = ''
+                elif punctuator == MULTI_LINE_COMMENT_END:
+                    self.isMultiLineCommentStarted = False
+                    self._tokensList.addMultiLineCommentLineToken( self.literalValue )
 
-        elif len(self._punctuatorsCache) == 2:
-            lastTwoChars = ''.join(list(self._punctuatorsCache))
-            if lastTwoChars in self._pairPunctuatorsDict:
-                punctuator = self._pairPunctuatorsDict[ lastTwoChars ]
                 self._tokensList.addSimpleToken( punctuator )
-
-        elif len(self._punctuatorsCache) == 1:
-            char = ''.join(list(self._punctuatorsCache))
-            if char in self._singlePunctuators:
-                punctuator = self._singlePunctuators[ char ]
-                self._tokensList.addSimpleToken( punctuator )
+                punctuator = UNKNOWN
 
         self._punctuatorsCache.clear()
-
-        if punctuator == SINGLE_LINE_COMMENT:
-            self.isSingleLineCommentStarted = True
-            self.literalValue = ''
-            pass
 
         return
 
