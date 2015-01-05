@@ -309,7 +309,9 @@ class cinderella():
                 self.isEscSeqStarted = False
             self.literalValue += c
         else:
-            if not self.isLiteralStarted:
+            if self.isSingleLineCommentStarted:
+                self.literalValue += c
+            elif not self.isLiteralStarted:
                 self.literalValue = c
                 self.isLiteralStarted = True
             else:
@@ -416,7 +418,10 @@ class cinderella():
         punctuator = UNKNOWN
         while len(self._punctuatorsCache):
 
-            if self.isMultiLineCommentStarted:
+            if self.isSingleLineCommentStarted:
+                self.literalValue += self._punctuatorsCache.popleft()
+
+            elif self.isMultiLineCommentStarted:
                 # only MULTI_LINE_COMMENT_END of EOL are allowed
                 if len(self._punctuatorsCache) >= 2:
                     firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])

@@ -110,3 +110,25 @@ class compilerComments(unittest.TestCase):
         self.assertEqual( SEMICOLON, actualOutput[6].type)
 
         self.assertEqual( EOL, actualOutput[7].type)
+
+    def test_comments_single_line_with__multiline_elements(self):
+        input = []
+        input.append('m = n//**/o')
+        input.append(' +p;')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( 'm', actualOutput[0].literalValue)
+        self.assertEqual( ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( 'n', actualOutput[2].literalValue)
+        self.assertEqual( SINGLE_LINE_COMMENT, actualOutput[3].type)
+        self.assertEqual( '**/o', actualOutput[3].literalValue)
+        self.assertEqual( EOL, actualOutput[4].type)
+        self.assertEqual( ADDITION, actualOutput[5].type)
+        self.assertEqual( LITERAL, actualOutput[6].type)
+        self.assertEqual( 'p', actualOutput[6].literalValue)
+        self.assertEqual( SEMICOLON, actualOutput[7].type)
+
+        self.assertEqual( EOL, actualOutput[8].type)
