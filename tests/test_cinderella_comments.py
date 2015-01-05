@@ -43,9 +43,9 @@ class compilerComments(unittest.TestCase):
         actualOutput = self.tkz.parseText(input)
 
         self.assertEqual( SINGLE_LINE_COMMENT, actualOutput[0].type)
-        self.assertEqual( ' */', actualOutput[1].literalValue)
+        self.assertEqual( ' */', actualOutput[0].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( EOL, actualOutput[1].type)
 
     def test_comments_multi_line_inserted_into_statement(self):
         input = []
@@ -68,3 +68,27 @@ class compilerComments(unittest.TestCase):
         self.assertEqual( SEMICOLON, actualOutput[8].type)
 
         self.assertEqual( EOL, actualOutput[9].type)
+
+    def test_comments_single_two_line(self):
+        input = []
+        input.append('//\\')
+        input.append('i();')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( SINGLE_LINE_COMMENT, actualOutput[0].type)
+        self.assertEqual( 'i();', actualOutput[0].literalValue)
+
+        self.assertEqual( EOL, actualOutput[1].type)
+
+    def test_comments_single_two_line_more_complex(self):
+        input = []
+        input.append('/\\')
+        input.append('/ j();')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( SINGLE_LINE_COMMENT, actualOutput[0].type)
+        self.assertEqual( ' j();', actualOutput[0].literalValue)
+
+        self.assertEqual( EOL, actualOutput[1].type)

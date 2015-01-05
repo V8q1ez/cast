@@ -107,15 +107,16 @@ class cinderella():
                 self.literalValue += c
                 continue
 
+            elif c == '\\':
+                if not self.isEscSeqStarted:
+                    self.isEscSeqStarted = True
+                    continue
+
             self._tryToCompletePreviousToken( c )
 
             if c in self._characterHandlersDict:
                 handlerToCall = self._characterHandlersDict[ c ]
                 handlerToCall()
-
-            elif c == '\\':
-                if not self.isEscSeqStarted:
-                    self.isEscSeqStarted = True
 
             elif c != ' ':
                 self._processNonSpace( c )
@@ -450,14 +451,16 @@ class cinderella():
                 if punctuator == SINGLE_LINE_COMMENT:
                     self.isSingleLineCommentStarted = True
                     self.literalValue = ''
-                elif punctuator == MULTI_LINE_COMMENT_START:
-                    self.isMultiLineCommentStarted = True
-                    self.literalValue = ''
-                elif punctuator == MULTI_LINE_COMMENT_END:
-                    self.isMultiLineCommentStarted = False
-                    self._tokensList.addMultiLineCommentLineToken( self.literalValue )
+                else:
+                    if punctuator == MULTI_LINE_COMMENT_START:
+                        self.isMultiLineCommentStarted = True
+                        self.literalValue = ''
+                    elif punctuator == MULTI_LINE_COMMENT_END:
+                        self.isMultiLineCommentStarted = False
+                        self._tokensList.addMultiLineCommentLineToken( self.literalValue )
 
-                self._tokensList.addSimpleToken( punctuator )
+                    self._tokensList.addSimpleToken( punctuator )
+
                 punctuator = UNKNOWN
 
         self._punctuatorsCache.clear()
@@ -474,7 +477,8 @@ class cinderella():
             self.isEscSeqStarted = False
         else:
             if self.isSingleLineCommentStarted:
-              self._tokensList.addSingleLineCommentToken( self.literalValue )
+                self._tokensList.addSingleLineCommentToken( self.literalValue )
+                self.isSingleLineCommentStarted = False
 
             elif self.isLiteralStarted:
                 self._processFoundLiteral()
