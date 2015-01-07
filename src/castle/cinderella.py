@@ -257,7 +257,6 @@ class cinderella():
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
-            self._tokensList.addSimpleToken( SEMICOLON )
         return
 
     def _processColon(self):
@@ -266,7 +265,6 @@ class cinderella():
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
-            self._tokensList.addSimpleToken( COLON )
         return
 
     def _processQuote(self):
@@ -311,7 +309,7 @@ class cinderella():
                 self.isEscSeqStarted = False
             self.literalValue += c
         else:
-            if self.isSingleLineCommentStarted:
+            if self.isSingleLineCommentStarted or self.isMultiLineCommentStarted:
                 self.literalValue += c
             elif not self.isLiteralStarted:
                 self.literalValue = c
@@ -510,6 +508,9 @@ class cinderella():
                 self._processFoundDirective()
             else:
                 self._processCachedPunctuators()
+                if self.isMultiLineCommentStarted:
+                    self._tokensList.addMultiLineCommentLineToken(self.literalValue)
+                    self.literalValue = ''
             self._tokensList.addSimpleToken( EOL )
 
         return

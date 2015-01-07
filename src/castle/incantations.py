@@ -101,6 +101,8 @@ class singlePunctuatorDict(dict):
         self['/'] = DIVISION
         self['%'] = MODULO
         self['?'] = QUESTION_MARK
+        self[':'] = COLON
+        self[';'] = SEMICOLON
 
 
 class pairPunctuatorDict(dict):

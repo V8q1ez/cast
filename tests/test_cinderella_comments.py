@@ -172,3 +172,24 @@ class compilerComments(unittest.TestCase):
         self.assertEqual( SEMICOLON, actualOutput[7].type)
 
         self.assertEqual( EOL, actualOutput[8].type)
+
+    def test_comments_multi_line_complex(self):
+        input = []
+        input.append('/*****')
+        input.append('* Function: a')
+        input.append('******/')
+
+        actualOutput = self.tkz.parseText(input)
+
+        self.assertEqual( MULTI_LINE_COMMENT_START, actualOutput[0].type)
+        self.assertEqual( MULTI_LINE_COMMENT_LINE, actualOutput[1].type)
+        self.assertEqual( '****', actualOutput[1].literalValue)
+        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( MULTI_LINE_COMMENT_LINE, actualOutput[3].type)
+        self.assertEqual( '* Function: a', actualOutput[3].literalValue)
+        self.assertEqual( EOL, actualOutput[4].type)
+        self.assertEqual( MULTI_LINE_COMMENT_LINE, actualOutput[5].type)
+        self.assertEqual( '*****', actualOutput[5].literalValue)
+        self.assertEqual( MULTI_LINE_COMMENT_END, actualOutput[6].type)
+
+        self.assertEqual( EOL, actualOutput[7].type)
