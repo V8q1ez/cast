@@ -103,6 +103,11 @@ class singlePunctuatorDict(dict):
         self['?'] = QUESTION_MARK
         self[':'] = COLON
         self[';'] = SEMICOLON
+        self['['] = SQUARE_BRACKET_LEFT
+        self[']'] = SQUARE_BRACKET_RIGHT
+        self['{'] = BRACE_LEFT
+        self['}'] = BRACE_RIGHT
+        self[','] = COMMA
 
 
 class pairPunctuatorDict(dict):

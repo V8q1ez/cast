@@ -57,30 +57,9 @@ class cinderella():
         self._characterHandlersDict = {
             '(' : self._processLeftParenthesis,
             ')' : self._processRightParenthesis,
-            '{' : self._processLeftBrace,
-            '}' : self._processRightBrace,
-            ',' : self._processComma,
-            ';' : self._processSemicolon,
-            ':' : self._processColon,
             '"' : self._processQuote,
             '#' : self._processHash,
-            '%' : self._processPercent,
-            '*' : self._processAsterisk,
-            '&' : self._processAmpersand,
-            '/' : self._processSlash,
-            '+' : self._processPlus,
-            '-' : self._processMinus,
-            '=' : self._processEqual,
-            '[' : self._processSquareBracketLeft,
-            ']' : self._processSquareBracketRight,
             ' ' : self._processSpace,
-            '!' : self._processExclamationMark,
-            '<' : self._processLeftAngleBracket,
-            '>' : self._processRightAngleBracket,
-            '|' : self._processVerticalBar,
-            '~' : self._processTilde,
-            '^' : self._processCaret,
-            '?' : self._processQuestionMark,
             }
 
     def _clearState(self):
@@ -114,7 +93,14 @@ class cinderella():
 
             self._tryToCompletePreviousToken( c )
 
-            if c in self._characterHandlersDict:
+            if c in self._singlePunctuators:
+                if self.isStringStarted:
+                    self.literalValue += c
+                else:
+                    if self.isLiteralStarted:
+                        self._processFoundLiteral()
+
+            elif c in self._characterHandlersDict:
                 handlerToCall = self._characterHandlersDict[ c ]
                 handlerToCall()
 
@@ -150,122 +136,6 @@ class cinderella():
             self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
         return
 
-    def _processLeftBrace(self):
-        if self.isStringStarted:
-            self.literalValue += '{'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( BRACE_LEFT )
-        return
-
-    def _processRightBrace(self):
-        if self.isStringStarted:
-            self.literalValue += '}'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( BRACE_RIGHT )
-        return
-
-    def _processSquareBracketLeft(self):
-        if self.isStringStarted:
-            self.literalValue += '['
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( SQUARE_BRACKET_LEFT )
-        return
-
-    def _processSquareBracketRight(self):
-        if self.isStringStarted:
-            self.literalValue += ']'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( SQUARE_BRACKET_RIGHT )
-        return
-
-    def _processLeftAngleBracket(self):
-        if self.isStringStarted:
-            self.literalValue += '<'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processRightAngleBracket(self):
-        if self.isStringStarted:
-            self.literalValue += '>'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processVerticalBar(self):
-        if self.isStringStarted:
-            self.literalValue += '|'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processTilde(self):
-        if self.isStringStarted:
-            self.literalValue += '~'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processCaret(self):
-        if self.isStringStarted:
-            self.literalValue += '^'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processQuestionMark(self):
-        if self.isStringStarted:
-            self.literalValue += '?'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processExclamationMark(self):
-        if self.isStringStarted:
-            self.literalValue +='!'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processComma(self):
-        if self.isStringStarted:
-            self.literalValue +=','
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( COMMA )
-        return
-
-    def _processSemicolon(self):
-        if self.isStringStarted:
-            self.literalValue += ';'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processColon(self):
-        if self.isStringStarted:
-            self.literalValue += ':'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
 
     def _processQuote(self):
         if self.isStringStarted:
@@ -326,65 +196,6 @@ class cinderella():
                 self.literalValue = ''
                 self.isDirectiveStarted = True
                 self.isTypeOfMacrosKnown = False
-        return
-
-    def _processPercent(self):
-        if self.isStringStarted:
-            self.literalValue += '%'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processAsterisk(self):
-        if self.isStringStarted:
-            self.literalValue += '*'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processAmpersand(self):
-        if self.isStringStarted:
-            self.literalValue += '&'
-        else:
-            if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-        return
-
-    def _processSlash(self):
-        if self.isStringStarted:
-            self.literalValue += '/'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-        return
-
-    def _processPlus(self):
-        if self.isStringStarted:
-            self.literalValue += '+'
-        else:
-            if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-        return
-
-    def _processMinus(self):
-        if self.isStringStarted:
-            self.literalValue += '-'
-        else:
-            if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
-        return
-
-    def _processEqual(self):
-        if self.isStringStarted:
-            self.literalValue += '='
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
         return
 
     def _processFoundDirective(self):
@@ -457,9 +268,14 @@ class cinderella():
 
                 elif len(self._punctuatorsCache) == 2:
                     firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                    char = ''.join(list(self._punctuatorsCache)[0:1])
                     if firstTwoChars in self._pairPunctuatorsDict:
                         punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
                         for _ in range(2):
+                            self._punctuatorsCache.popleft()
+                    elif char in self._singlePunctuators:
+                        punctuator = self._singlePunctuators[ char ]
+                        for _ in range(1):
                             self._punctuatorsCache.popleft()
 
                 elif len(self._punctuatorsCache) == 1:
