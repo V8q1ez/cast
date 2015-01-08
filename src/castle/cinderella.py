@@ -56,7 +56,6 @@ class cinderella():
 
         self._characterHandlersDict = {
             '(' : self._processLeftParenthesis,
-            ')' : self._processRightParenthesis,
             '"' : self._processQuote,
             ' ' : self._processSpace,
             }
@@ -124,15 +123,6 @@ class cinderella():
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
 
-        return
-
-    def _processRightParenthesis(self):
-        if self.isStringStarted:
-            self.literalValue += ')'
-        else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
-            self._tokensList.addSimpleToken( PARENTHESIS_RIGHT )
         return
 
 

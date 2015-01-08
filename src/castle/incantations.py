@@ -110,6 +110,7 @@ class singlePunctuatorDict(dict):
         self['}'] = BRACE_RIGHT
         self[','] = COMMA
         self['#'] = HASH
+        self[')'] = PARENTHESIS_RIGHT
 
 
 class pairPunctuatorDict(dict):
