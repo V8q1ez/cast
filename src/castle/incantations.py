@@ -64,6 +64,7 @@ SINGLE_LINE_COMMENT = 60
 MULTI_LINE_COMMENT_START = 61
 MULTI_LINE_COMMENT_LINE = 62
 MULTI_LINE_COMMENT_END = 63
+HASH = 64
 
 
 class directivesDict(dict):
@@ -108,6 +109,7 @@ class singlePunctuatorDict(dict):
         self['{'] = BRACE_LEFT
         self['}'] = BRACE_RIGHT
         self[','] = COMMA
+        self['#'] = HASH
 
 
 class pairPunctuatorDict(dict):

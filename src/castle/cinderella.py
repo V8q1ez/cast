@@ -58,7 +58,6 @@ class cinderella():
             '(' : self._processLeftParenthesis,
             ')' : self._processRightParenthesis,
             '"' : self._processQuote,
-            '#' : self._processHash,
             ' ' : self._processSpace,
             }
 
@@ -188,16 +187,6 @@ class cinderella():
                 self.literalValue += c
         return
 
-    def _processHash(self):
-        if self.isStringStarted:
-            self.literalValue += '#'
-        else:
-            if not self.isDirectiveStarted:
-                self.literalValue = ''
-                self.isDirectiveStarted = True
-                self.isTypeOfMacrosKnown = False
-        return
-
     def _processFoundDirective(self):
         if self.literalValue in self.knownDirectives:
             self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
@@ -289,6 +278,11 @@ class cinderella():
                     if punctuator == SINGLE_LINE_COMMENT:
                         self.isSingleLineCommentStarted = True
                         self.literalValue = ''
+                    elif punctuator == HASH:
+                        if not self.isStringStarted and not self.isDirectiveStarted:
+                            self.literalValue = ''
+                            self.isDirectiveStarted = True
+                            self.isTypeOfMacrosKnown = False
                     else:
                         if punctuator == MULTI_LINE_COMMENT_START:
                             self.isMultiLineCommentStarted = True
