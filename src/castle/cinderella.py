@@ -37,9 +37,6 @@ class tokenList():
         t.literalValue = literalValue
         self.tokensList.append(t)
 
-    def changeTokenType(self, index, newType):
-        self.tokensList[ index ].type = newType
-
     def getList(self):
         return self.tokensList
 
@@ -64,11 +61,12 @@ class cinderella():
         self.isLiteralStarted = False
         self.isStringStarted = False
         self.isEscSeqStarted = False
-        self.isTypeOfMacrosKnown = True
+        self.isNameOfMacrosNeeded = False
         self.literalValue = ''
         self.isDirectiveStarted = False
         self.isSingleLineCommentStarted = False
         self.isMultiLineCommentStarted = False
+        self.isNameOfMacrosNeeded = False
 
     """
     All used preprocessor rules are taken from:
@@ -110,15 +108,21 @@ class cinderella():
         return
 
     def _processLeftParenthesis(self):
-        if self.isStringStarted:
+        if self.isNameOfMacrosNeeded:
+          self._tokensList.addSimpleToken( FUNCTION_LIKE_MACRO )
+          self._tokensList.addLiteralToken( self.literalValue )
+          self.isNameOfMacrosNeeded = False
+          self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
+
+        elif self.isStringStarted:
             self.literalValue += '('
         else:
             if self.isLiteralStarted:
-                if not self.isTypeOfMacrosKnown:
+                # if not self.isNameOfMacrosNeeded:
                     # There is no space between name and parenthesis
                     # So we should change the type of first token
-                    self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
-                    self.isTypeOfMacrosKnown = True
+                    # self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
+                    # self.isNameOfMacrosNeeded = True
                     # and write the macros name
                 self._processFoundLiteral()
             self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
@@ -137,8 +141,7 @@ class cinderella():
                 self._tokensList.addSimpleToken( QUOTE )
         else:
             if self.isLiteralStarted:
-                self._tokensList.addLiteralToken( self.literalValue )
-                self.isLiteralStarted = False
+                self._processFoundLiteral()
             else:
                 self.literalValue = ''
                 self.isStringStarted = True
@@ -149,18 +152,21 @@ class cinderella():
     def _processSpace(self):
         if self.isDirectiveStarted:
             self._processFoundDirective()
+        elif self.isNameOfMacrosNeeded:
+            self._lastFoundMacrosName = self.literalValue
+            self.isNameOfMacrosNeeded = False
+            self._tokensList.addSimpleToken(OBJECT_LIKE_MACRO)
+            self._tokensList.addLiteralToken( self.literalValue )
         elif self.isStringStarted \
                 or self.isSingleLineCommentStarted\
                 or self.isMultiLineCommentStarted:
             self.literalValue += ' '
         elif self.isLiteralStarted:
-            # since literal finishes by space - this is an object like macros
-            self.isTypeOfMacrosKnown = True
             self._processFoundLiteral()
         return
 
     def _processNonSpace(self, c):
-        if self.isDirectiveStarted:
+        if self.isDirectiveStarted or self.isNameOfMacrosNeeded:
             self.literalValue += c
         elif self.isStringStarted:
             if self.isEscSeqStarted:
@@ -179,12 +185,14 @@ class cinderella():
 
     def _processFoundDirective(self):
         if self.literalValue in self.knownDirectives:
-            self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
             self.isDirectiveStarted = False
-            if self.literalValue != 'define':
-                self.isTypeOfMacrosKnown = True
+            if self.literalValue == 'define':
+                self.isNameOfMacrosNeeded = True
+            else:
+                self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
         else:
             self._tokensList.addSimpleToken(UNKNOWN)
+        self.literalValue = ''
         return
 
     def _processFoundLiteral(self):
@@ -272,7 +280,7 @@ class cinderella():
                         if not self.isStringStarted and not self.isDirectiveStarted:
                             self.literalValue = ''
                             self.isDirectiveStarted = True
-                            self.isTypeOfMacrosKnown = False
+                            self.isNameOfMacrosNeeded = False
                     else:
                         if punctuator == MULTI_LINE_COMMENT_START:
                             self.isMultiLineCommentStarted = True
@@ -306,6 +314,11 @@ class cinderella():
                 self._processFoundLiteral()
             elif self.isDirectiveStarted:
                 self._processFoundDirective()
+            elif self.isNameOfMacrosNeeded:
+                self._lastFoundMacrosName = self.literalValue
+                self.isNameOfMacrosNeeded = False
+                self._tokensList.addSimpleToken(OBJECT_LIKE_MACRO)
+                self._tokensList.addLiteralToken( self.literalValue )
             else:
                 self._processCachedPunctuators()
                 if self.isMultiLineCommentStarted:
