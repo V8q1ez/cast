@@ -143,3 +143,8 @@ class triplePunctuatorDict(dict):
     def __init__(self):
         self['<<='] = BITWISE_L_SHIFT_ASSIGNMENT
         self['>>='] = BITWISE_R_SHIFT_ASSIGNMENT
+
+class token():
+    def __init__(self, type):
+        self.type = type
+        self.literalValue = ''

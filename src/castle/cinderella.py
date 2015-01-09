@@ -4,12 +4,6 @@ from collections import deque
 from src.castle.incantations import *
 
 
-class token():
-    def __init__(self, type):
-        self.type = type
-        self.literalValue = ''
-
-
 class tokenList():
     def __init__(self):
         self.tokensList = []
