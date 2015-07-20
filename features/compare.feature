@@ -7,5 +7,5 @@ Feature: Compare
 
   Scenario: Completely Identical Files
     Given the left and right files are completely identical
-     When the cast compare is performed
-     Then the output shall contain 'Files are identical'
+     When the 'cast compare' is performed
+     Then the output shall contain 'Files are equivalent'

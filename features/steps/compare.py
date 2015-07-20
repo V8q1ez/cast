@@ -27,20 +27,16 @@ def step_impl(context):
     left_file.close()
     right_file.close()
 
-@when('the cast compare is performed')
+@when('the \'cast compare\' is performed')
 def step_impl(context):
     line = 'cast.bat compare left_file.c right_file.c'
     p = subprocess.Popen(line, stdout=subprocess.PIPE, stderr=None, stdin=None)
-    text = p.stdout.read()
+    context.output = p.stdout.read()
     p.wait()
-    print(text)
-    assert( str('Files are identical') in str(text) )
 
-
-
-
-@then(u'the output shall contain \'Files are identical\'')
+@then(u'the output shall contain \'Files are equivalent\'')
 def step_impl(context):
-    pass
+    print(context.output)
+    assert( str('Files are equivalent') in str(context.output) )
 
 

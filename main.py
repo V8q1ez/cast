@@ -7,7 +7,7 @@ from docopt import docopt
 
 
 def process_compare_command(args):
-    print('Files are identical')
+    print('Files are equivalent')
     pass
 
 if __name__ == '__main__':
