@@ -7,133 +7,139 @@ from src.castle.warlock import warlock
 
 class warlockTest(unittest.TestCase):
     def setUp(self):
-       pass
+        self.left_file_text = """
+#include "stdio.h"
+
+#define a (124) // single line comment
+
+static int v = 4;
+/*
+* Multi line comment
+*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
 
     def test_files_equivalent(self):
         w = warlock()
-
-        left_file_text = """
-#include "stdio.h"
-
-#define a (124)
-
-static int v = 4;
-
-static void foo(int b)
-{
-    v = b * a;
-}
-
-"""
         right_file_text = """
 #include "stdio.h"
 
-#define a (124)
+#define a (124) // single line comment
 
 static int v = 4;
-
+/*
+* Multi line comment
+*/
 static void foo(int b)
 {
     v = b * a;
 }
 
 """
-        areFilesEquivalent = w.areFilesEquivalent(left_file_text.splitlines(), right_file_text.splitlines())
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( True, areFilesEquivalent )
 
     def test_different_functions_name(self):
         w = warlock()
-
-        left_file_text = """
-#include "stdio.h"
-
-#define a (124)
-
-static int v = 4;
-
-static void foo(int b)
-{
-    v = b * a;
-}
-
-"""
         right_file_text = """
 #include "stdio.h"
 
-#define a (124)
+#define a (124) // single line comment
 
 static int v = 4;
-
+/*
+* Multi line comment
+*/
 static void foo_(int b)
 {
     v = b * a;
 }
 
 """
-        areFilesEquivalent = w.areFilesEquivalent(left_file_text.splitlines(), right_file_text.splitlines())
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( False, areFilesEquivalent )
 
     def test_different_variable_name(self):
         w = warlock()
-
-        left_file_text = """
-#include "stdio.h"
-
-#define a (124)
-
-static int v = 4;
-
-static void foo(int b)
-{
-    v = b * a;
-}
-
-"""
         right_file_text = """
 #include "stdio.h"
 
-#define a (124)
+#define a (124) // single line comment
 
 static int x = 4;
-
+/*
+* Multi line comment
+*/
 static void foo(int b)
 {
     x = b * a;
 }
 
 """
-        areFilesEquivalent = w.areFilesEquivalent(left_file_text.splitlines(), right_file_text.splitlines())
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( False, areFilesEquivalent )
 
-    def test_different_file_included(self):
+    def test_different_variable_value(self):
         w = warlock()
-
-        left_file_text = """
+        right_file_text = """
 #include "stdio.h"
 
-#define a (124)
+#define a (124) // single line comment
 
-static int v = 4;
-
+static int v = 5;
+/*
+* Multi line comment
+*/
 static void foo(int b)
 {
     v = b * a;
 }
 
 """
-        right_file_text = """
-#include "stdlib.h"
-
-#define a (124)
-
-static int v = 4;
-
-static void foo(int b)
-{
-    v = b * a;
-}
-
-"""
-        areFilesEquivalent = w.areFilesEquivalent(left_file_text.splitlines(), right_file_text.splitlines())
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( False, areFilesEquivalent )
+
+    def test_different_single_line_comment(self):
+        w = warlock()
+        right_file_text = """
+#include "stdio.h"
+
+#define a (124) // different single line comment
+
+static int v = 4;
+/*
+* Multi line comment
+*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
+        self.assertEqual( True, areFilesEquivalent )
+
+    def test_different_multi_line_comment(self):
+        w = warlock()
+        right_file_text = """
+#include "stdio.h"
+
+#define a (124) // single line comment
+
+static int v = 4;
+/*
+* Different Multi line comment
+*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
+        self.assertEqual( True, areFilesEquivalent )
 
