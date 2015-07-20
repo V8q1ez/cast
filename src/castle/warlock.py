@@ -20,6 +20,9 @@ class warlock():
                 if left_file_tokens[lf_index].type == LITERAL:
                     if left_file_tokens[lf_index].literalValue != right_file_tokens[rf_index].literalValue:
                         return False
+                elif left_file_tokens[lf_index].type == STRING:
+                    if left_file_tokens[lf_index].literalValue != right_file_tokens[rf_index].literalValue:
+                        return False
 
             lf_index += 1
             rf_index += 1
