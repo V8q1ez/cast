@@ -4,7 +4,8 @@ from src.castle.cinderella import *
 
 class warlock():
     def __init__(self):
-        pass
+        self.isMultiLineCommentStartedInRight = False
+        self.isMultiLineCommentStartedInLeft = False
 
     def areFilesEquivalent(self, left_file_text, right_file_text):
         left_file_tokens = cinderella().parseText(left_file_text)
@@ -14,12 +15,28 @@ class warlock():
         rf_index = 0
 
         while lf_index < len(left_file_tokens) and rf_index < len(right_file_tokens):
-            if left_file_tokens[lf_index].type != right_file_tokens[rf_index].type:
+            if self.isMultiLineCommentStartedInRight == True:
+                if right_file_tokens[rf_index].type != MULTI_LINE_COMMENT_END:
+                    rf_index += 2
+                    continue
+            elif self.isMultiLineCommentStartedInLeft == True:
+                if left_file_tokens[lf_index].type != MULTI_LINE_COMMENT_END:
+                    lf_index += 2
+                    continue
+            elif left_file_tokens[lf_index].type != right_file_tokens[rf_index].type:
                 if right_file_tokens[rf_index].type == SINGLE_LINE_COMMENT:
                     rf_index += 1
                     continue
                 elif left_file_tokens[lf_index].type == SINGLE_LINE_COMMENT:
                     lf_index += 1
+                    continue
+                elif right_file_tokens[rf_index].type == MULTI_LINE_COMMENT_START:
+                    self.isMultiLineCommentStartedInRight = True
+                    rf_index += 1
+                    continue
+                elif left_file_tokens[lf_index].type == MULTI_LINE_COMMENT_START:
+                    self.isMultiLineCommentStartedInLeft = True
+                    rf_index += 1
                     continue
                 return False
             else:
