@@ -15,6 +15,12 @@ class warlock():
 
         while lf_index < len(left_file_tokens) and rf_index < len(right_file_tokens):
             if left_file_tokens[lf_index].type != right_file_tokens[rf_index].type:
+                if right_file_tokens[rf_index].type == SINGLE_LINE_COMMENT:
+                    rf_index += 1
+                    continue
+                elif left_file_tokens[lf_index].type == SINGLE_LINE_COMMENT:
+                    lf_index += 1
+                    continue
                 return False
             else:
                 if left_file_tokens[lf_index].type == LITERAL:

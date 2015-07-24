@@ -143,3 +143,43 @@ static void foo(int b)
         areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( True, areFilesEquivalent )
 
+    def test_one_more_single_line_comment_right(self):
+        w = warlock()
+        right_file_text = """
+#include "stdio.h"
+
+#define a (124) // single line comment
+
+static int v = 4; // one more single line comment
+/*
+* Different Multi line comment
+*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
+        self.assertEqual( True, areFilesEquivalent )
+
+    def test_one_more_single_line_comment_left(self):
+        w = warlock()
+        right_file_text = """
+#include "stdio.h"
+
+#define a (124)
+
+static int v = 4;
+/*
+* Different Multi line comment
+*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
+        self.assertEqual( True, areFilesEquivalent )
+
