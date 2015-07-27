@@ -39,4 +39,32 @@ def step_impl(context):
     print(context.output)
     assert( str('Files are equivalent') in str(context.output) )
 
+@given('the left and right files has different functions')
+def step_impl(context):
+    left_file = open('left_file.c', 'w')
+    right_file = open('right_file.c', 'w')
+
+    left_file.write(FILE_CONTENT)
+    right_file.write("""
+#include "stdio.h"
+
+#define a (124)
+
+static int v = 4;
+
+static void foo_(int b)
+{
+    v = b * a;
+}
+
+""")
+
+    left_file.close()
+    right_file.close()
+
+@then(u'the output shall contain \'Files are different\'')
+def step_impl(context):
+    print(context.output)
+    assert( str('Files are different') in str(context.output) )
+
 

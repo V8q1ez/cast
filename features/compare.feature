@@ -9,3 +9,8 @@ Feature: Compare
     Given the left and right files are completely identical
      When the 'cast compare' is performed
      Then the output shall contain 'Files are equivalent'
+
+  Scenario: Completely Identical Files
+    Given the left and right files has different functions
+     When the 'cast compare' is performed
+     Then the output shall contain 'Files are different'
