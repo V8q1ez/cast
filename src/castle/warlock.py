@@ -17,14 +17,28 @@ class warlock():
         while lf_index < len(left_file_tokens) and rf_index < len(right_file_tokens):
             if self.isMultiLineCommentStartedInRight == True:
                 if right_file_tokens[rf_index].type != MULTI_LINE_COMMENT_END:
-                    rf_index += 2
+                    rf_index += 1
+                    continue
+                else:
+                    self.isMultiLineCommentStartedInRight = False
+                    rf_index += 1
                     continue
             elif self.isMultiLineCommentStartedInLeft == True:
                 if left_file_tokens[lf_index].type != MULTI_LINE_COMMENT_END:
-                    lf_index += 2
+                    lf_index += 1
+                    continue
+                else:
+                    self.isMultiLineCommentStartedInLeft = False
+                    lf_index += 1
                     continue
             elif left_file_tokens[lf_index].type != right_file_tokens[rf_index].type:
-                if right_file_tokens[rf_index].type == SINGLE_LINE_COMMENT:
+                if left_file_tokens[lf_index].type == EOL:
+                    lf_index += 1
+                    continue
+                elif right_file_tokens[rf_index].type == EOL:
+                    rf_index += 1
+                    continue
+                elif right_file_tokens[rf_index].type == SINGLE_LINE_COMMENT:
                     rf_index += 1
                     continue
                 elif left_file_tokens[lf_index].type == SINGLE_LINE_COMMENT:
@@ -36,7 +50,7 @@ class warlock():
                     continue
                 elif left_file_tokens[lf_index].type == MULTI_LINE_COMMENT_START:
                     self.isMultiLineCommentStartedInLeft = True
-                    rf_index += 1
+                    lf_index += 1
                     continue
                 return False
             else:
