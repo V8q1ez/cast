@@ -264,3 +264,24 @@ static void foo(int b)
 
         areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
         self.assertEqual( False, areFilesEquivalent )
+
+    def test_sequence_of_multi_line_comments(self):
+        w = warlock()
+        right_file_text = """
+#include "stdio.h"
+
+#define a (124) // single line comment
+
+static int v = 4;
+/*
+* Multi line comment
+*/
+/* One More multi line comment*/
+static void foo(int b)
+{
+    v = b * a;
+}
+
+"""
+        areFilesEquivalent = w.areFilesEquivalent(self.left_file_text.splitlines(), right_file_text.splitlines())
+        self.assertEqual( True, areFilesEquivalent )
