@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class compilerCompoundAssignments(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_compound_addition(self):
         input = []
@@ -15,12 +16,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( ADDITION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.ADDITION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_addition_with_spaces(self):
         input = []
@@ -28,12 +29,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( ADDITION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.ADDITION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_subtraction(self):
         input = []
@@ -41,12 +42,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( SUBTRACTION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.SUBTRACTION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_subtraction_with_spaces(self):
         input = []
@@ -54,12 +55,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( SUBTRACTION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.SUBTRACTION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_multiplication(self):
         input = []
@@ -67,12 +68,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MULTIPLICATION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MULTIPLICATION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_multiplication_with_spaces(self):
         input = []
@@ -80,12 +81,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MULTIPLICATION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MULTIPLICATION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_division(self):
         input = []
@@ -93,12 +94,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DIVISION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DIVISION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_division_with_spaces(self):
         input = []
@@ -106,12 +107,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DIVISION_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DIVISION_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_modulo(self):
         input = []
@@ -119,12 +120,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MODULO_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MODULO_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_modulo_with_spaces(self):
         input = []
@@ -132,12 +133,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MODULO_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MODULO_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_and(self):
         input = []
@@ -145,12 +146,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_AND_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_AND_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_and_with_spaces(self):
         input = []
@@ -158,12 +159,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_AND_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_AND_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_modulo_with_spaces(self):
         input = []
@@ -171,12 +172,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MODULO_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MODULO_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_or(self):
         input = []
@@ -184,12 +185,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_OR_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_OR_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_or_with_spaces(self):
         input = []
@@ -197,12 +198,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_OR_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_OR_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_xor(self):
         input = []
@@ -210,12 +211,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_XOR_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_XOR_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_xor_with_spaces(self):
         input = []
@@ -223,12 +224,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_XOR_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_XOR_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_left_shift(self):
         input = []
@@ -236,12 +237,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_left_shift_with_spaces(self):
         input = []
@@ -249,12 +250,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_L_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_right_shift(self):
         input = []
@@ -262,12 +263,12 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_compound_bitwise_right_shift_with_spaces(self):
         input = []
@@ -275,9 +276,9 @@ class compilerCompoundAssignments(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_R_SHIFT_ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)

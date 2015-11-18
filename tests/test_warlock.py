@@ -3,6 +3,7 @@ __author__ = 'V8q1ez'
 import unittest
 
 from src.castle.warlock import warlock
+from src.castle.cinderella import Grammar
 
 
 class warlockTest(unittest.TestCase):
@@ -24,7 +25,7 @@ static void foo(int b)
 """
 
     def test_files_equivalent(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -44,7 +45,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_different_functions_name(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -64,7 +65,7 @@ static void foo_(int b)
         self.assertEqual( False, areFilesEquivalent )
 
     def test_different_variable_name(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -84,7 +85,7 @@ static void foo(int b)
         self.assertEqual( False, areFilesEquivalent )
 
     def test_different_variable_value(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -104,7 +105,7 @@ static void foo(int b)
         self.assertEqual( False, areFilesEquivalent )
 
     def test_different_single_line_comment(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -124,7 +125,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_different_multi_line_comment(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -144,7 +145,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_one_more_single_line_comment_right(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -164,7 +165,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_one_more_single_line_comment_left(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -184,7 +185,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_one_more_multi_line_comment_right(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 /*
@@ -206,7 +207,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_one_more_multi_line_comment_left(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -224,7 +225,7 @@ static void foo(int b)
         self.assertEqual( True, areFilesEquivalent )
 
     def test_one_more_multi_line_comments_right_but_different_files(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 /*
@@ -247,7 +248,7 @@ static void foo(int b)
         self.assertEqual( False, areFilesEquivalent )
 
     def test_one_more_multi_line_comments_left_but_different_files(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 
@@ -266,7 +267,7 @@ static void foo(int b)
         self.assertEqual( False, areFilesEquivalent )
 
     def test_sequence_of_multi_line_comments(self):
-        w = warlock()
+        w = warlock(Grammar())
         right_file_text = """
 #include "stdio.h"
 

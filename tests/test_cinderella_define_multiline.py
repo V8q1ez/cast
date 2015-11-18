@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class preprocessorDefineMultiline(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_define_multi(self):
         input = []
@@ -15,10 +16,10 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
     def test_define_multi_after_space(self):
@@ -27,10 +28,10 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
     def test_define_multi_simple_case(self):
@@ -40,15 +41,15 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[3].type)
         self.assertEqual( 'c', actualOutput[3].literalValue)
 
-        self.assertEqual( EOL, actualOutput[4].type)
+        self.assertEqual( Grammar.EOL, actualOutput[4].type)
 
     def test_define_multi_broken_string(self):
         input = []
@@ -57,15 +58,15 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'start  finish', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_multi_broken_literal(self):
         input = []
@@ -74,13 +75,13 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'startfinish', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_define_multi_broken_directive(self):
         input = []
@@ -89,11 +90,11 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_define_multi_broken_variadic(self):
         input = []
@@ -102,13 +103,13 @@ class preprocessorDefineMultiline(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( FUNCTION_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( PARENTHESIS_LEFT, actualOutput[2].type)
-        self.assertEqual( VARIADIC_ARGS, actualOutput[3].type)
-        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[4].type)
-        self.assertEqual( LITERAL, actualOutput[5].type)
+        self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[2].type)
+        self.assertEqual( Grammar.VARIADIC_ARGS, actualOutput[3].type)
+        self.assertEqual( Grammar.PARENTHESIS_RIGHT, actualOutput[4].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[5].type)
         self.assertEqual( 'b', actualOutput[5].literalValue)
 
-        self.assertEqual( EOL, actualOutput[6].type)
+        self.assertEqual( Grammar.EOL, actualOutput[6].type)

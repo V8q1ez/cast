@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class preprocessorDefineStrings(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_define_str_space_including(self):
         input = []
@@ -15,15 +16,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'before after', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_escaped_quote(self):
         input = []
@@ -31,15 +32,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'before\\\"after', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_escaped_quote_spaces(self):
         input = []
@@ -47,15 +48,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'before \\\" after', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_escaped_n(self):
         input = []
@@ -63,15 +64,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'before\\nafter', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_escaped_n_spaces(self):
         input = []
@@ -79,15 +80,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'before \\n after', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_enum(self):
         input = []
@@ -95,15 +96,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'enum', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_enum_spaces(self):
         input = []
@@ -111,15 +112,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( ' enum ', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_braces(self):
         input = []
@@ -127,15 +128,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( ' { } ', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_parentheses(self):
         input = []
@@ -143,15 +144,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( ' ( ) ', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_assignment(self):
         input = []
@@ -159,15 +160,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( ' b=7', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_comma(self):
         input = []
@@ -175,15 +176,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'b,c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_sharp(self):
         input = []
@@ -191,15 +192,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'b#c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_semicolon(self):
         input = []
@@ -207,15 +208,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'b;c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_struct(self):
         input = []
@@ -223,15 +224,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'struct', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_static(self):
         input = []
@@ -239,15 +240,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'static', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_square_braces(self):
         input = []
@@ -255,15 +256,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( ' [ ] ', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_square_braces(self):
         input = []
@@ -271,15 +272,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a:b', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_star_and_backslash(self):
         input = []
@@ -287,15 +288,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a*b/c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_percent(self):
         input = []
@@ -303,15 +304,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( '5%', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_function_type_definition(self):
         input = []
@@ -319,15 +320,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'typedef void(*FOO_TYPE)(void);', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_arithmetic_operations(self):
         input = []
@@ -335,15 +336,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a=b+c-d', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_increments_decrements(self):
         input = []
@@ -351,15 +352,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a= ++b - c++ + --d + e--', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_comparison_relational(self):
         input = []
@@ -367,15 +368,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a==b c!=d e<f g>h a<=b a>=b', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_logical_operations(self):
         input = []
@@ -383,15 +384,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( '!a && b || c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_bitwise_operations(self):
         input = []
@@ -399,15 +400,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( '~a & b | c ^ d << e >> f', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_compound_assignments(self):
         input = []
@@ -415,15 +416,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a += b -= d *= e /= f %= g &= h |= j ^= k <<= >>=', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_members_and_pointers(self):
         input = []
@@ -431,15 +432,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a->b', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_ternary_conditional(self):
         input = []
@@ -447,15 +448,15 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'a?b:c', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_str_with_other_operators(self):
         input = []
@@ -463,12 +464,12 @@ class preprocessorDefineStrings(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( OBJECT_LIKE_MACRO, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( QUOTE, actualOutput[2].type)
-        self.assertEqual( STRING, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[2].type)
+        self.assertEqual( Grammar.STRING, actualOutput[3].type)
         self.assertEqual( 'sizeof(a)+ alignof(b)', actualOutput[3].literalValue)
-        self.assertEqual( QUOTE, actualOutput[4].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)

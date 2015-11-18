@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class compilerBitwiseOperations(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_bitwise_negation(self):
         input = []
@@ -15,11 +16,11 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( BITWISE_NOT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.BITWISE_NOT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_bitwise_negation_with_space(self):
         input = []
@@ -27,11 +28,11 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( BITWISE_NOT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.BITWISE_NOT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_bitwise_and(self):
         input = []
@@ -39,13 +40,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_AND, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_AND, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_and_with_spaces(self):
         input = []
@@ -53,13 +54,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_AND, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_AND, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_or(self):
         input = []
@@ -67,13 +68,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_OR, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_OR, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_or_with_spaces(self):
         input = []
@@ -81,13 +82,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_OR, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_OR, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_xor(self):
         input = []
@@ -95,13 +96,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_XOR, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_XOR, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_xor_with_spaces(self):
         input = []
@@ -109,13 +110,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_XOR, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_XOR, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_left_shift(self):
         input = []
@@ -123,13 +124,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_LEFT_SHIFT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_LEFT_SHIFT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_left_shift_with_spaces(self):
         input = []
@@ -137,13 +138,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_LEFT_SHIFT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_LEFT_SHIFT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_right_shift(self):
         input = []
@@ -151,13 +152,13 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_RIGHT_SHIFT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_RIGHT_SHIFT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_bitwise_right_shift_with_spaces(self):
         input = []
@@ -165,10 +166,10 @@ class compilerBitwiseOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( BITWISE_RIGHT_SHIFT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.BITWISE_RIGHT_SHIFT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)

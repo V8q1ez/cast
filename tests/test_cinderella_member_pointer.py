@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class compilerMemberAndPointer(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_member_structure_dereference(self):
         input = []
@@ -15,12 +16,12 @@ class compilerMemberAndPointer(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( STRUCTURE_DEREFERENCE, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.STRUCTURE_DEREFERENCE, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_member_structure_dereference_with_spaces(self):
         input = []
@@ -28,9 +29,9 @@ class compilerMemberAndPointer(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( STRUCTURE_DEREFERENCE, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.STRUCTURE_DEREFERENCE, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)

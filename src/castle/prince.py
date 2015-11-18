@@ -1,7 +1,7 @@
 __author__ = 'V8q1ez'
 
-from src.castle.incantations import *
 from src.castle.legalist import legalist
+from src.castle.cinderella import Grammar
 
 class prince():
     def __init__(self, legalist):
@@ -12,19 +12,19 @@ class prince():
         currentLine = ''
         isMacrosNameHandled = False
         for t in tokens:
-            if t.type == OBJECT_LIKE_MACRO:
+            if t.type == Grammar.OBJECT_LIKE_MACRO:
                 currentLine += '#define '
 
-            elif t.type == LITERAL:
+            elif t.type == Grammar.LITERAL:
                 if isMacrosNameHandled:
                     currentLine += t.literalValue
                 else:
                     currentLine += self._legalist.handle_macros_name( t.literalValue )
                     isMacrosNameHandled = True
 
-            elif t.type == PARENTHESIS_LEFT:
+            elif t.type == Grammar.PARENTHESIS_LEFT:
                 currentLine += ' ('
-            elif t.type == PARENTHESIS_RIGHT:
+            elif t.type == Grammar.PARENTHESIS_RIGHT:
                 currentLine += ')'
 
         self._outputText.append(currentLine)

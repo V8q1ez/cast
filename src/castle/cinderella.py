@@ -1,48 +1,185 @@
 __author__ = 'V8q1ez'
 
 from collections import deque
-from src.castle.incantations import *
 
+class Grammar():
+    UNKNOWN = 0
+    OBJECT_LIKE_MACRO = 1
+    INCLUDE = 2
+    QUOTE = 3
+    LITERAL = 4
+    PARENTHESIS_LEFT = 5
+    PARENTHESIS_RIGHT = 6
+    FUNCTION_LIKE_MACRO = 7
+    COMMA = 8
+    VARIADIC_ARGS = 9
+    SEMICOLON = 10
+    STRING = 11
+    EOL = 12
+    TYPEDEF = 13
+    ENUM = 14
+    BRACE_LEFT = 15
+    BRACE_RIGHT = 16
+    ASSIGNMENT = 17
+    STRUCT = 18
+    STATIC = 19
+    SQUARE_BRACKET_LEFT = 20
+    SQUARE_BRACKET_RIGHT = 21
+    COLON = 22
+    VOID = 23
+    ASTERISK = 24
+    ADDITION = 25
+    SUBTRACTION = 26
+    INCREMENT = 27
+    DECREMENT = 28
+    DIVISION = 29
+    MODULO = 30
+    EQUAL_TO = 31
+    NOT_EQUAL_TO = 32
+    LESS_THAN = 33
+    GREATER_THAN = 34
+    LESS_OR_EQUAL = 35
+    GREATER_OR_EQUAL = 36
+    NOT = 37
+    LOGICAL_END = 38
+    LOGICAL_OR = 39
+    BITWISE_NOT = 40
+    BITWISE_AND = 41
+    BITWISE_OR = 42
+    BITWISE_XOR = 43
+    BITWISE_LEFT_SHIFT = 44
+    BITWISE_RIGHT_SHIFT = 45
+    ADDITION_ASSIGNMENT = 46
+    SUBTRACTION_ASSIGNMENT = 47
+    MULTIPLICATION_ASSIGNMENT = 48
+    DIVISION_ASSIGNMENT = 49
+    MODULO_ASSIGNMENT = 50
+    BITWISE_AND_ASSIGNMENT = 51
+    BITWISE_OR_ASSIGNMENT = 52
+    BITWISE_XOR_ASSIGNMENT = 53
+    BITWISE_L_SHIFT_ASSIGNMENT = 54
+    BITWISE_R_SHIFT_ASSIGNMENT = 55
+    STRUCTURE_DEREFERENCE = 56
+    QUESTION_MARK = 57
+    SIZEOF = 58
+    ALIGNOF = 59
+    SINGLE_LINE_COMMENT = 60
+    MULTI_LINE_COMMENT_START = 61
+    MULTI_LINE_COMMENT_LINE = 62
+    MULTI_LINE_COMMENT_END = 63
+    HASH = 64
 
-class tokenList():
     def __init__(self):
-        self.tokensList = []
+        self._directives = {}
+        self._directives['include'] = self.INCLUDE
+        # by default we always interpret definition as an object-like macros
+        self._directives['define'] = self.OBJECT_LIKE_MACRO
 
-    def addSimpleToken(self, tokenType):
-        self.tokensList.append( token(tokenType) )
+        self._keyWords = {}
+        self._keyWords['typedef'] = self.TYPEDEF
+        self._keyWords['enum'] = self.ENUM
+        self._keyWords['...'] = self.VARIADIC_ARGS
+        self._keyWords['struct'] = self.STRUCT
+        self._keyWords['static'] = self.STATIC
+        self._keyWords['void'] = self.VOID
+        self._keyWords['sizeof'] = self.SIZEOF
+        self._keyWords['alignof'] = self.ALIGNOF
 
-    def addLiteralToken(self, literalValue):
-        t = token(LITERAL)
-        t.literalValue = literalValue
-        self.tokensList.append(t)
+        self._singlePunctuators = {}
+        self._singlePunctuators['+'] = self.ADDITION
+        self._singlePunctuators['-'] = self.SUBTRACTION
+        self._singlePunctuators['='] = self.ASSIGNMENT
+        self._singlePunctuators['!'] = self.NOT
+        self._singlePunctuators['<'] = self.LESS_THAN
+        self._singlePunctuators['>'] = self.GREATER_THAN
+        self._singlePunctuators['~'] = self.BITWISE_NOT
+        self._singlePunctuators['&'] = self.BITWISE_AND
+        self._singlePunctuators['|'] = self.BITWISE_OR
+        self._singlePunctuators['^'] = self.BITWISE_XOR
+        self._singlePunctuators['*'] = self.ASTERISK
+        self._singlePunctuators['/'] = self.DIVISION
+        self._singlePunctuators['%'] = self.MODULO
+        self._singlePunctuators['?'] = self.QUESTION_MARK
+        self._singlePunctuators[':'] = self.COLON
+        self._singlePunctuators[';'] = self.SEMICOLON
+        self._singlePunctuators['['] = self.SQUARE_BRACKET_LEFT
+        self._singlePunctuators[']'] = self.SQUARE_BRACKET_RIGHT
+        self._singlePunctuators['{'] = self.BRACE_LEFT
+        self._singlePunctuators['}'] = self.BRACE_RIGHT
+        self._singlePunctuators[','] = self.COMMA
+        self._singlePunctuators['#'] = self.HASH
+        self._singlePunctuators[')'] = self.PARENTHESIS_RIGHT
 
-    def addStringToken(self, literalValue):
-        t = token(STRING)
-        t.literalValue = literalValue
-        self.tokensList.append(t)
+        self._pairPunctuators = {}
+        self._pairPunctuators['++'] = self.INCREMENT
+        self._pairPunctuators['--'] = self.DECREMENT
+        self._pairPunctuators['!='] = self.NOT_EQUAL_TO
+        self._pairPunctuators['=='] = self.EQUAL_TO
+        self._pairPunctuators['<='] = self.LESS_OR_EQUAL
+        self._pairPunctuators['>='] = self.GREATER_OR_EQUAL
+        self._pairPunctuators['&&'] = self.LOGICAL_END
+        self._pairPunctuators['||'] = self.LOGICAL_OR
+        self._pairPunctuators['<<'] = self.BITWISE_LEFT_SHIFT
+        self._pairPunctuators['>>'] = self.BITWISE_RIGHT_SHIFT
+        self._pairPunctuators['+='] = self.ADDITION_ASSIGNMENT
+        self._pairPunctuators['-='] = self.SUBTRACTION_ASSIGNMENT
+        self._pairPunctuators['*='] = self.MULTIPLICATION_ASSIGNMENT
+        self._pairPunctuators['/='] = self.DIVISION_ASSIGNMENT
+        self._pairPunctuators['%='] = self.MODULO_ASSIGNMENT
+        self._pairPunctuators['&='] = self.BITWISE_AND_ASSIGNMENT
+        self._pairPunctuators['|='] = self.BITWISE_OR_ASSIGNMENT
+        self._pairPunctuators['^='] = self.BITWISE_XOR_ASSIGNMENT
+        self._pairPunctuators['->'] = self.STRUCTURE_DEREFERENCE
+        self._pairPunctuators['//'] = self.SINGLE_LINE_COMMENT
+        self._pairPunctuators['/*'] = self.MULTI_LINE_COMMENT_START
+        self._pairPunctuators['*/'] = self.MULTI_LINE_COMMENT_END
 
-    def addSingleLineCommentToken(self, literalValue):
-        t = token(SINGLE_LINE_COMMENT)
-        t.literalValue = literalValue
-        self.tokensList.append(t)
+        self._triplePunctuators = {}
+        self._triplePunctuators['<<='] = self.BITWISE_L_SHIFT_ASSIGNMENT
+        self._triplePunctuators['>>='] = self.BITWISE_R_SHIFT_ASSIGNMENT
 
-    def addMultiLineCommentLineToken(self, literalValue):
-        t = token(MULTI_LINE_COMMENT_LINE)
-        t.literalValue = literalValue
-        self.tokensList.append(t)
+    def isItSinglePunctuator(self, character):
+        return character in self._singlePunctuators
 
-    def getList(self):
-        return self.tokensList
+    def isItPairPunctuator(self, twoCharacters):
+        return twoCharacters in self._pairPunctuators
+
+    def isItTriplePunctuator(self, threeCharacters):
+        return threeCharacters in self._triplePunctuators
+
+    def getSinglePunctuatorByCharacter(self, character):
+        return self._singlePunctuators[character]
+
+    def getPairPunctuatorByCharacter(self, twoCharacters):
+        return self._pairPunctuators[twoCharacters]
+
+    def getTriplePunctuatorByCharacter(self, threeCharacters):
+        return self._triplePunctuators[threeCharacters]
+
+    def isItKeyWord(self, literal):
+        return literal in self._keyWords
+
+    def getKeyWordByLiteral(self, literal):
+        return self._keyWords[literal]
+
+    def isItDirective(self, literal):
+        return literal in self._directives
+
+    def getDirectiveByLiteral(self, literal):
+        return self._directives[literal]
+
+
+
+class token():
+    def __init__(self, type):
+        self.type = type
+        self.literalValue = ''
+
 
 
 class cinderella():
-    def __init__(self):
-        self._tokensList = tokenList()
-        self.knownDirectives = directivesDict()
-        self._knownKeywords = keyWordsDict()
-        self._singlePunctuators = singlePunctuatorDict()
-        self._pairPunctuatorsDict = pairPunctuatorDict()
-        self._triplePunctuatorsDict = triplePunctuatorDict()
+    def __init__(self, grammar):
+        self._tokensList = []
         self._punctuatorsCache = deque()
 
         self._characterHandlersDict = {
@@ -50,6 +187,7 @@ class cinderella():
             '"' : self._processQuote,
             ' ' : self._processSpace,
             }
+        self._grammar = grammar
 
     def _clearState(self):
         self.isLiteralStarted = False
@@ -61,6 +199,29 @@ class cinderella():
         self.isSingleLineCommentStarted = False
         self.isMultiLineCommentStarted = False
         self.isNameOfMacrosNeeded = False
+
+    def addSimpleToken(self, tokenType):
+        self._tokensList.append( token(tokenType) )
+
+    def addLiteralToken(self, literalValue):
+        t = token(self._grammar.LITERAL)
+        t.literalValue = literalValue
+        self._tokensList.append(t)
+
+    def addStringToken(self, literalValue):
+        t = token(self._grammar.STRING)
+        t.literalValue = literalValue
+        self._tokensList.append(t)
+
+    def addSingleLineCommentToken(self, literalValue):
+        t = token(self._grammar.SINGLE_LINE_COMMENT)
+        t.literalValue = literalValue
+        self._tokensList.append(t)
+
+    def addMultiLineCommentLineToken(self, literalValue):
+        t = token(self._grammar.MULTI_LINE_COMMENT_LINE)
+        t.literalValue = literalValue
+        self._tokensList.append(t)
 
     """
     All used preprocessor rules are taken from:
@@ -83,7 +244,7 @@ class cinderella():
 
             self._tryToCompletePreviousToken( c )
 
-            if c in self._singlePunctuators:
+            if self._grammar.isItSinglePunctuator(c):
                 if self.isStringStarted:
                     self.literalValue += c
                 else:
@@ -103,10 +264,10 @@ class cinderella():
 
     def _processLeftParenthesis(self):
         if self.isNameOfMacrosNeeded:
-          self._tokensList.addSimpleToken( FUNCTION_LIKE_MACRO )
-          self._tokensList.addLiteralToken( self.literalValue )
+          self.addSimpleToken( self._grammar.FUNCTION_LIKE_MACRO )
+          self.addLiteralToken( self.literalValue )
           self.isNameOfMacrosNeeded = False
-          self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
+          self.addSimpleToken( self._grammar.PARENTHESIS_LEFT )
 
         elif self.isStringStarted:
             self.literalValue += '('
@@ -119,7 +280,7 @@ class cinderella():
                     # self.isNameOfMacrosNeeded = True
                     # and write the macros name
                 self._processFoundLiteral()
-            self._tokensList.addSimpleToken( PARENTHESIS_LEFT )
+            self.addSimpleToken( self._grammar.PARENTHESIS_LEFT )
 
         return
 
@@ -130,16 +291,16 @@ class cinderella():
                 self.literalValue += '\\\"'
                 self.isEscSeqStarted = False
             else:
-                self._tokensList.addStringToken( self.literalValue )
+                self.addStringToken( self.literalValue )
                 self.isStringStarted = False
-                self._tokensList.addSimpleToken( QUOTE )
+                self.addSimpleToken( self._grammar.QUOTE )
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             else:
                 self.literalValue = ''
                 self.isStringStarted = True
-            self._tokensList.addSimpleToken( QUOTE )
+            self.addSimpleToken( self._grammar.QUOTE )
 
         return
 
@@ -149,8 +310,8 @@ class cinderella():
         elif self.isNameOfMacrosNeeded:
             self._lastFoundMacrosName = self.literalValue
             self.isNameOfMacrosNeeded = False
-            self._tokensList.addSimpleToken(OBJECT_LIKE_MACRO)
-            self._tokensList.addLiteralToken( self.literalValue )
+            self.addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
+            self.addLiteralToken( self.literalValue )
         elif self.isStringStarted \
                 or self.isSingleLineCommentStarted\
                 or self.isMultiLineCommentStarted:
@@ -178,28 +339,28 @@ class cinderella():
         return
 
     def _processFoundDirective(self):
-        if self.literalValue in self.knownDirectives:
+        if self._grammar.isItDirective(self.literalValue):
             self.isDirectiveStarted = False
             if self.literalValue == 'define':
                 self.isNameOfMacrosNeeded = True
             else:
-                self._tokensList.addSimpleToken( self.knownDirectives[self.literalValue] )
+                self.addSimpleToken( self._grammar.getDirectiveByLiteral(self.literalValue) )
         else:
-            self._tokensList.addSimpleToken(UNKNOWN)
+            self.addSimpleToken(self._grammar.UNKNOWN)
         self.literalValue = ''
         return
 
     def _processFoundLiteral(self):
-        if self.literalValue in self._knownKeywords:
-            self._tokensList.addSimpleToken( self._knownKeywords[self.literalValue] )
+        if self._grammar.isItKeyWord(self.literalValue):
+            self.addSimpleToken( self._grammar.getKeyWordByLiteral(self.literalValue) )
         else:
-            self._tokensList.addLiteralToken( self.literalValue )
+            self.addLiteralToken( self.literalValue )
         self.isLiteralStarted = False
         return
 
     def _tryToCompletePreviousToken(self, c):
         if not self.isStringStarted:
-            if c in self._singlePunctuators:
+            if self._grammar.isItSinglePunctuator(c):
                 self._punctuatorsCache.append(c)
             else:
                 self._processCachedPunctuators()
@@ -207,7 +368,7 @@ class cinderella():
         return
 
     def _processCachedPunctuators(self):
-        punctuator = UNKNOWN
+        punctuator = self._grammar.UNKNOWN
         while len(self._punctuatorsCache):
 
             if self.isSingleLineCommentStarted:
@@ -217,14 +378,14 @@ class cinderella():
                 # only MULTI_LINE_COMMENT_END of EOL are allowed
                 if len(self._punctuatorsCache) >= 2:
                     firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
-                    if firstTwoChars in self._pairPunctuatorsDict:
-                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
-                    if punctuator == MULTI_LINE_COMMENT_END:
+                    if self._grammar.isItPairPunctuator(firstTwoChars):
+                        punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
+                    if punctuator == self._grammar.MULTI_LINE_COMMENT_END:
                         for _ in range(2):
                             self._punctuatorsCache.popleft()
                         self.isMultiLineCommentStarted = False
-                        self._tokensList.addMultiLineCommentLineToken( self.literalValue )
-                        self._tokensList.addSimpleToken( punctuator )
+                        self.addMultiLineCommentLineToken( self.literalValue )
+                        self.addSimpleToken( punctuator )
                     else:
                         self.literalValue += self._punctuatorsCache.popleft()
                 else:
@@ -234,58 +395,58 @@ class cinderella():
                     lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
                     firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
                     char = ''.join(list(self._punctuatorsCache)[0:1])
-                    if lastThreeChars in self._triplePunctuatorsDict:
-                        punctuator = self._triplePunctuatorsDict[ lastThreeChars ]
+                    if self._grammar.isItTriplePunctuator(lastThreeChars):
+                        punctuator = self._grammar.getTriplePunctuatorByCharacter(lastThreeChars)
                         for _ in range(3):
                             self._punctuatorsCache.popleft()
-                    elif firstTwoChars in self._pairPunctuatorsDict:
-                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                    elif self._grammar.isItPairPunctuator(firstTwoChars):
+                        punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
                         for _ in range(2):
                             self._punctuatorsCache.popleft()
-                    elif char in self._singlePunctuators:
-                        punctuator = self._singlePunctuators[ char ]
+                    elif self._grammar.isItSinglePunctuator(char):
+                        punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
                             self._punctuatorsCache.popleft()
 
                 elif len(self._punctuatorsCache) == 2:
                     firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
                     char = ''.join(list(self._punctuatorsCache)[0:1])
-                    if firstTwoChars in self._pairPunctuatorsDict:
-                        punctuator = self._pairPunctuatorsDict[ firstTwoChars ]
+                    if self._grammar.isItPairPunctuator(firstTwoChars):
+                        punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
                         for _ in range(2):
                             self._punctuatorsCache.popleft()
-                    elif char in self._singlePunctuators:
-                        punctuator = self._singlePunctuators[ char ]
+                    elif self._grammar.isItSinglePunctuator(char):
+                        punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
                             self._punctuatorsCache.popleft()
 
                 elif len(self._punctuatorsCache) == 1:
                     char = ''.join(list(self._punctuatorsCache)[0:1])
-                    if char in self._singlePunctuators:
-                        punctuator = self._singlePunctuators[ char ]
+                    if self._grammar.isItSinglePunctuator(char):
+                        punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
                             self._punctuatorsCache.popleft()
 
-                if punctuator != UNKNOWN:
-                    if punctuator == SINGLE_LINE_COMMENT:
+                if punctuator != self._grammar.UNKNOWN:
+                    if punctuator == self._grammar.SINGLE_LINE_COMMENT:
                         self.isSingleLineCommentStarted = True
                         self.literalValue = ''
-                    elif punctuator == HASH:
+                    elif punctuator == self._grammar.HASH:
                         if not self.isStringStarted and not self.isDirectiveStarted:
                             self.literalValue = ''
                             self.isDirectiveStarted = True
                             self.isNameOfMacrosNeeded = False
                     else:
-                        if punctuator == MULTI_LINE_COMMENT_START:
+                        if punctuator == self._grammar.MULTI_LINE_COMMENT_START:
                             self.isMultiLineCommentStarted = True
                             self.literalValue = ''
-                        elif punctuator == MULTI_LINE_COMMENT_END:
+                        elif punctuator == self._grammar.MULTI_LINE_COMMENT_END:
                             self.isMultiLineCommentStarted = False
-                            self._tokensList.addMultiLineCommentLineToken( self.literalValue )
+                            self.addMultiLineCommentLineToken( self.literalValue )
 
-                        self._tokensList.addSimpleToken( punctuator )
+                        self.addSimpleToken( punctuator )
 
-                    punctuator = UNKNOWN
+                    punctuator = self._grammar.UNKNOWN
 
         self._punctuatorsCache.clear()
 
@@ -301,7 +462,7 @@ class cinderella():
             self.isEscSeqStarted = False
         else:
             if self.isSingleLineCommentStarted:
-                self._tokensList.addSingleLineCommentToken( self.literalValue )
+                self.addSingleLineCommentToken( self.literalValue )
                 self.isSingleLineCommentStarted = False
 
             elif self.isLiteralStarted:
@@ -311,14 +472,14 @@ class cinderella():
             elif self.isNameOfMacrosNeeded:
                 self._lastFoundMacrosName = self.literalValue
                 self.isNameOfMacrosNeeded = False
-                self._tokensList.addSimpleToken(OBJECT_LIKE_MACRO)
-                self._tokensList.addLiteralToken( self.literalValue )
+                self.addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
+                self.addLiteralToken( self.literalValue )
             else:
                 self._processCachedPunctuators()
                 if self.isMultiLineCommentStarted:
-                    self._tokensList.addMultiLineCommentLineToken(self.literalValue)
+                    self.addMultiLineCommentLineToken(self.literalValue)
                     self.literalValue = ''
-            self._tokensList.addSimpleToken( EOL )
+            self.addSimpleToken( self._grammar.EOL )
 
         return
 
@@ -333,6 +494,6 @@ class cinderella():
             self._parseLine(line)
 
         if self.isLiteralStarted:
-            self._tokensList.addLiteralToken( self.literalValue )
+            self.addLiteralToken( self.literalValue )
 
-        return self._tokensList.getList()
+        return self._tokensList

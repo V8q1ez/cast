@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class compilerTypedefFunction(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_typedef_simple_function(self):
         input = []
@@ -15,19 +16,19 @@ class compilerTypedefFunction(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( TYPEDEF, actualOutput[0].type)
-        self.assertEqual( VOID, actualOutput[1].type)
-        self.assertEqual( PARENTHESIS_LEFT, actualOutput[2].type)
-        self.assertEqual( ASTERISK, actualOutput[3].type)
-        self.assertEqual( LITERAL, actualOutput[4].type)
+        self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
+        self.assertEqual( Grammar.VOID, actualOutput[1].type)
+        self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[2].type)
+        self.assertEqual( Grammar.ASTERISK, actualOutput[3].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[4].type)
         self.assertEqual( 'FOO_TYPE', actualOutput[4].literalValue)
-        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[5].type)
-        self.assertEqual( PARENTHESIS_LEFT, actualOutput[6].type)
-        self.assertEqual( VOID, actualOutput[7].type)
-        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[8].type)
-        self.assertEqual( SEMICOLON, actualOutput[9].type)
+        self.assertEqual( Grammar.PARENTHESIS_RIGHT, actualOutput[5].type)
+        self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[6].type)
+        self.assertEqual( Grammar.VOID, actualOutput[7].type)
+        self.assertEqual( Grammar.PARENTHESIS_RIGHT, actualOutput[8].type)
+        self.assertEqual( Grammar.SEMICOLON, actualOutput[9].type)
 
-        self.assertEqual( EOL, actualOutput[10].type)
+        self.assertEqual( Grammar.EOL, actualOutput[10].type)
 
     def test_typedef_simple_function_with_spaces(self):
         input = []
@@ -35,16 +36,16 @@ class compilerTypedefFunction(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( TYPEDEF, actualOutput[0].type)
-        self.assertEqual( VOID, actualOutput[1].type)
-        self.assertEqual( PARENTHESIS_LEFT, actualOutput[2].type)
-        self.assertEqual( ASTERISK, actualOutput[3].type)
-        self.assertEqual( LITERAL, actualOutput[4].type)
+        self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
+        self.assertEqual( Grammar.VOID, actualOutput[1].type)
+        self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[2].type)
+        self.assertEqual( Grammar.ASTERISK, actualOutput[3].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[4].type)
         self.assertEqual( 'FOO_TYPE', actualOutput[4].literalValue)
-        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[5].type)
-        self.assertEqual( PARENTHESIS_LEFT, actualOutput[6].type)
-        self.assertEqual( VOID, actualOutput[7].type)
-        self.assertEqual( PARENTHESIS_RIGHT, actualOutput[8].type)
-        self.assertEqual( SEMICOLON, actualOutput[9].type)
+        self.assertEqual( Grammar.PARENTHESIS_RIGHT, actualOutput[5].type)
+        self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[6].type)
+        self.assertEqual( Grammar.VOID, actualOutput[7].type)
+        self.assertEqual( Grammar.PARENTHESIS_RIGHT, actualOutput[8].type)
+        self.assertEqual( Grammar.SEMICOLON, actualOutput[9].type)
 
-        self.assertEqual( EOL, actualOutput[10].type)
+        self.assertEqual( Grammar.EOL, actualOutput[10].type)

@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class compilerArithmeticOperations(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_arithmetic_assignment(self):
         input = []
@@ -15,13 +16,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( ASSIGNMENT, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.ASSIGNMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_addition(self):
         input = []
@@ -29,13 +30,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( ADDITION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.ADDITION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_addition_with_spaces(self):
         input = []
@@ -43,13 +44,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( ADDITION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.ADDITION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_subtraction(self):
         input = []
@@ -57,13 +58,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( SUBTRACTION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_subtraction_with_spaces(self):
         input = []
@@ -71,13 +72,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( SUBTRACTION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_pre_increment(self):
         input = []
@@ -85,11 +86,11 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCREMENT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_arithmetic_two_pre_increments(self):
         input = []
@@ -97,15 +98,15 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCREMENT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( COMMA, actualOutput[2].type)
-        self.assertEqual( INCREMENT, actualOutput[3].type)
-        self.assertEqual( LITERAL, actualOutput[4].type)
+        self.assertEqual( Grammar.COMMA, actualOutput[2].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[3].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[4].type)
         self.assertEqual( 'b', actualOutput[4].literalValue)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_arithmetic_post_increment(self):
         input = []
@@ -113,11 +114,11 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( INCREMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[1].type)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_arithmetic_two_post_increments(self):
         input = []
@@ -125,15 +126,15 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( INCREMENT, actualOutput[1].type)
-        self.assertEqual( COMMA, actualOutput[2].type)
-        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.COMMA, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[3].type)
         self.assertEqual( 'b', actualOutput[3].literalValue)
-        self.assertEqual( INCREMENT, actualOutput[4].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_arithmetic_pre_decrement(self):
         input = []
@@ -141,11 +142,11 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( DECREMENT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_arithmetic_two_pre_decrements(self):
         input = []
@@ -153,15 +154,15 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( DECREMENT, actualOutput[0].type)
-        self.assertEqual( LITERAL, actualOutput[1].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
         self.assertEqual( 'a', actualOutput[1].literalValue)
-        self.assertEqual( COMMA, actualOutput[2].type)
-        self.assertEqual( DECREMENT, actualOutput[3].type)
-        self.assertEqual( LITERAL, actualOutput[4].type)
+        self.assertEqual( Grammar.COMMA, actualOutput[2].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[3].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[4].type)
         self.assertEqual( 'b', actualOutput[4].literalValue)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_arithmetic_post_decrement(self):
         input = []
@@ -169,11 +170,11 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DECREMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[1].type)
 
-        self.assertEqual( EOL, actualOutput[2].type)
+        self.assertEqual( Grammar.EOL, actualOutput[2].type)
 
     def test_arithmetic_two_post_decrements(self):
         input = []
@@ -181,15 +182,15 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DECREMENT, actualOutput[1].type)
-        self.assertEqual( COMMA, actualOutput[2].type)
-        self.assertEqual( LITERAL, actualOutput[3].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[1].type)
+        self.assertEqual( Grammar.COMMA, actualOutput[2].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[3].type)
         self.assertEqual( 'b', actualOutput[3].literalValue)
-        self.assertEqual( DECREMENT, actualOutput[4].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[4].type)
 
-        self.assertEqual( EOL, actualOutput[5].type)
+        self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_pre_inc_with_unary_plus(self):
         input = []
@@ -197,12 +198,12 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCREMENT, actualOutput[0].type)
-        self.assertEqual( ADDITION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.ADDITION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'a', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_pre_dec_with_unary_minus(self):
         input = []
@@ -210,12 +211,12 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( DECREMENT, actualOutput[0].type)
-        self.assertEqual( SUBTRACTION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'a', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_pre_inc_with_unary_plus_spaces(self):
         input = []
@@ -223,12 +224,12 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCREMENT, actualOutput[0].type)
-        self.assertEqual( ADDITION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.INCREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.ADDITION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'a', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_pre_dec_with_unary_minus_spaces(self):
         input = []
@@ -236,12 +237,12 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( DECREMENT, actualOutput[0].type)
-        self.assertEqual( SUBTRACTION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DECREMENT, actualOutput[0].type)
+        self.assertEqual( Grammar.SUBTRACTION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'a', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_division(self):
         input = []
@@ -249,13 +250,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DIVISION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DIVISION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_division_with_spaces(self):
         input = []
@@ -263,13 +264,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( DIVISION, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.DIVISION, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_modulo(self):
         input = []
@@ -277,13 +278,13 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MODULO, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MODULO, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_arithmetic_modulo_with_spaces(self):
         input = []
@@ -291,10 +292,10 @@ class compilerArithmeticOperations(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( LITERAL, actualOutput[0].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
-        self.assertEqual( MODULO, actualOutput[1].type)
-        self.assertEqual( LITERAL, actualOutput[2].type)
+        self.assertEqual( Grammar.MODULO, actualOutput[1].type)
+        self.assertEqual( Grammar.LITERAL, actualOutput[2].type)
         self.assertEqual( 'b', actualOutput[2].literalValue)
 
-        self.assertEqual( EOL, actualOutput[3].type)
+        self.assertEqual( Grammar.EOL, actualOutput[3].type)

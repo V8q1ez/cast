@@ -7,7 +7,8 @@ from src.castle.cinderella import *
 
 class preprocessorInclude(unittest.TestCase):
     def setUp(self):
-       self.tkz = cinderella()
+        self._grammar = Grammar()
+        self.tkz = cinderella(self._grammar)
 
     def test_include_quotes(self):
         input = []
@@ -15,13 +16,13 @@ class preprocessorInclude(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCLUDE, actualOutput[0].type)
-        self.assertEqual( QUOTE, actualOutput[1].type)
-        self.assertEqual( STRING, actualOutput[2].type)
+        self.assertEqual( Grammar.INCLUDE, actualOutput[0].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[1].type)
+        self.assertEqual( Grammar.STRING, actualOutput[2].type)
         self.assertEqual( 'hello.h', actualOutput[2].literalValue)
-        self.assertEqual( QUOTE, actualOutput[3].type)
+        self.assertEqual( Grammar.QUOTE, actualOutput[3].type)
 
-        self.assertEqual( EOL, actualOutput[4].type)
+        self.assertEqual( Grammar.EOL, actualOutput[4].type)
 
     def test_include_multi_broken_directive(self):
         input = []
@@ -30,6 +31,6 @@ class preprocessorInclude(unittest.TestCase):
 
         actualOutput = self.tkz.parseText(input)
 
-        self.assertEqual( INCLUDE, actualOutput[0].type)
+        self.assertEqual( Grammar.INCLUDE, actualOutput[0].type)
 
-        self.assertEqual( EOL, actualOutput[1].type)
+        self.assertEqual( Grammar.EOL, actualOutput[1].type)
