@@ -1,6 +1,6 @@
 __author__ = 'V8q1ez'
 
-class legalist():
+class CodingRules():
     def __init__(self):
         pass
 

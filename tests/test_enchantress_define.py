@@ -6,7 +6,7 @@ import mock
 from src.castle.enchantress import enchantress
 from src.castle.ccodeparser import CCodeParser
 from src.castle.prince import prince
-from src.castle.legalist import legalist
+from src.castle.codingrules import CodingRules
 from src.castle.ccodeparser import Grammar
 
 class enchantressDefine(unittest.TestCase):
@@ -14,7 +14,7 @@ class enchantressDefine(unittest.TestCase):
        pass
 
     def test_define_nominal(self):
-        target = enchantress(cinderella=CCodeParser(Grammar()), prince=prince(legalist()))
+        target = enchantress(cinderella=CCodeParser(Grammar()), prince=prince(CodingRules()))
 
         inputText = """#define A (5)\n"""
         expectedOutput = """#define A (5)\n"""
@@ -23,7 +23,7 @@ class enchantressDefine(unittest.TestCase):
         self.assertEqual( expectedOutput.splitlines(), actualOutput )
 
 
-    @mock.patch.object(legalist, 'handle_macros_name')
+    @mock.patch.object(CodingRules, 'handle_macros_name')
     def test_define_lower_case_literal(self, mock_legalist):
         target = enchantress(cinderella=CCodeParser(Grammar()), prince=prince(mock_legalist))
         mock_legalist.handle_macros_name.return_value = 'LITERAL'
@@ -35,7 +35,7 @@ class enchantressDefine(unittest.TestCase):
         self.assertEqual( expectedOutput.splitlines(), actualOutput )
 
 
-    @mock.patch.object(legalist, 'handle_macros_name')
+    @mock.patch.object(CodingRules, 'handle_macros_name')
     def test_define_lower_case_literal_allowed(self, mock_legalist):
         target = enchantress(cinderella=CCodeParser(Grammar()), prince=prince(mock_legalist))
         mock_legalist.handle_macros_name.return_value = 'literal'
