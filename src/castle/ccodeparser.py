@@ -200,25 +200,25 @@ class CCodeParser():
         self.isMultiLineCommentStarted = False
         self.isNameOfMacrosNeeded = False
 
-    def addSimpleToken(self, tokenType):
+    def _addSimpleToken(self, tokenType):
         self._tokensList.append( token(tokenType) )
 
-    def addLiteralToken(self, literalValue):
+    def _addLiteralToken(self, literalValue):
         t = token(self._grammar.LITERAL)
         t.literalValue = literalValue
         self._tokensList.append(t)
 
-    def addStringToken(self, literalValue):
+    def _addStringToken(self, literalValue):
         t = token(self._grammar.STRING)
         t.literalValue = literalValue
         self._tokensList.append(t)
 
-    def addSingleLineCommentToken(self, literalValue):
+    def _addSingleLineCommentToken(self, literalValue):
         t = token(self._grammar.SINGLE_LINE_COMMENT)
         t.literalValue = literalValue
         self._tokensList.append(t)
 
-    def addMultiLineCommentLineToken(self, literalValue):
+    def _addMultiLineCommentLineToken(self, literalValue):
         t = token(self._grammar.MULTI_LINE_COMMENT_LINE)
         t.literalValue = literalValue
         self._tokensList.append(t)
@@ -228,8 +228,7 @@ class CCodeParser():
         https://gcc.gnu.org/onlinedocs/cpp/index.html
     """
 
-    def parseLine(self, remainingString):
-
+    def _parseLine(self, remainingString):
 
         for c in remainingString:
 
@@ -264,10 +263,10 @@ class CCodeParser():
 
     def _processLeftParenthesis(self):
         if self.isNameOfMacrosNeeded:
-          self.addSimpleToken( self._grammar.FUNCTION_LIKE_MACRO )
-          self.addLiteralToken( self.literalValue )
+          self._addSimpleToken(self._grammar.FUNCTION_LIKE_MACRO)
+          self._addLiteralToken(self.literalValue)
           self.isNameOfMacrosNeeded = False
-          self.addSimpleToken( self._grammar.PARENTHESIS_LEFT )
+          self._addSimpleToken(self._grammar.PARENTHESIS_LEFT)
 
         elif self.isStringStarted:
             self.literalValue += '('
@@ -280,7 +279,7 @@ class CCodeParser():
                     # self.isNameOfMacrosNeeded = True
                     # and write the macros name
                 self._processFoundLiteral()
-            self.addSimpleToken( self._grammar.PARENTHESIS_LEFT )
+            self._addSimpleToken(self._grammar.PARENTHESIS_LEFT)
 
         return
 
@@ -291,16 +290,16 @@ class CCodeParser():
                 self.literalValue += '\\\"'
                 self.isEscSeqStarted = False
             else:
-                self.addStringToken( self.literalValue )
+                self._addStringToken(self.literalValue)
                 self.isStringStarted = False
-                self.addSimpleToken( self._grammar.QUOTE )
+                self._addSimpleToken(self._grammar.QUOTE)
         else:
             if self.isLiteralStarted:
                 self._processFoundLiteral()
             else:
                 self.literalValue = ''
                 self.isStringStarted = True
-            self.addSimpleToken( self._grammar.QUOTE )
+            self._addSimpleToken(self._grammar.QUOTE)
 
         return
 
@@ -310,8 +309,8 @@ class CCodeParser():
         elif self.isNameOfMacrosNeeded:
             self._lastFoundMacrosName = self.literalValue
             self.isNameOfMacrosNeeded = False
-            self.addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
-            self.addLiteralToken( self.literalValue )
+            self._addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
+            self._addLiteralToken(self.literalValue)
         elif self.isStringStarted \
                 or self.isSingleLineCommentStarted\
                 or self.isMultiLineCommentStarted:
@@ -344,17 +343,17 @@ class CCodeParser():
             if self.literalValue == 'define':
                 self.isNameOfMacrosNeeded = True
             else:
-                self.addSimpleToken( self._grammar.getDirectiveByLiteral(self.literalValue) )
+                self._addSimpleToken(self._grammar.getDirectiveByLiteral(self.literalValue))
         else:
-            self.addSimpleToken(self._grammar.UNKNOWN)
+            self._addSimpleToken(self._grammar.UNKNOWN)
         self.literalValue = ''
         return
 
     def _processFoundLiteral(self):
         if self._grammar.isItKeyWord(self.literalValue):
-            self.addSimpleToken( self._grammar.getKeyWordByLiteral(self.literalValue) )
+            self._addSimpleToken(self._grammar.getKeyWordByLiteral(self.literalValue))
         else:
-            self.addLiteralToken( self.literalValue )
+            self._addLiteralToken(self.literalValue)
         self.isLiteralStarted = False
         return
 
@@ -384,8 +383,8 @@ class CCodeParser():
                         for _ in range(2):
                             self._punctuatorsCache.popleft()
                         self.isMultiLineCommentStarted = False
-                        self.addMultiLineCommentLineToken( self.literalValue )
-                        self.addSimpleToken( punctuator )
+                        self._addMultiLineCommentLineToken(self.literalValue)
+                        self._addSimpleToken(punctuator)
                     else:
                         self.literalValue += self._punctuatorsCache.popleft()
                 else:
@@ -442,9 +441,9 @@ class CCodeParser():
                             self.literalValue = ''
                         elif punctuator == self._grammar.MULTI_LINE_COMMENT_END:
                             self.isMultiLineCommentStarted = False
-                            self.addMultiLineCommentLineToken( self.literalValue )
+                            self._addMultiLineCommentLineToken(self.literalValue)
 
-                        self.addSimpleToken( punctuator )
+                        self._addSimpleToken(punctuator)
 
                     punctuator = self._grammar.UNKNOWN
 
@@ -462,7 +461,7 @@ class CCodeParser():
             self.isEscSeqStarted = False
         else:
             if self.isSingleLineCommentStarted:
-                self.addSingleLineCommentToken( self.literalValue )
+                self._addSingleLineCommentToken(self.literalValue)
                 self.isSingleLineCommentStarted = False
 
             elif self.isLiteralStarted:
@@ -472,21 +471,16 @@ class CCodeParser():
             elif self.isNameOfMacrosNeeded:
                 self._lastFoundMacrosName = self.literalValue
                 self.isNameOfMacrosNeeded = False
-                self.addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
-                self.addLiteralToken( self.literalValue )
+                self._addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
+                self._addLiteralToken(self.literalValue)
             else:
                 self._processCachedPunctuators()
                 if self.isMultiLineCommentStarted:
-                    self.addMultiLineCommentLineToken(self.literalValue)
+                    self._addMultiLineCommentLineToken(self.literalValue)
                     self.literalValue = ''
-            self.addSimpleToken( self._grammar.EOL )
+            self._addSimpleToken(self._grammar.EOL)
 
         return
-
-    def _parseLine(self, inputString):
-        self.parseLine(inputString)
-        return
-
 
     def parseText(self, text):
         self._clearState()
@@ -494,6 +488,6 @@ class CCodeParser():
             self._parseLine(line)
 
         if self.isLiteralStarted:
-            self.addLiteralToken( self.literalValue )
+            self._addLiteralToken(self.literalValue)
 
         return self._tokensList
