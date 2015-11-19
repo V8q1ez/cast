@@ -3,15 +3,15 @@ __author__ = 'V8q1ez'
 from src.castle.codingrules import CodingRules
 from src.castle.ccodeparser import Grammar
 
-class prince():
-    def __init__(self, legalist):
+class CCodeBuilder():
+    def __init__(self, codingRules):
         self._outputText = []
-        self._legalist = legalist
+        self._codingRules = codingRules
 
-    def buildFormattedText(self, tokens):
+    def buildFormattedText(self, tokenList):
         currentLine = ''
         isMacrosNameHandled = False
-        for t in tokens:
+        for t in tokenList:
             if t.type == Grammar.OBJECT_LIKE_MACRO:
                 currentLine += '#define '
 
@@ -19,7 +19,7 @@ class prince():
                 if isMacrosNameHandled:
                     currentLine += t.literalValue
                 else:
-                    currentLine += self._legalist.handle_macros_name( t.literalValue )
+                    currentLine += self._codingRules.handle_macros_name(t.literalValue)
                     isMacrosNameHandled = True
 
             elif t.type == Grammar.PARENTHESIS_LEFT:
