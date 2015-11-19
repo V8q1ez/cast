@@ -2,13 +2,14 @@ __author__ = 'V8q1ez'
 
 import unittest
 
-from src.castle.cinderella import *
+from src.castle.ccodeparser import CCodeParser
+from src.castle.ccodeparser import Grammar
 
 
-class preprocessorDefine(unittest.TestCase):
+class CCodeParserDefine(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
-        self.tkz = cinderella(self._grammar)
+        self.tkz = CCodeParser(self._grammar)
 
     def test_define_object_like(self):
         input = []

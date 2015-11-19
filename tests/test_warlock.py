@@ -3,7 +3,7 @@ __author__ = 'V8q1ez'
 import unittest
 
 from src.castle.warlock import warlock
-from src.castle.cinderella import Grammar
+from src.castle.ccodeparser import Grammar
 
 
 class warlockTest(unittest.TestCase):

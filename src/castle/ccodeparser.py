@@ -177,7 +177,7 @@ class token():
 
 
 
-class cinderella():
+class CCodeParser():
     def __init__(self, grammar):
         self._tokensList = []
         self._punctuatorsCache = deque()

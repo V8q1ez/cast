@@ -1,6 +1,6 @@
 __author__ = 'V8q1ez'
 
-from src.castle.cinderella import cinderella
+from src.castle.ccodeparser import CCodeParser
 from src.castle.prince import prince
 
 class enchantress():

@@ -1,7 +1,7 @@
 __author__ = 'V8q1ez'
 
 from src.castle.legalist import legalist
-from src.castle.cinderella import Grammar
+from src.castle.ccodeparser import Grammar
 
 class prince():
     def __init__(self, legalist):
