@@ -176,20 +176,21 @@ class token():
         self.literalValue = ''
 
 
+class CCodeParsingContext():
+    def __init__(self):
+        self.tokensList = []
+        self.isLiteralStarted = False
+        self.isStringStarted = False
+        self.isEscSeqStarted = False
+        self.isNameOfMacrosNeeded = False
+        self.literalValue = ''
+        self.isDirectiveStarted = False
+        self.isSingleLineCommentStarted = False
+        self.isMultiLineCommentStarted = False
+        self.isNameOfMacrosNeeded = False
+        self.punctuatorsCache = deque()
 
-class CCodeParser():
-    def __init__(self, grammar):
-        self._tokensList = []
-        self._punctuatorsCache = deque()
-
-        self._characterHandlersDict = {
-            '(' : self._processLeftParenthesis,
-            '"' : self._processQuote,
-            ' ' : self._processSpace,
-            }
-        self._grammar = grammar
-
-    def _clearState(self):
+    def clearState(self):
         self.isLiteralStarted = False
         self.isStringStarted = False
         self.isEscSeqStarted = False
@@ -200,294 +201,306 @@ class CCodeParser():
         self.isMultiLineCommentStarted = False
         self.isNameOfMacrosNeeded = False
 
-    def _addSimpleToken(self, tokenType):
-        self._tokensList.append( token(tokenType) )
+    def addSimpleToken(self, tokenType):
+        self.tokensList.append( token(tokenType) )
 
-    def _addLiteralToken(self, literalValue):
-        t = token(self._grammar.LITERAL)
+    def addLiteralToken(self, literalValue):
+        t = token(Grammar.LITERAL)
         t.literalValue = literalValue
-        self._tokensList.append(t)
+        self.tokensList.append(t)
 
-    def _addStringToken(self, literalValue):
-        t = token(self._grammar.STRING)
+    def addStringToken(self, literalValue):
+        t = token(Grammar.STRING)
         t.literalValue = literalValue
-        self._tokensList.append(t)
+        self.tokensList.append(t)
 
-    def _addSingleLineCommentToken(self, literalValue):
-        t = token(self._grammar.SINGLE_LINE_COMMENT)
+    def addSingleLineCommentToken(self, literalValue):
+        t = token(Grammar.SINGLE_LINE_COMMENT)
         t.literalValue = literalValue
-        self._tokensList.append(t)
+        self.tokensList.append(t)
 
-    def _addMultiLineCommentLineToken(self, literalValue):
-        t = token(self._grammar.MULTI_LINE_COMMENT_LINE)
+    def addMultiLineCommentLineToken(self, literalValue):
+        t = token(Grammar.MULTI_LINE_COMMENT_LINE)
         t.literalValue = literalValue
-        self._tokensList.append(t)
+        self.tokensList.append(t)
+
+
+
+class CCodeParser():
+    def __init__(self, grammar):
+
+        self._characterHandlersDict = {
+            '(' : self._processLeftParenthesis,
+            '"' : self._processQuote,
+            ' ' : self._processSpace,
+            }
+        self._grammar = grammar
 
     """
     All used preprocessor rules are taken from:
         https://gcc.gnu.org/onlinedocs/cpp/index.html
     """
 
-    def _parseLine(self, remainingString):
+    def _parseLine(self, remainingString, parsingContext):
 
         for c in remainingString:
 
-            if self.isSingleLineCommentStarted:
-                self.literalValue += c
+            if parsingContext.isSingleLineCommentStarted:
+                parsingContext.literalValue += c
                 continue
 
             elif c == '\\':
-                if not self.isEscSeqStarted:
-                    self.isEscSeqStarted = True
+                if not parsingContext.isEscSeqStarted:
+                    parsingContext.isEscSeqStarted = True
                     continue
 
-            self._tryToCompletePreviousToken( c )
+            self._tryToCompletePreviousToken( c, parsingContext )
 
             if self._grammar.isItSinglePunctuator(c):
-                if self.isStringStarted:
-                    self.literalValue += c
+                if parsingContext.isStringStarted:
+                    parsingContext.literalValue += c
                 else:
-                    if self.isLiteralStarted:
-                        self._processFoundLiteral()
+                    if parsingContext.isLiteralStarted:
+                        self._processFoundLiteral(parsingContext)
 
             elif c in self._characterHandlersDict:
                 handlerToCall = self._characterHandlersDict[ c ]
-                handlerToCall()
+                handlerToCall(parsingContext)
 
             elif c != ' ':
-                self._processNonSpace( c )
+                self._processNonSpace( c, parsingContext )
 
-        self._processEndOfLine()
+        self._processEndOfLine(parsingContext)
 
         return
 
-    def _processLeftParenthesis(self):
-        if self.isNameOfMacrosNeeded:
-          self._addSimpleToken(self._grammar.FUNCTION_LIKE_MACRO)
-          self._addLiteralToken(self.literalValue)
-          self.isNameOfMacrosNeeded = False
-          self._addSimpleToken(self._grammar.PARENTHESIS_LEFT)
+    def _processLeftParenthesis(self, parsingContext):
+        if parsingContext.isNameOfMacrosNeeded:
+          parsingContext.addSimpleToken(Grammar.FUNCTION_LIKE_MACRO)
+          parsingContext.addLiteralToken(parsingContext.literalValue)
+          parsingContext.isNameOfMacrosNeeded = False
+          parsingContext.addSimpleToken(Grammar.PARENTHESIS_LEFT)
 
-        elif self.isStringStarted:
-            self.literalValue += '('
+        elif parsingContext.isStringStarted:
+            parsingContext.literalValue += '('
         else:
-            if self.isLiteralStarted:
+            if parsingContext.isLiteralStarted:
                 # if not self.isNameOfMacrosNeeded:
                     # There is no space between name and parenthesis
                     # So we should change the type of first token
                     # self._tokensList.changeTokenType( 0, FUNCTION_LIKE_MACRO )
                     # self.isNameOfMacrosNeeded = True
                     # and write the macros name
-                self._processFoundLiteral()
-            self._addSimpleToken(self._grammar.PARENTHESIS_LEFT)
+                self._processFoundLiteral(parsingContext)
+            parsingContext.addSimpleToken(Grammar.PARENTHESIS_LEFT)
 
         return
 
 
-    def _processQuote(self):
-        if self.isStringStarted:
-            if self.isEscSeqStarted:
-                self.literalValue += '\\\"'
-                self.isEscSeqStarted = False
+    def _processQuote(self, parsingContext):
+        if parsingContext.isStringStarted:
+            if parsingContext.isEscSeqStarted:
+                parsingContext.literalValue += '\\\"'
+                parsingContext.isEscSeqStarted = False
             else:
-                self._addStringToken(self.literalValue)
-                self.isStringStarted = False
-                self._addSimpleToken(self._grammar.QUOTE)
+                parsingContext.addStringToken(parsingContext.literalValue)
+                parsingContext.isStringStarted = False
+                parsingContext.addSimpleToken(Grammar.QUOTE)
         else:
-            if self.isLiteralStarted:
-                self._processFoundLiteral()
+            if parsingContext.isLiteralStarted:
+                self._processFoundLiteral(parsingContext)
             else:
-                self.literalValue = ''
-                self.isStringStarted = True
-            self._addSimpleToken(self._grammar.QUOTE)
+                parsingContext.literalValue = ''
+                parsingContext.isStringStarted = True
+            parsingContext.addSimpleToken(Grammar.QUOTE)
 
         return
 
-    def _processSpace(self):
-        if self.isDirectiveStarted:
-            self._processFoundDirective()
-        elif self.isNameOfMacrosNeeded:
-            self._lastFoundMacrosName = self.literalValue
-            self.isNameOfMacrosNeeded = False
-            self._addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
-            self._addLiteralToken(self.literalValue)
-        elif self.isStringStarted \
-                or self.isSingleLineCommentStarted\
-                or self.isMultiLineCommentStarted:
-            self.literalValue += ' '
-        elif self.isLiteralStarted:
-            self._processFoundLiteral()
+    def _processSpace(self, parsingContext):
+        if parsingContext.isDirectiveStarted:
+            self._processFoundDirective(parsingContext)
+        elif parsingContext.isNameOfMacrosNeeded:
+            # self._lastFoundMacrosName = parsingContext.literalValue
+            parsingContext.isNameOfMacrosNeeded = False
+            parsingContext.addSimpleToken(Grammar.OBJECT_LIKE_MACRO)
+            parsingContext.addLiteralToken(parsingContext.literalValue)
+        elif parsingContext.isStringStarted \
+                or parsingContext.isSingleLineCommentStarted\
+                or parsingContext.isMultiLineCommentStarted:
+            parsingContext.literalValue += ' '
+        elif parsingContext.isLiteralStarted:
+            self._processFoundLiteral(parsingContext)
         return
 
-    def _processNonSpace(self, c):
-        if self.isDirectiveStarted or self.isNameOfMacrosNeeded:
-            self.literalValue += c
-        elif self.isStringStarted:
-            if self.isEscSeqStarted:
-                self.literalValue += '\\'
-                self.isEscSeqStarted = False
-            self.literalValue += c
+    def _processNonSpace(self, c, parsingContext):
+        if parsingContext.isDirectiveStarted or parsingContext.isNameOfMacrosNeeded:
+            parsingContext.literalValue += c
+        elif parsingContext.isStringStarted:
+            if parsingContext.isEscSeqStarted:
+                parsingContext.literalValue += '\\'
+                parsingContext.isEscSeqStarted = False
+            parsingContext.literalValue += c
         else:
-            if self.isSingleLineCommentStarted or self.isMultiLineCommentStarted:
-                self.literalValue += c
-            elif not self.isLiteralStarted:
-                self.literalValue = c
-                self.isLiteralStarted = True
+            if parsingContext.isSingleLineCommentStarted or parsingContext.isMultiLineCommentStarted:
+                parsingContext.literalValue += c
+            elif not parsingContext.isLiteralStarted:
+                parsingContext.literalValue = c
+                parsingContext.isLiteralStarted = True
             else:
-                self.literalValue += c
+                parsingContext.literalValue += c
         return
 
-    def _processFoundDirective(self):
-        if self._grammar.isItDirective(self.literalValue):
-            self.isDirectiveStarted = False
-            if self.literalValue == 'define':
-                self.isNameOfMacrosNeeded = True
+    def _processFoundDirective(self, parsingContext):
+        if self._grammar.isItDirective(parsingContext.literalValue):
+            parsingContext.isDirectiveStarted = False
+            if parsingContext.literalValue == 'define':
+                parsingContext.isNameOfMacrosNeeded = True
             else:
-                self._addSimpleToken(self._grammar.getDirectiveByLiteral(self.literalValue))
+                parsingContext.addSimpleToken(self._grammar.getDirectiveByLiteral(parsingContext.literalValue))
         else:
-            self._addSimpleToken(self._grammar.UNKNOWN)
-        self.literalValue = ''
+            parsingContext.addSimpleToken(Grammar.UNKNOWN)
+        parsingContext.literalValue = ''
         return
 
-    def _processFoundLiteral(self):
-        if self._grammar.isItKeyWord(self.literalValue):
-            self._addSimpleToken(self._grammar.getKeyWordByLiteral(self.literalValue))
+    def _processFoundLiteral(self, parsingContext):
+        if self._grammar.isItKeyWord(parsingContext.literalValue):
+            parsingContext.addSimpleToken(self._grammar.getKeyWordByLiteral(parsingContext.literalValue))
         else:
-            self._addLiteralToken(self.literalValue)
-        self.isLiteralStarted = False
+            parsingContext.addLiteralToken(parsingContext.literalValue)
+        parsingContext.isLiteralStarted = False
         return
 
-    def _tryToCompletePreviousToken(self, c):
-        if not self.isStringStarted:
+    def _tryToCompletePreviousToken(self, c, parsingContext):
+        if not parsingContext.isStringStarted:
             if self._grammar.isItSinglePunctuator(c):
-                self._punctuatorsCache.append(c)
+                parsingContext.punctuatorsCache.append(c)
             else:
-                self._processCachedPunctuators()
+                self._processCachedPunctuators(parsingContext)
 
         return
 
-    def _processCachedPunctuators(self):
-        punctuator = self._grammar.UNKNOWN
-        while len(self._punctuatorsCache):
+    def _processCachedPunctuators(self, parsingContext):
+        punctuator = Grammar.UNKNOWN
+        while len(parsingContext.punctuatorsCache):
 
-            if self.isSingleLineCommentStarted:
-                self.literalValue += self._punctuatorsCache.popleft()
+            if parsingContext.isSingleLineCommentStarted:
+                parsingContext.literalValue += parsingContext.punctuatorsCache.popleft()
 
-            elif self.isMultiLineCommentStarted:
+            elif parsingContext.isMultiLineCommentStarted:
                 # only MULTI_LINE_COMMENT_END of EOL are allowed
-                if len(self._punctuatorsCache) >= 2:
-                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
+                if len(parsingContext.punctuatorsCache) >= 2:
+                    firstTwoChars = ''.join(list(parsingContext.punctuatorsCache)[0:2])
                     if self._grammar.isItPairPunctuator(firstTwoChars):
                         punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
-                    if punctuator == self._grammar.MULTI_LINE_COMMENT_END:
+                    if punctuator == Grammar.MULTI_LINE_COMMENT_END:
                         for _ in range(2):
-                            self._punctuatorsCache.popleft()
-                        self.isMultiLineCommentStarted = False
-                        self._addMultiLineCommentLineToken(self.literalValue)
-                        self._addSimpleToken(punctuator)
+                            parsingContext.punctuatorsCache.popleft()
+                        parsingContext.isMultiLineCommentStarted = False
+                        parsingContext.addMultiLineCommentLineToken(parsingContext.literalValue)
+                        parsingContext.addSimpleToken(punctuator)
                     else:
-                        self.literalValue += self._punctuatorsCache.popleft()
+                        parsingContext.literalValue += parsingContext.punctuatorsCache.popleft()
                 else:
-                    self.literalValue += self._punctuatorsCache.popleft()
+                    parsingContext.literalValue += parsingContext.punctuatorsCache.popleft()
             else:
-                if len(self._punctuatorsCache) >= 3:
-                    lastThreeChars = ''.join(list(self._punctuatorsCache)[0:3])
-                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
-                    char = ''.join(list(self._punctuatorsCache)[0:1])
+                if len(parsingContext.punctuatorsCache) >= 3:
+                    lastThreeChars = ''.join(list(parsingContext.punctuatorsCache)[0:3])
+                    firstTwoChars = ''.join(list(parsingContext.punctuatorsCache)[0:2])
+                    char = ''.join(list(parsingContext.punctuatorsCache)[0:1])
                     if self._grammar.isItTriplePunctuator(lastThreeChars):
                         punctuator = self._grammar.getTriplePunctuatorByCharacter(lastThreeChars)
                         for _ in range(3):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
                     elif self._grammar.isItPairPunctuator(firstTwoChars):
                         punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
                         for _ in range(2):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
                     elif self._grammar.isItSinglePunctuator(char):
                         punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
 
-                elif len(self._punctuatorsCache) == 2:
-                    firstTwoChars = ''.join(list(self._punctuatorsCache)[0:2])
-                    char = ''.join(list(self._punctuatorsCache)[0:1])
+                elif len(parsingContext.punctuatorsCache) == 2:
+                    firstTwoChars = ''.join(list(parsingContext.punctuatorsCache)[0:2])
+                    char = ''.join(list(parsingContext.punctuatorsCache)[0:1])
                     if self._grammar.isItPairPunctuator(firstTwoChars):
                         punctuator = self._grammar.getPairPunctuatorByCharacter(firstTwoChars)
                         for _ in range(2):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
                     elif self._grammar.isItSinglePunctuator(char):
                         punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
 
-                elif len(self._punctuatorsCache) == 1:
-                    char = ''.join(list(self._punctuatorsCache)[0:1])
+                elif len(parsingContext.punctuatorsCache) == 1:
+                    char = ''.join(list(parsingContext.punctuatorsCache)[0:1])
                     if self._grammar.isItSinglePunctuator(char):
                         punctuator = self._grammar.getSinglePunctuatorByCharacter(char)
                         for _ in range(1):
-                            self._punctuatorsCache.popleft()
+                            parsingContext.punctuatorsCache.popleft()
 
-                if punctuator != self._grammar.UNKNOWN:
-                    if punctuator == self._grammar.SINGLE_LINE_COMMENT:
-                        self.isSingleLineCommentStarted = True
-                        self.literalValue = ''
-                    elif punctuator == self._grammar.HASH:
-                        if not self.isStringStarted and not self.isDirectiveStarted:
-                            self.literalValue = ''
-                            self.isDirectiveStarted = True
-                            self.isNameOfMacrosNeeded = False
+                if punctuator != Grammar.UNKNOWN:
+                    if punctuator == Grammar.SINGLE_LINE_COMMENT:
+                        parsingContext.isSingleLineCommentStarted = True
+                        parsingContext.literalValue = ''
+                    elif punctuator == Grammar.HASH:
+                        if not parsingContext.isStringStarted and not parsingContext.isDirectiveStarted:
+                            parsingContext.literalValue = ''
+                            parsingContext.isDirectiveStarted = True
+                            parsingContext.isNameOfMacrosNeeded = False
                     else:
-                        if punctuator == self._grammar.MULTI_LINE_COMMENT_START:
-                            self.isMultiLineCommentStarted = True
-                            self.literalValue = ''
-                        elif punctuator == self._grammar.MULTI_LINE_COMMENT_END:
-                            self.isMultiLineCommentStarted = False
-                            self._addMultiLineCommentLineToken(self.literalValue)
+                        if punctuator == Grammar.MULTI_LINE_COMMENT_START:
+                            parsingContext.isMultiLineCommentStarted = True
+                            parsingContext.literalValue = ''
+                        elif punctuator == Grammar.MULTI_LINE_COMMENT_END:
+                            parsingContext.isMultiLineCommentStarted = False
+                            parsingContext.addMultiLineCommentLineToken(parsingContext.literalValue)
 
-                        self._addSimpleToken(punctuator)
+                        parsingContext.addSimpleToken(punctuator)
 
-                    punctuator = self._grammar.UNKNOWN
+                    punctuator = Grammar.UNKNOWN
 
-        self._punctuatorsCache.clear()
+        parsingContext.punctuatorsCache.clear()
 
         return
 
-    def _processEndOfLine(self):
-        if self.isEscSeqStarted:
-            if self.isLiteralStarted:
+    def _processEndOfLine(self, parsingContext):
+        if parsingContext.isEscSeqStarted:
+            if parsingContext.isLiteralStarted:
                 pass
                 #self._tokensList.addLiteralToken( self.literalValue )
                 #self.isLiteralStarted = False
             # esc sequence cannot be between two lines
-            self.isEscSeqStarted = False
+            parsingContext.isEscSeqStarted = False
         else:
-            if self.isSingleLineCommentStarted:
-                self._addSingleLineCommentToken(self.literalValue)
-                self.isSingleLineCommentStarted = False
+            if parsingContext.isSingleLineCommentStarted:
+                parsingContext.addSingleLineCommentToken(parsingContext.literalValue)
+                parsingContext.isSingleLineCommentStarted = False
 
-            elif self.isLiteralStarted:
-                self._processFoundLiteral()
-            elif self.isDirectiveStarted:
-                self._processFoundDirective()
-            elif self.isNameOfMacrosNeeded:
-                self._lastFoundMacrosName = self.literalValue
-                self.isNameOfMacrosNeeded = False
-                self._addSimpleToken(self._grammar.OBJECT_LIKE_MACRO)
-                self._addLiteralToken(self.literalValue)
+            elif parsingContext.isLiteralStarted:
+                self._processFoundLiteral(parsingContext)
+            elif parsingContext.isDirectiveStarted:
+                self._processFoundDirective(parsingContext)
+            elif parsingContext.isNameOfMacrosNeeded:
+                # parsingContext._lastFoundMacrosName = parsingContext.literalValue
+                parsingContext.isNameOfMacrosNeeded = False
+                parsingContext.addSimpleToken(Grammar.OBJECT_LIKE_MACRO)
+                parsingContext.addLiteralToken(parsingContext.literalValue)
             else:
-                self._processCachedPunctuators()
-                if self.isMultiLineCommentStarted:
-                    self._addMultiLineCommentLineToken(self.literalValue)
-                    self.literalValue = ''
-            self._addSimpleToken(self._grammar.EOL)
+                self._processCachedPunctuators(parsingContext)
+                if parsingContext.isMultiLineCommentStarted:
+                    parsingContext.addMultiLineCommentLineToken(parsingContext.literalValue)
+                    parsingContext.literalValue = ''
+            parsingContext.addSimpleToken(Grammar.EOL)
 
         return
 
-    def parseText(self, text):
-        self._clearState()
+    def parseText(self, text, parsingContext):
+        parsingContext.clearState()
         for line in text:
-            self._parseLine(line)
+            self._parseLine(line, parsingContext)
 
-        if self.isLiteralStarted:
-            self._addLiteralToken(self.literalValue)
+        if parsingContext.isLiteralStarted:
+            parsingContext.addLiteralToken(parsingContext.literalValue)
 
-        return self._tokensList
+        return parsingContext.tokensList

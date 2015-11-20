@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserOtherOperators(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_other_ternary_conditional(self):
         input = []
         input.append('a?b:c')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -31,7 +33,7 @@ class CCodeParserOtherOperators(unittest.TestCase):
         input = []
         input.append('a ? b : c')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -47,7 +49,7 @@ class CCodeParserOtherOperators(unittest.TestCase):
         input = []
         input.append('sizeof(a)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.SIZEOF, actualOutput[0].type)
         self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[1].type)
@@ -61,7 +63,7 @@ class CCodeParserOtherOperators(unittest.TestCase):
         input = []
         input.append('sizeof ( a )')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.SIZEOF, actualOutput[0].type)
         self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[1].type)
@@ -75,7 +77,7 @@ class CCodeParserOtherOperators(unittest.TestCase):
         input = []
         input.append('alignof(a)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.ALIGNOF, actualOutput[0].type)
         self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[1].type)
@@ -89,7 +91,7 @@ class CCodeParserOtherOperators(unittest.TestCase):
         input = []
         input.append('alignof ( a )')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.ALIGNOF, actualOutput[0].type)
         self.assertEqual( Grammar.PARENTHESIS_LEFT, actualOutput[1].type)

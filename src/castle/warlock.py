@@ -2,6 +2,7 @@ __author__ = 'V8q1ez'
 
 from src.castle.ccodeparser import Grammar
 from src.castle.ccodeparser import CCodeParser
+from src.castle.ccodeparser import CCodeParsingContext
 
 class warlock():
     def __init__(self, grammar):
@@ -10,8 +11,9 @@ class warlock():
         self.isMultiLineCommentStartedInLeft = False
 
     def areFilesEquivalent(self, left_file_text, right_file_text):
-        left_file_tokens = CCodeParser(self._grammar).parseText(left_file_text)
-        right_file_tokens = CCodeParser(self._grammar).parseText(right_file_text)
+        parser = CCodeParser(self._grammar)
+        left_file_tokens = parser.parseText(left_file_text, CCodeParsingContext())
+        right_file_tokens = parser.parseText(right_file_text, CCodeParsingContext())
 
         lf_index = 0
         rf_index = 0

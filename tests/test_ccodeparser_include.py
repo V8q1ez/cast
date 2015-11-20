@@ -4,6 +4,7 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserInclude(unittest.TestCase):
@@ -12,10 +13,11 @@ class CCodeParserInclude(unittest.TestCase):
         self.tkz = CCodeParser(self._grammar)
 
     def test_include_quotes(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#include "hello.h"')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.INCLUDE, actualOutput[0].type)
         self.assertEqual( Grammar.QUOTE, actualOutput[1].type)
@@ -26,11 +28,12 @@ class CCodeParserInclude(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[4].type)
 
     def test_include_multi_broken_directive(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#in\\')
         input.append('clude')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.INCLUDE, actualOutput[0].type)
 

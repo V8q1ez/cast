@@ -4,6 +4,7 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserComparisonRelational(unittest.TestCase):
@@ -12,10 +13,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.tkz = CCodeParser(self._grammar)
 
     def test_comparison_equal_to(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a==b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -26,10 +28,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_equal_to_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a == b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -40,10 +43,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_not_equal_to(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a!=b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -54,10 +58,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_not_equal_to_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a != b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -68,10 +73,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_less_than(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a<b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -82,10 +88,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_less_than_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a < b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -96,10 +103,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_greater_than(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a>b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -110,10 +118,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_greater_than_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a > b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -124,10 +133,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_less_or_equal(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a<=b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -138,10 +148,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_less_or_equal_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a <= b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -152,10 +163,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_less_or_equal_off_nominal(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a < = b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -167,10 +179,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[4].type)
 
     def test_comparison_greater_or_equal(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a>=b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -181,10 +194,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_greater_or_equal_with_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a >= b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -195,10 +209,11 @@ class CCodeParserComparisonRelational(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_comparison_greater_or_equal_off_nominal(self):
+        context = CCodeParsingContext()
         input = []
         input.append('a > = b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)

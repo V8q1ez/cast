@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserVariables(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_variables_simple(self):
         input = []
         input.append('int varName;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'int', actualOutput[0].literalValue)
@@ -30,7 +32,7 @@ class CCodeParserVariables(unittest.TestCase):
         input = []
         input.append('static int varName;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual(Grammar. STATIC, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -45,7 +47,7 @@ class CCodeParserVariables(unittest.TestCase):
         input = []
         input.append('int varName=100;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'int', actualOutput[0].literalValue)
@@ -62,7 +64,7 @@ class CCodeParserVariables(unittest.TestCase):
         input = []
         input.append('int varName=[1,2];')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'int', actualOutput[0].literalValue)
@@ -84,7 +86,7 @@ class CCodeParserVariables(unittest.TestCase):
         input = []
         input.append('int varName = [ 1 , 2 ] ;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'int', actualOutput[0].literalValue)

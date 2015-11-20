@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserComments(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_comments_single_line_in_string(self):
         input = []
         input.append('"a//b"')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.QUOTE, actualOutput[0].type)
         self.assertEqual( Grammar.STRING, actualOutput[1].type)
@@ -28,7 +30,7 @@ class CCodeParserComments(unittest.TestCase):
         input = []
         input.append('#include "//e"')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.INCLUDE, actualOutput[0].type)
         self.assertEqual( Grammar.QUOTE, actualOutput[1].type)
@@ -42,7 +44,7 @@ class CCodeParserComments(unittest.TestCase):
         input = []
         input.append('// */')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.SINGLE_LINE_COMMENT, actualOutput[0].type)
         self.assertEqual( ' */', actualOutput[0].literalValue)
@@ -53,7 +55,7 @@ class CCodeParserComments(unittest.TestCase):
         input = []
         input.append('f = g/**//h;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'f', actualOutput[0].literalValue)
@@ -76,7 +78,7 @@ class CCodeParserComments(unittest.TestCase):
         input.append('//\\')
         input.append('i();')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.SINGLE_LINE_COMMENT, actualOutput[0].type)
         self.assertEqual( 'i();', actualOutput[0].literalValue)
@@ -88,7 +90,7 @@ class CCodeParserComments(unittest.TestCase):
         input.append('/\\')
         input.append('/ j();')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.SINGLE_LINE_COMMENT, actualOutput[0].type)
         self.assertEqual( ' j();', actualOutput[0].literalValue)
@@ -99,7 +101,7 @@ class CCodeParserComments(unittest.TestCase):
         input = []
         input.append('/*//*/ l();')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_START, actualOutput[0].type)
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_LINE, actualOutput[1].type)
@@ -117,7 +119,7 @@ class CCodeParserComments(unittest.TestCase):
         input = []
         input.append('/* // */ l();')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_START, actualOutput[0].type)
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_LINE, actualOutput[1].type)
@@ -136,7 +138,7 @@ class CCodeParserComments(unittest.TestCase):
         input.append('m = n//**/o')
         input.append(' +p;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'm', actualOutput[0].literalValue)
@@ -158,7 +160,7 @@ class CCodeParserComments(unittest.TestCase):
         input.append('m = n// **/o')
         input.append(' +p;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'm', actualOutput[0].literalValue)
@@ -181,7 +183,7 @@ class CCodeParserComments(unittest.TestCase):
         input.append('* Function: a')
         input.append('******/')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_START, actualOutput[0].type)
         self.assertEqual( Grammar.MULTI_LINE_COMMENT_LINE, actualOutput[1].type)

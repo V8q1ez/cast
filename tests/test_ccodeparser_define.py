@@ -4,6 +4,7 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserDefine(unittest.TestCase):
@@ -12,10 +13,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.tkz = CCodeParser(self._grammar)
 
     def test_define_object_like(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -26,10 +28,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[3].type)
 
     def test_define_function_like(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a() b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -42,10 +45,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_function_like_param(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(x) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -60,10 +64,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[6].type)
 
     def test_define_function_like_param_2(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(x,y) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -81,10 +86,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[8].type)
 
     def test_define_function_like_param_2_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a( x , y ) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -102,10 +108,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[8].type)
 
     def test_define_function_like_param_3(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(x,y,z) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -126,10 +133,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[10].type)
 
     def test_define_function_like_param_3_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(  x  ,  y  ,  z  ) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -150,10 +158,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[10].type)
 
     def test_define_variadic(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(...) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -167,10 +176,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[6].type)
 
     def test_define_variadic_param_1(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(x,...) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -187,10 +197,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[8].type)
 
     def test_define_variadic_param_1_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a( x , ... ) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -207,10 +218,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[8].type)
 
     def test_define_variadic_param_2(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a(x,y,...) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -230,10 +242,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[10].type)
 
     def test_define_variadic_param_2_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a( x , y , ... ) b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -253,10 +266,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[10].type)
 
     def test_define_object_like_empty_parenthesis_impl(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a ()')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -267,10 +281,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[4].type)
 
     def test_define_object_like_constant_in_parenthesis(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define aa (5)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -283,10 +298,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_object_like_float_constant_in_parenthesis(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a (5.5)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -299,10 +315,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_object_like_string_constant(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a "str"')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -315,10 +332,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_object_like_str_const_like_variadic(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define a "..."')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -331,10 +349,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[5].type)
 
     def test_define_function_like_sum(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define sum(x,y) (x)+(y)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -359,10 +378,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[14].type)
 
     def test_define_function_like_sum_spaces(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define sum( x , y ) ( x ) + ( y )')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.FUNCTION_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -387,10 +407,11 @@ class CCodeParserDefine(unittest.TestCase):
         self.assertEqual( Grammar.EOL, actualOutput[14].type)
 
     def test_define_wrong_function_like_sum(self):
+        context = CCodeParsingContext()
         input = []
         input.append('#define sum (x,y) (x)+(y)')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, context)
 
         self.assertEqual( Grammar.OBJECT_LIKE_MACRO, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)

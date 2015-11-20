@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserBitwiseOperations(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_bitwise_negation(self):
         input = []
         input.append('~a')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.BITWISE_NOT, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -27,7 +29,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('~ a')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.BITWISE_NOT, actualOutput[0].type)
         self.assertEqual( Grammar.LITERAL, actualOutput[1].type)
@@ -39,7 +41,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a&b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -53,7 +55,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a & b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -67,7 +69,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a|b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -81,7 +83,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a | b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -95,7 +97,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a^b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -109,7 +111,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a ^ b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -123,7 +125,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a<<b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -137,7 +139,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a << b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -151,7 +153,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a>>b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -165,7 +167,7 @@ class CCodeParserBitwiseOperations(unittest.TestCase):
         input = []
         input.append('a >> b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)

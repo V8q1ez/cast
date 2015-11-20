@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserMemberAndPointer(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_member_structure_dereference(self):
         input = []
         input.append('a->b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)
@@ -28,7 +30,7 @@ class CCodeParserMemberAndPointer(unittest.TestCase):
         input = []
         input.append('a -> b')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.LITERAL, actualOutput[0].type)
         self.assertEqual( 'a', actualOutput[0].literalValue)

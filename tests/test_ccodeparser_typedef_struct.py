@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserTypedefStruct(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_typedef_struct_single_line(self):
         input = []
         input.append('typedef struct{int a;}STRUCT_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.STRUCT, actualOutput[1].type)
@@ -36,7 +38,7 @@ class CCodeParserTypedefStruct(unittest.TestCase):
         input = []
         input.append(' typedef struct { int a ; } STRUCT_TYPE_NAME ; ')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.STRUCT, actualOutput[1].type)
@@ -61,7 +63,7 @@ class CCodeParserTypedefStruct(unittest.TestCase):
         input.append('    short int b;')
         input.append('}STRUCT_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.STRUCT, actualOutput[1].type)
@@ -94,7 +96,7 @@ class CCodeParserTypedefStruct(unittest.TestCase):
         input = []
         input.append('typedef struct{int a:2;}STRUCT_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.STRUCT, actualOutput[1].type)

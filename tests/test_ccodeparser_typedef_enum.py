@@ -4,18 +4,20 @@ import unittest
 
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import CCodeParsingContext
 
 
 class CCodeParserTypedef(unittest.TestCase):
     def setUp(self):
         self._grammar = Grammar()
+        self._context = CCodeParsingContext()
         self.tkz = CCodeParser(self._grammar)
 
     def test_typedef_enum_single_line(self):
         input = []
         input.append('typedef enum{ENUM_VALUE_1}ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -33,7 +35,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input = []
         input.append('typedef enum { ENUM_VALUE_1 } ENUM_TYPE_NAME ;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -51,7 +53,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input = []
         input.append('typedef enum{ENUM_VALUE_1=2}ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -72,7 +74,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input = []
         input.append('typedef enum{ ENUM_VALUE_1 = 2 }ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -97,7 +99,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input.append('    ENUM_VALUE_2')
         input.append('}ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -126,7 +128,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input.append('    ENUM_VALUE_2 = 2')
         input.append('}ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
@@ -157,7 +159,7 @@ class CCodeParserTypedef(unittest.TestCase):
         input = []
         input.append('typedef enum TYPE{ENUM_VALUE_1}ENUM_TYPE_NAME;')
 
-        actualOutput = self.tkz.parseText(input)
+        actualOutput = self.tkz.parseText(input, self._context)
 
         self.assertEqual( Grammar.TYPEDEF, actualOutput[0].type)
         self.assertEqual( Grammar.ENUM, actualOutput[1].type)
