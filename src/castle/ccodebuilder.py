@@ -9,27 +9,74 @@ class CCodeBuildingContext():
         self.currentLine = ''
         self.isMacrosNameHandled = False
 
+class CSyntaxError(RuntimeError):
+   def __init__(self, arg):
+      self.args = arg
+
 class CCodeBuilder():
     def __init__(self, codingRules):
         self._codingRules = codingRules
 
     def buildFormattedText(self, tokenList, buildingContext):
-        for t in tokenList:
+        index = 0
+        while index < len(tokenList):
+            t = tokenList[index]
+
             if t.type == Grammar.OBJECT_LIKE_MACRO:
-                buildingContext.currentLine += '#define '
+                index = self._buildObjectLikeMacro(tokenList, index, buildingContext)
 
-            elif t.type == Grammar.LITERAL:
-                if buildingContext.isMacrosNameHandled:
-                    buildingContext.currentLine += t.literalValue
-                else:
-                    buildingContext.currentLine += self._codingRules.handle_macros_name(t.literalValue)
-                    buildingContext.isMacrosNameHandled = True
+            elif t.type == Grammar.TYPEDEF:
+                index = self._buildTypeDefinition(tokenList, index, buildingContext)
 
-            elif t.type == Grammar.PARENTHESIS_LEFT:
-                buildingContext.currentLine += ' ('
-            elif t.type == Grammar.PARENTHESIS_RIGHT:
-                buildingContext.currentLine += ')'
+            index += 1
 
         buildingContext.outputText.append(buildingContext.currentLine)
 
         return buildingContext.outputText
+
+    def _buildObjectLikeMacro(self, tokenList, index, context):
+        context.currentLine += '#define '
+        index += 1
+        while index < len(tokenList):
+            t = tokenList[index]
+            if t.type == Grammar.LITERAL:
+                if context.isMacrosNameHandled:
+                    context.currentLine += t.literalValue
+                else:
+                    context.currentLine += self._codingRules.handle_macros_name(t.literalValue)
+                    context.isMacrosNameHandled = True
+
+            elif t.type == Grammar.PARENTHESIS_LEFT:
+                context.currentLine += ' ('
+            elif t.type == Grammar.PARENTHESIS_RIGHT:
+                context.currentLine += ')'
+            index += 1
+        return index
+
+    def _buildTypeDefinition(self, tokenList, index, context):
+        context.currentLine += 'typedef '
+        index += 1
+        while index < len(tokenList):
+            t = tokenList[index]
+            if t.type == Grammar.ENUM:
+                index = self._buildEnumTypeDefinition(tokenList, index, context)
+            else: index += 1
+        return index
+
+    def _buildEnumTypeDefinition(self, tokenList, index, context):
+        context.currentLine += 'enum{ENUM_VALUE_1}ENUM_TYPE_NAME_E;'
+        index += 1
+        while index < len(tokenList):
+            t = tokenList[index]
+            """if t == Grammar.PARENTHESIS_LEFT:
+                context.currentLine += \
+                    self._codingRules.handle_space_before_opening_parenthesis()
+                context.currentLine += '{'
+            elif t == Grammar.LITERAL:
+                pass
+            """
+            if t == Grammar.SEMICOLON:
+                return index
+            index += 1
+        return index
+
