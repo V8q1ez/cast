@@ -1,16 +1,13 @@
-from src.codebuilders.macrobuilder import MacroBuilder
-from src.codebuilders.typedefbuilder import TypeDefBuilder
-
 __author__ = 'V8q1ez'
 
-from src.castle.codingrules import CodingRules
+from src.codebuilders.macrobuilder import MacroBuilder, MacroBuilderContext
+from src.codebuilders.typedefbuilder import TypeDefBuilder
 from src.castle.ccodeparser import Grammar
 
 class CCodeBuildingContext():
     def __init__(self):
         self.outputText = []
         self.currentLine = ''
-        self.isMacrosNameHandled = False
         self.codingRules = None
 
 class CSyntaxError(RuntimeError):
@@ -27,7 +24,8 @@ class CCodeBuilder():
             t = tokenList[index]
 
             if t.type == Grammar.OBJECT_LIKE_MACRO:
-                index = MacroBuilder.build(tokenList, index, buildingContext)
+                localContext = MacroBuilderContext()
+                index = MacroBuilder.build(tokenList, index, buildingContext, localContext)
 
             elif t.type == Grammar.TYPEDEF:
                 index = TypeDefBuilder.build(tokenList, index, buildingContext)

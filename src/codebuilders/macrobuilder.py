@@ -1,29 +1,32 @@
 __author__ = 'V8q1ez'
 
-from src.castle.codingrules import CodingRules
 from src.castle.ccodeparser import Grammar
+
+class MacroBuilderContext():
+    def __init__(self):
+        self.isMacrosNameHandled = False
 
 class MacroBuilder():
     @classmethod
-    def build(self, tokenList, index, context):
-        return self._buildObjectLikeMacro(tokenList, index, context)
+    def build(self, tokenList, index, gContext, lContext):
+        return self._buildObjectLikeMacro(tokenList, index, gContext, lContext)
 
     @classmethod
-    def _buildObjectLikeMacro(self, tokenList, index, context):
-        context.currentLine += '#define '
+    def _buildObjectLikeMacro(self, tokenList, index, gContext, lContext):
+        gContext.currentLine += '#define '
         index += 1
         while index < len(tokenList):
             t = tokenList[index]
             if t.type == Grammar.LITERAL:
-                if context.isMacrosNameHandled:
-                    context.currentLine += t.literalValue
+                if lContext.isMacrosNameHandled:
+                    gContext.currentLine += t.literalValue
                 else:
-                    context.currentLine += context.codingRules.handle_macros_name(t.literalValue)
-                    context.isMacrosNameHandled = True
+                    gContext.currentLine += gContext.codingRules.handle_macros_name(t.literalValue)
+                    lContext.isMacrosNameHandled = True
 
             elif t.type == Grammar.PARENTHESIS_LEFT:
-                context.currentLine += ' ('
+                gContext.currentLine += ' ('
             elif t.type == Grammar.PARENTHESIS_RIGHT:
-                context.currentLine += ')'
+                gContext.currentLine += ')'
             index += 1
         return index
