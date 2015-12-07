@@ -5,9 +5,6 @@ class EnumTypeDefinitionCodingRules():
     def handle_space_before_opening_brace(self):
         return '\n'
 
-    def handle_space_after_opening_brace(self):
-        return '\n'
-
     def handle_space_before_closing_brace(self):
         return '\n'
 
@@ -15,7 +12,7 @@ class EnumTypeDefinitionCodingRules():
         return ''
 
     def handle_space_before_next_element(self):
-        return '    '
+        return '\n    '
 
 class CodingRules():
     def __init__(self, enum):

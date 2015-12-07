@@ -34,8 +34,6 @@ class TypeDefBuilder():
                 gContext.currentLine += \
                     gContext.codingRules.enum.handle_space_before_opening_brace()
                 gContext.currentLine += '{'
-                gContext.currentLine += \
-                    gContext.codingRules.enum.handle_space_after_opening_brace()
             if t.type == Grammar.BRACE_RIGHT:
                 lContext.bodyIndex -= 1
                 gContext.currentLine += \
@@ -48,6 +46,9 @@ class TypeDefBuilder():
                     gContext.currentLine += \
                         gContext.codingRules.enum.handle_space_before_next_element()
                 gContext.currentLine += t.literalValue
+
+            elif t.type == Grammar.COMMA:
+                gContext.currentLine += ','
 
             elif t.type == Grammar.SEMICOLON:
                 gContext.currentLine += ';'
