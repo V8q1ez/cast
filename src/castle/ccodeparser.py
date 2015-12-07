@@ -170,7 +170,7 @@ class Grammar():
 
 
 
-class token():
+class CToken():
     def __init__(self, type):
         self.type = type
         self.literalValue = ''
@@ -202,25 +202,25 @@ class CCodeParsingContext():
         self.isNameOfMacrosNeeded = False
 
     def addSimpleToken(self, tokenType):
-        self.tokensList.append( token(tokenType) )
+        self.tokensList.append(CToken(tokenType))
 
     def addLiteralToken(self, literalValue):
-        t = token(Grammar.LITERAL)
+        t = CToken(Grammar.LITERAL)
         t.literalValue = literalValue
         self.tokensList.append(t)
 
     def addStringToken(self, literalValue):
-        t = token(Grammar.STRING)
+        t = CToken(Grammar.STRING)
         t.literalValue = literalValue
         self.tokensList.append(t)
 
     def addSingleLineCommentToken(self, literalValue):
-        t = token(Grammar.SINGLE_LINE_COMMENT)
+        t = CToken(Grammar.SINGLE_LINE_COMMENT)
         t.literalValue = literalValue
         self.tokensList.append(t)
 
     def addMultiLineCommentLineToken(self, literalValue):
-        t = token(Grammar.MULTI_LINE_COMMENT_LINE)
+        t = CToken(Grammar.MULTI_LINE_COMMENT_LINE)
         t.literalValue = literalValue
         self.tokensList.append(t)
 

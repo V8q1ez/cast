@@ -1,7 +1,7 @@
 __author__ = 'V8q1ez'
 
 from src.codebuilders.macrobuilder import MacroBuilder, MacroBuilderContext
-from src.codebuilders.typedefbuilder import TypeDefBuilder
+from src.codebuilders.typedefbuilder import TypeDefBuilder, TypedefBuilderContext
 from src.castle.ccodeparser import Grammar
 
 class CCodeBuildingContext():
@@ -28,7 +28,8 @@ class CCodeBuilder():
                 index = MacroBuilder.build(tokenList, index, buildingContext, localContext)
 
             elif t.type == Grammar.TYPEDEF:
-                index = TypeDefBuilder.build(tokenList, index, buildingContext)
+                localContext = TypedefBuilderContext()
+                index = TypeDefBuilder.build(tokenList, index, buildingContext, localContext)
 
             index += 1
 

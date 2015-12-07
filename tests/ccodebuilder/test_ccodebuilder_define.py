@@ -5,7 +5,7 @@ import unittest
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import CCodeParsingContext
 from src.castle.ccodeparser import Grammar
-from src.castle.codingrules import CodingRules
+from src.castle.codingrules import CodingRules, EnumTypeDefinitionCodingRules
 from src.codebuilders.ccodebuilder import CCodeBuilder
 from src.codebuilders.ccodebuilder import CCodeBuildingContext
 
@@ -25,7 +25,7 @@ class CCodeBuilderDefine(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRulesDefine()
+        bContext.codingRules = CodingRulesDefine( EnumTypeDefinitionCodingRules() )
 
         inputText = """#define literal (5)\n"""
         expectedOutput = """#define LITERAL (5)\n"""

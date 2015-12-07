@@ -5,15 +5,9 @@ import unittest
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import CCodeParsingContext
 from src.castle.ccodeparser import Grammar
-from src.castle.codingrules import CodingRules
+from src.castle.codingrules import CodingRules, EnumTypeDefinitionCodingRules
 from src.codebuilders.ccodebuilder import CCodeBuilder
 from src.codebuilders.ccodebuilder import CCodeBuildingContext
-
-
-class CodingRulesEnum(CodingRules):
-    def handle_enum_name(self, name):
-        return 'ENUM_TYPE_NAME_E'
-
 
 class CCodeBuilderEnum(unittest.TestCase):
     def setUp(self):
@@ -25,11 +19,14 @@ class CCodeBuilderEnum(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRulesEnum()
+        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
 
-        inputText = "typedef enum{ENUM_VALUE_1}enum_type_name;"
-        expectedOutput = "typedef enum{ENUM_VALUE_1}ENUM_TYPE_NAME_E;"
+        inputText = "typedef enum{ENUM_VALUE_1}ENUM_TYPE_NAME_E;"
+        expectedOutput = """typedef enum
+{
+    ENUM_VALUE_1
+}ENUM_TYPE_NAME_E;"""
 
         actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
-        self.assertEqual( expectedOutput.splitlines(), actualOutput )
+        self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
