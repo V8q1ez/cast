@@ -1,15 +1,13 @@
 __author__ = 'V8q1ez'
 
 import unittest
-import mock
-
 
 from src.castle.ccodeparser import CCodeParser
-from src.castle.ccodebuilder import CCodeBuilder
-from src.castle.codingrules import CodingRules
-from src.castle.ccodeparser import Grammar
 from src.castle.ccodeparser import CCodeParsingContext
-from src.castle.ccodebuilder import CCodeBuildingContext
+from src.castle.ccodeparser import Grammar
+from src.castle.codingrules import CodingRules
+from src.codebuilders.ccodebuilder import CCodeBuilder
+from src.codebuilders.ccodebuilder import CCodeBuildingContext
 
 
 class CodingRulesEnum(CodingRules):

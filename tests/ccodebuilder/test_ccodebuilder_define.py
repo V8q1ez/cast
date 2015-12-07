@@ -2,13 +2,12 @@ __author__ = 'V8q1ez'
 
 import unittest
 
-
 from src.castle.ccodeparser import CCodeParser
-from src.castle.ccodebuilder import CCodeBuilder
-from src.castle.codingrules import CodingRules
-from src.castle.ccodeparser import Grammar
 from src.castle.ccodeparser import CCodeParsingContext
-from src.castle.ccodebuilder import CCodeBuildingContext
+from src.castle.ccodeparser import Grammar
+from src.castle.codingrules import CodingRules
+from src.codebuilders.ccodebuilder import CCodeBuilder
+from src.codebuilders.ccodebuilder import CCodeBuildingContext
 
 
 class CodingRulesDefine(CodingRules):
