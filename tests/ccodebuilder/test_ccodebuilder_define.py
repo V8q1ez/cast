@@ -21,9 +21,11 @@ class CCodeBuilderDefine(unittest.TestCase):
         pass
 
     def test_define_lower_case_literal_allowed(self):
-        builder = CCodeBuilder(CodingRulesDefine())
+        builder = CCodeBuilder()
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
+
+        bContext.codingRules = CodingRulesDefine()
 
         inputText = """#define literal (5)\n"""
         expectedOutput = """#define LITERAL (5)\n"""

@@ -8,14 +8,15 @@ class CCodeBuildingContext():
         self.outputText = []
         self.currentLine = ''
         self.isMacrosNameHandled = False
+        self.codingRules = None
 
 class CSyntaxError(RuntimeError):
    def __init__(self, arg):
       self.args = arg
 
 class CCodeBuilder():
-    def __init__(self, codingRules):
-        self._codingRules = codingRules
+    def __init__(self):
+        pass
 
     def buildFormattedText(self, tokenList, buildingContext):
         index = 0
@@ -43,7 +44,7 @@ class CCodeBuilder():
                 if context.isMacrosNameHandled:
                     context.currentLine += t.literalValue
                 else:
-                    context.currentLine += self._codingRules.handle_macros_name(t.literalValue)
+                    context.currentLine += context.codingRules.handle_macros_name(t.literalValue)
                     context.isMacrosNameHandled = True
 
             elif t.type == Grammar.PARENTHESIS_LEFT:
@@ -70,7 +71,7 @@ class CCodeBuilder():
             t = tokenList[index]
             """if t == Grammar.PARENTHESIS_LEFT:
                 context.currentLine += \
-                    self._codingRules.handle_space_before_opening_parenthesis()
+                    context.codingRules.handle_space_before_opening_parenthesis()
                 context.currentLine += '{'
             elif t == Grammar.LITERAL:
                 pass

@@ -21,9 +21,11 @@ class CCodeBuilderEnum(unittest.TestCase):
         pass
 
     def test_enum_single_line(self):
-        builder = CCodeBuilder(CodingRulesEnum())
+        builder = CCodeBuilder()
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
+
+        bContext.codingRules = CodingRulesEnum()
 
         inputText = "typedef enum{ENUM_VALUE_1}enum_type_name;"
         expectedOutput = "typedef enum{ENUM_VALUE_1}ENUM_TYPE_NAME_E;"
