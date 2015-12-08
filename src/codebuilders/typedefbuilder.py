@@ -5,6 +5,7 @@ from src.castle.ccodeparser import Grammar, CToken
 class TypedefBuilderContext():
     def __init__(self):
         self.bodyIndex = 0
+        self.isAssignmentHandlingRequired = False
 
 
 class TypeDefBuilder():
@@ -32,23 +33,36 @@ class TypeDefBuilder():
             if t.type == Grammar.BRACE_LEFT:
                 lContext.bodyIndex += 1
                 gContext.currentLine += \
-                    gContext.codingRules.enum.handle_space_before_opening_brace()
+                    gContext.codingRules.enum.get_space_before_opening_brace()
                 gContext.currentLine += '{'
+
             if t.type == Grammar.BRACE_RIGHT:
                 lContext.bodyIndex -= 1
                 gContext.currentLine += \
-                    gContext.codingRules.enum.handle_space_before_closing_brace()
+                    gContext.codingRules.enum.get_space_before_closing_brace()
                 gContext.currentLine += '}'
                 gContext.currentLine += \
-                    gContext.codingRules.enum.handle_space_after_closing_brace()
+                    gContext.codingRules.enum.get_space_after_closing_brace()
+
             elif t.type == Grammar.LITERAL:
                 if lContext.bodyIndex != 0:
-                    gContext.currentLine += \
-                        gContext.codingRules.enum.handle_space_before_next_element()
+                    if lContext.isAssignmentHandlingRequired:
+                        lContext.isAssignmentHandlingRequired = False
+                    else:
+                        gContext.currentLine += \
+                            gContext.codingRules.enum.get_space_before_next_element()
                 gContext.currentLine += t.literalValue
 
             elif t.type == Grammar.COMMA:
                 gContext.currentLine += ','
+
+            elif t.type == Grammar.ASSIGNMENT:
+                lContext.isAssignmentHandlingRequired = True
+                gContext.currentLine += \
+                        gContext.codingRules.enum.get_space_before_assignment()
+                gContext.currentLine += '='
+                gContext.currentLine += \
+                        gContext.codingRules.enum.get_space_after_assignment()
 
             elif t.type == Grammar.SEMICOLON:
                 gContext.currentLine += ';'
