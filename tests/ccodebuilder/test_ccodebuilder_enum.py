@@ -64,3 +64,24 @@ class CCodeBuilderEnum(unittest.TestCase):
         actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
+    def test_enum_with_single_line_comment(self):
+        builder = CCodeBuilder()
+        pContext = CCodeParsingContext()
+        bContext = CCodeBuildingContext()
+
+        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+
+        inputText = """typedef enum{
+ENUM_VALUE_1=0, // Default value
+ENUM_VALUE_2=PI      // 3.1415
+}ENUM_TYPE_NAME_E;"""
+
+        expectedOutput = """typedef enum
+{
+    ENUM_VALUE_1 = 0,    // Default value
+    ENUM_VALUE_2 = PI    // 3.1415
+}ENUM_TYPE_NAME_E;"""
+
+        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
+

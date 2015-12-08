@@ -64,6 +64,11 @@ class TypeDefBuilder():
                 gContext.currentLine += \
                         gContext.codingRules.enum.get_space_after_assignment()
 
+            elif t.type == Grammar.SINGLE_LINE_COMMENT:
+                gContext.currentLine += \
+                    gContext.codingRules.enum.get_min_space_before_comment()
+                gContext.currentLine += '//' + t.literalValue
+
             elif t.type == Grammar.SEMICOLON:
                 gContext.currentLine += ';'
                 return index
