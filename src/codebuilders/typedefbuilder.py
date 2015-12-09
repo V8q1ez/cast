@@ -5,29 +5,77 @@ from src.castle.ccodeparser import Grammar, CToken
 class TypedefBuilderContext():
     def __init__(self):
         self.bodyIndex = 0
-        self.isAssignmentHandlingRequired = False
+        self.activeBlock = []
 
 
 class TypeDefBuilder():
     @classmethod
     def build(self, tokenList, index, gContext, lContext):
-        gContext.currentLine += 'typedef '
-        index += 1
-        while index < len(tokenList):
-            t = tokenList[index]
-            if t.type == Grammar.ENUM:
-                index = self._buildEnumTypeDefinition(tokenList, index, gContext, lContext)
-            else: index += 1
+
+        index = self._popCodeBlockToBuild(tokenList, index, lContext)
+        self._analyseAndCorrectBlock(lContext)
+
+        if lContext.activeBlock[1].type == Grammar.ENUM:
+            self._buildEnumTypeDefinition(gContext, lContext)
+
         return index
 
     @classmethod
-    def _buildEnumTypeDefinition(self, tokenList, index, gContext, lContext):
+    def _popCodeBlockToBuild(self, tokenList, index, lContext):
         assert isinstance(lContext, TypedefBuilderContext)
-        gContext.currentLine += 'enum'
+        lContext.activeBlock.append(tokenList[index]) # typedef
         index += 1
+        isClosingBraceFound = False
         while index < len(tokenList):
-
             t = tokenList[index]
+            assert  isinstance(t, CToken)
+            lContext.activeBlock.append(tokenList[index])
+            if  t.type == Grammar.BRACE_LEFT:
+                isClosingBraceFound = True
+            elif  isClosingBraceFound and t.type == Grammar.SEMICOLON:
+                break
+            index += 1
+
+        return index
+
+    @classmethod
+    def _analyseAndCorrectBlock(self, lContext):
+        assert isinstance(lContext, TypedefBuilderContext)
+        index = 0
+        elementIndex = 0
+        commentIndex = 0
+        bodyIndex = 0
+        while index < len(lContext.activeBlock):
+            t = lContext.activeBlock[index]
+            assert  isinstance(t, CToken)
+            if  t.type == Grammar.BRACE_LEFT:
+                bodyIndex += 1
+            elif  t.type == Grammar.BRACE_RIGHT:
+                bodyIndex -= 1
+            elif t.type == Grammar.LITERAL:
+                if bodyIndex > 0:
+                    elementIndex = index
+            elif t.type == Grammar.SINGLE_LINE_COMMENT:
+                commentIndex = index
+            elif t.type == Grammar.COMMA:
+                # issue: element // comment EOL ,
+                if elementIndex +1 == commentIndex and commentIndex +2 == index:
+                    lContext.activeBlock[commentIndex], lContext.activeBlock[index] = \
+                        lContext.activeBlock[index], lContext.activeBlock[commentIndex]
+                    lContext.activeBlock[index], lContext.activeBlock[index-1] = \
+                        lContext.activeBlock[index-1], lContext.activeBlock[index]
+            index += 1
+
+
+    @classmethod
+    def _buildEnumTypeDefinition(self, gContext, lContext):
+        assert isinstance(lContext, TypedefBuilderContext)
+        gContext.currentLine += 'typedef enum'
+        index = 2
+        isAssignmentHandlingRequired = False
+        while index < len(lContext.activeBlock):
+
+            t = lContext.activeBlock[index]
             assert isinstance(t, CToken)
 
             if t.type == Grammar.BRACE_LEFT:
@@ -46,8 +94,8 @@ class TypeDefBuilder():
 
             elif t.type == Grammar.LITERAL:
                 if lContext.bodyIndex != 0:
-                    if lContext.isAssignmentHandlingRequired:
-                        lContext.isAssignmentHandlingRequired = False
+                    if isAssignmentHandlingRequired:
+                        isAssignmentHandlingRequired = False
                     else:
                         gContext.currentLine += \
                             gContext.codingRules.enum.get_space_before_next_element()
@@ -57,7 +105,7 @@ class TypeDefBuilder():
                 gContext.currentLine += ','
 
             elif t.type == Grammar.ASSIGNMENT:
-                lContext.isAssignmentHandlingRequired = True
+                isAssignmentHandlingRequired = True
                 gContext.currentLine += \
                         gContext.codingRules.enum.get_space_before_assignment()
                 gContext.currentLine += '='
@@ -73,4 +121,4 @@ class TypeDefBuilder():
                 gContext.currentLine += ';'
                 return index
             index += 1
-        return index
+        return
