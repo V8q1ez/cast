@@ -5,12 +5,12 @@ import unittest
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import CCodeParsingContext
 from src.castle.ccodeparser import Grammar
-from src.castle.codingrules import CodingRules, EnumTypeDefinitionCodingRules
+from src.castle.codingrules import DefaultCodingRules, EnumTypeDefinitionDefaultCodingRules
 from src.codebuilders.ccodebuilder import CCodeBuilder
 from src.codebuilders.ccodebuilder import CCodeBuildingContext
 
 
-class CodingRulesDefine(CodingRules):
+class CodingRulesDefine(DefaultCodingRules):
     def handle_macros_name(self, name):
         return 'LITERAL'
 
@@ -25,7 +25,7 @@ class CCodeBuilderDefine(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRulesDefine( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = CodingRulesDefine(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """#define literal (5)\n"""
         expectedOutput = """#define LITERAL (5)\n"""

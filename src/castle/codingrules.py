@@ -1,7 +1,7 @@
 __author__ = 'V8q1ez'
 
 
-class EnumTypeDefinitionCodingRules():
+class EnumTypeDefinitionDefaultCodingRules():
     def get_space_before_opening_brace(self):
         return '\n'
 
@@ -23,7 +23,7 @@ class EnumTypeDefinitionCodingRules():
     def get_min_space_before_comment(self):
         return '    '
 
-class CodingRules():
+class DefaultCodingRules():
     def __init__(self, enum):
         self.enum = enum
 

@@ -5,7 +5,7 @@ import unittest
 from src.castle.ccodeparser import CCodeParser
 from src.castle.ccodeparser import CCodeParsingContext
 from src.castle.ccodeparser import Grammar
-from src.castle.codingrules import CodingRules, EnumTypeDefinitionCodingRules
+from src.castle.codingrules import DefaultCodingRules, EnumTypeDefinitionDefaultCodingRules
 from src.codebuilders.ccodebuilder import CCodeBuilder
 from src.codebuilders.ccodebuilder import CCodeBuildingContext
 
@@ -19,7 +19,7 @@ class CCodeBuilderEnum(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = "typedef enum{ENUM_VALUE_1}ENUM_TYPE_NAME_E;"
         expectedOutput = """typedef enum
@@ -35,7 +35,7 @@ class CCodeBuilderEnum(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = "typedef enum{ENUM_VALUE_1, ENUM_VALUE_2}ENUM_TYPE_NAME_E;"
         expectedOutput = """typedef enum
@@ -52,7 +52,7 @@ class CCodeBuilderEnum(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = "typedef enum{ENUM_VALUE_1=0, ENUM_VALUE_2=PI}ENUM_TYPE_NAME_E;"
         expectedOutput = """typedef enum
@@ -69,7 +69,7 @@ class CCodeBuilderEnum(unittest.TestCase):
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """typedef enum{
 ENUM_VALUE_1=0, // Default value
@@ -90,7 +90,7 @@ ENUM_VALUE_2=PI      // 3.1415
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """typedef enum{
 ENUM_VALUE_1=0 // Default value
@@ -111,7 +111,7 @@ ENUM_VALUE_1=0 // Default value
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """typedef enum{
 ENUM_VALUE_1=0, /* Default value */
@@ -132,7 +132,7 @@ ENUM_VALUE_2=PI      /* 3.1415 */
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
 
-        bContext.codingRules = CodingRules( EnumTypeDefinitionCodingRules() )
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """typedef enum{
 ENUM_VALUE_1=0 /* Default value */
