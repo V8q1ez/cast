@@ -23,6 +23,9 @@ class EnumTypeDefinitionDefaultCodingRules():
     def get_min_space_before_comment(self):
         return '    '
 
+    def get_space_before_type(self):
+        return ' '
+
 class DefaultCodingRules():
     def __init__(self, enum):
         self.enum = enum

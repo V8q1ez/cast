@@ -191,3 +191,19 @@ typedef enum
 
         actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
+
+    def test_enum_with_type(self):
+        builder = CCodeBuilder()
+        pContext = CCodeParsingContext()
+        bContext = CCodeBuildingContext()
+
+        bContext.codingRules = DefaultCodingRules(EnumTypeDefinitionDefaultCodingRules())
+
+        inputText = "typedef enum TYPE{ENUM_VALUE_1}ENUM_TYPE_NAME_E;"
+        expectedOutput = """typedef enum TYPE
+{
+    ENUM_VALUE_1
+}ENUM_TYPE_NAME_E;
+"""
+        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )

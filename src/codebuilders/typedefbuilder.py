@@ -90,6 +90,7 @@ class TypeDefBuilder():
         gContext.currentLine += 'typedef enum'
         index = 2
         isAssignmentHandlingRequired = False
+        wasBodyProcessed = False
         while index < len(lContext.activeBlock):
 
             t = lContext.activeBlock[index]
@@ -103,6 +104,8 @@ class TypeDefBuilder():
 
             if t.type == Grammar.BRACE_RIGHT:
                 lContext.bodyIndex -= 1
+                if lContext.bodyIndex == 0:
+                    wasBodyProcessed = True
                 gContext.currentLine += \
                     gContext.codingRules.enum.get_space_before_closing_brace()
                 gContext.currentLine += '}'
@@ -116,6 +119,10 @@ class TypeDefBuilder():
                     else:
                         gContext.currentLine += \
                             gContext.codingRules.enum.get_space_before_next_element()
+                else:
+                    if not wasBodyProcessed:
+                        gContext.currentLine += gContext.codingRules.enum.get_space_before_type()
+
                 gContext.currentLine += t.literalValue
 
             elif t.type == Grammar.COMMA:
