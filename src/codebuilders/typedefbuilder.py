@@ -2,7 +2,6 @@ __author__ = 'V8q1ez'
 
 from src.castle.ccodeparser import Grammar, CToken
 
-
 class TypedefBuilderContext():
     def __init__(self):
         self.bodyIndex = 0
@@ -16,8 +15,12 @@ class TypeDefBuilder():
         index = self._popCodeBlockToBuild(tokenList, index, lContext)
         self._analyseAndCorrectBlock(lContext)
 
+        if gContext.previousBlockType == Grammar.TYPEDEF:
+            gContext.currentLine += gContext.codingRules.get_space_between_similar_blocks()
+
         if lContext.activeBlock[1].type == Grammar.ENUM:
-            self._buildEnumTypeDefinition(gContext, lContext)
+            self._buildEnumTypeDefinitionBlock(gContext, lContext)
+            gContext.currentLine += '\n'
 
         return index
 
@@ -82,7 +85,7 @@ class TypeDefBuilder():
             index += 1
 
     @classmethod
-    def _buildEnumTypeDefinition(self, gContext, lContext):
+    def _buildEnumTypeDefinitionBlock(self, gContext, lContext):
         assert isinstance(lContext, TypedefBuilderContext)
         gContext.currentLine += 'typedef enum'
         index = 2

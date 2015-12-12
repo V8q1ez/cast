@@ -32,3 +32,6 @@ class DefaultCodingRules():
 
     def handle_enum_name(self, name):
         return name
+
+    def get_space_between_similar_blocks(self):
+        return '\n'
