@@ -22,7 +22,7 @@ class CCodeBuilder():
     def __init__(self):
         pass
 
-    def buildFormattedText(self, tokenList, buildingContext):
+    def buildFromTokenList(self, tokenList, buildingContext):
         index = 0
         previous_block_type = Grammar.UNKNOWN
         while index < len(tokenList):

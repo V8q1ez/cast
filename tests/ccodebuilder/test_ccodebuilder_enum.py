@@ -28,7 +28,7 @@ class CCodeBuilderEnum(unittest.TestCase):
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_two_elements(self):
@@ -46,7 +46,7 @@ class CCodeBuilderEnum(unittest.TestCase):
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_two_elements_with_assignment(self):
@@ -64,7 +64,7 @@ class CCodeBuilderEnum(unittest.TestCase):
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_with_single_line_comment(self):
@@ -87,7 +87,7 @@ ENUM_VALUE_2=PI      // 3.1415
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_single_line_comment_next_line_comma(self):
@@ -110,7 +110,7 @@ ENUM_VALUE_1=0 // Default value
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_with_multi_line_comment(self):
@@ -133,7 +133,7 @@ ENUM_VALUE_2=PI      /* 3.1415 */
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_with_multi_line_comment_next_line_comma(self):
@@ -156,7 +156,7 @@ ENUM_VALUE_1=0 /* Default value */
 }ENUM_TYPE_NAME_E;
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_two_enums_with_multi_line_comment_next_line_comma(self):
@@ -189,7 +189,7 @@ typedef enum
 }ENUM_TYPE_NAME2_E
 """
 
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
 
     def test_enum_with_type(self):
@@ -205,5 +205,5 @@ typedef enum
     ENUM_VALUE_1
 }ENUM_TYPE_NAME_E;
 """
-        actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
+        actualOutput = builder.buildFromTokenList(self._parser.parseText(inputText.splitlines(), pContext), bContext)
         self.assertMultiLineEqual( expectedOutput, '\n'.join(actualOutput) )
