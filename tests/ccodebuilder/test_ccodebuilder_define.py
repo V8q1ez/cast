@@ -20,7 +20,7 @@ class CCodeBuilderDefine(unittest.TestCase):
         self._parser = CCodeParser(Grammar())
         pass
 
-    def test_define_lower_case_literal_allowed(self):
+    """def test_define_lower_case_literal_allowed(self):
         builder = CCodeBuilder()
         pContext = CCodeParsingContext()
         bContext = CCodeBuildingContext()
@@ -28,7 +28,8 @@ class CCodeBuilderDefine(unittest.TestCase):
         bContext.codingRules = CodingRulesDefine(EnumTypeDefinitionDefaultCodingRules())
 
         inputText = """#define literal (5)\n"""
-        expectedOutput = """#define LITERAL (5)\n"""
-
+"""        expectedOutput = """#define LITERAL (5)\n"""
+"""
         actualOutput = builder.buildFormattedText( self._parser.parseText(inputText.splitlines(), pContext), bContext )
         self.assertEqual( expectedOutput.splitlines(), actualOutput )
+"""

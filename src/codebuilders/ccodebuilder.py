@@ -1,3 +1,5 @@
+from src.codebuilders.ccodeblockprocessor import CCodeBlockProcessorContext, CCodeBlockProcessor
+
 __author__ = 'V8q1ez'
 
 from src.codebuilders.macrobuilder import MacroBuilder, MacroBuilderContext
@@ -10,8 +12,6 @@ class CCodeBuildingContext():
         self.outputText = []
         self.currentLine = ''
         self.codingRules = None
-        self.previousBlockType = Grammar.UNKNOWN
-        self.activeBlock = []
 
 class CSyntaxError(RuntimeError):
     def __init__(self, arg):
@@ -24,20 +24,25 @@ class CCodeBuilder():
 
     def buildFormattedText(self, tokenList, buildingContext):
         index = 0
-        buildingContext.previousBlockType = Grammar.UNKNOWN
+        previous_block_type = Grammar.UNKNOWN
         while index < len(tokenList):
-            t = tokenList[index]
+            ccb_context = CCodeBlockProcessorContext( previous_block_type )
+            index = CCodeBlockProcessor.popBlock(tokenList, index, ccb_context)
+            CCodeBlockProcessor.AnalyseAndCorrectBlock(ccb_context)
 
-            if t.type == Grammar.OBJECT_LIKE_MACRO:
+            if previous_block_type == ccb_context.activeBlockType:
+                buildingContext.currentLine += buildingContext.codingRules.get_space_between_similar_blocks()
+
+            if ccb_context.activeBlockType == Grammar.OBJECT_LIKE_MACRO:
                 localContext = MacroBuilderContext()
                 index = MacroBuilder.build(tokenList, index, buildingContext, localContext)
-                buildingContext.previousBlockType = t.type
+                buildingContext.previousBlockType = Grammar.UNKNOWN
 
-            elif t.type == Grammar.TYPEDEF:
-                index = self._popBlock(tokenList, index, buildingContext)
+            elif ccb_context.activeBlockType == Grammar.TYPEDEF:
                 localContext = TypedefBuilderContext()
-                TypeDefBuilder.build(tokenList, index, buildingContext, localContext)
-                buildingContext.previousBlockType = t.type
+                localContext.activeBlock = ccb_context.activeBlock
+                TypeDefBuilder.build(buildingContext, localContext)
+                previous_block_type = ccb_context.activeBlockType
 
             index += 1
 
@@ -45,19 +50,3 @@ class CCodeBuilder():
 
         return buildingContext.outputText
 
-    def _popBlock(self, tokenList, index, gContext):
-        gContext.activeBlock = []
-        gContext.activeBlock.append(tokenList[index])  # typedef
-        index += 1
-        isClosingBraceFound = False
-        while index < len(tokenList):
-            t = tokenList[index]
-            assert isinstance(t, CToken)
-            gContext.activeBlock.append(tokenList[index])
-            if t.type == Grammar.BRACE_LEFT:
-                isClosingBraceFound = True
-            elif isClosingBraceFound and t.type == Grammar.SEMICOLON:
-                break
-            index += 1
-
-        return index
