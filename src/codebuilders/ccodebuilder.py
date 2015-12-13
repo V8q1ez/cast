@@ -2,7 +2,7 @@ __author__ = 'V8q1ez'
 
 from src.codebuilders.macrobuilder import MacroBuilder, MacroBuilderContext
 from src.codebuilders.typedefbuilder import TypeDefBuilder, TypedefBuilderContext
-from src.castle.ccodeparser import Grammar
+from src.castle.ccodeparser import Grammar, CToken
 
 
 class CCodeBuildingContext():
@@ -11,7 +11,7 @@ class CCodeBuildingContext():
         self.currentLine = ''
         self.codingRules = None
         self.previousBlockType = Grammar.UNKNOWN
-
+        self.activeBlock = []
 
 class CSyntaxError(RuntimeError):
     def __init__(self, arg):
@@ -34,8 +34,9 @@ class CCodeBuilder():
                 buildingContext.previousBlockType = t.type
 
             elif t.type == Grammar.TYPEDEF:
+                index = self._popBlock(tokenList, index, buildingContext)
                 localContext = TypedefBuilderContext()
-                index = TypeDefBuilder.build(tokenList, index, buildingContext, localContext)
+                TypeDefBuilder.build(tokenList, index, buildingContext, localContext)
                 buildingContext.previousBlockType = t.type
 
             index += 1
@@ -43,3 +44,20 @@ class CCodeBuilder():
         buildingContext.outputText.append(buildingContext.currentLine)
 
         return buildingContext.outputText
+
+    def _popBlock(self, tokenList, index, gContext):
+        gContext.activeBlock = []
+        gContext.activeBlock.append(tokenList[index])  # typedef
+        index += 1
+        isClosingBraceFound = False
+        while index < len(tokenList):
+            t = tokenList[index]
+            assert isinstance(t, CToken)
+            gContext.activeBlock.append(tokenList[index])
+            if t.type == Grammar.BRACE_LEFT:
+                isClosingBraceFound = True
+            elif isClosingBraceFound and t.type == Grammar.SEMICOLON:
+                break
+            index += 1
+
+        return index
